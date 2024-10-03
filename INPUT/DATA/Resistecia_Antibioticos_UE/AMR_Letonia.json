@@ -1,0 +1,273 @@
+{
+  "access": {
+    "embargo": {
+      "active": false,
+      "reason": null
+    },
+    "files": "public",
+    "record": "public",
+    "status": "open"
+  },
+  "created": "2024-02-28T09:32:14.994849+00:00",
+  "custom_fields": {},
+  "deletion_status": {
+    "is_deleted": false,
+    "status": "P"
+  },
+  "files": {
+    "count": 1,
+    "enabled": true,
+    "entries": {
+      "LV_AMR_PUB.zip": {
+        "access": {
+          "hidden": false
+        },
+        "checksum": "md5:56ec20cd19f994014b580f0e43b0c0cc",
+        "ext": "zip",
+        "id": "71e94f7b-c812-44aa-b0ea-d36b5276137c",
+        "key": "LV_AMR_PUB.zip",
+        "links": {
+          "content": "https://zenodo.org/api/records/10531773/files/LV_AMR_PUB.zip/content",
+          "self": "https://zenodo.org/api/records/10531773/files/LV_AMR_PUB.zip"
+        },
+        "metadata": null,
+        "mimetype": "application/zip",
+        "size": 1242681,
+        "storage_class": "L"
+      }
+    },
+    "order": [],
+    "total_bytes": 1242681
+  },
+  "id": "10531773",
+  "is_draft": false,
+  "is_published": true,
+  "links": {
+    "access": "https://zenodo.org/api/records/10531773/access",
+    "access_grants": "https://zenodo.org/api/records/10531773/access/grants",
+    "access_links": "https://zenodo.org/api/records/10531773/access/links",
+    "access_request": "https://zenodo.org/api/records/10531773/access/request",
+    "access_users": "https://zenodo.org/api/records/10531773/access/users",
+    "archive": "https://zenodo.org/api/records/10531773/files-archive",
+    "archive_media": "https://zenodo.org/api/records/10531773/media-files-archive",
+    "communities": "https://zenodo.org/api/records/10531773/communities",
+    "communities-suggestions": "https://zenodo.org/api/records/10531773/communities-suggestions",
+    "doi": "https://doi.org/10.5281/zenodo.10531773",
+    "draft": "https://zenodo.org/api/records/10531773/draft",
+    "files": "https://zenodo.org/api/records/10531773/files",
+    "latest": "https://zenodo.org/api/records/10531773/versions/latest",
+    "latest_html": "https://zenodo.org/records/10531773/latest",
+    "media_files": "https://zenodo.org/api/records/10531773/media-files",
+    "parent": "https://zenodo.org/api/records/10531772",
+    "parent_doi": "https://doi.org/10.5281/zenodo.10531773",
+    "parent_doi_html": "https://zenodo.org/doi/10.5281/zenodo.10531772",
+    "parent_html": "https://zenodo.org/records/10531772",
+    "requests": "https://zenodo.org/api/records/10531773/requests",
+    "reserve_doi": "https://zenodo.org/api/records/10531773/draft/pids/doi",
+    "self": "https://zenodo.org/api/records/10531773",
+    "self_doi": "https://doi.org/10.5281/zenodo.10531773",
+    "self_doi_html": "https://zenodo.org/doi/10.5281/zenodo.10531773",
+    "self_html": "https://zenodo.org/records/10531773",
+    "self_iiif_manifest": "https://zenodo.org/api/iiif/record:10531773/manifest",
+    "self_iiif_sequence": "https://zenodo.org/api/iiif/record:10531773/sequence/default",
+    "versions": "https://zenodo.org/api/records/10531773/versions"
+  },
+  "media_files": {
+    "count": 0,
+    "enabled": false,
+    "entries": {},
+    "order": [],
+    "total_bytes": 0
+  },
+  "metadata": {
+    "additional_descriptions": [
+      {
+        "description": "<p><span>LV; xlsx; zoonoses_support@efsa.europa.eu</span></p>",
+        "lang": {
+          "id": "eng",
+          "title": {
+            "en": "English"
+          }
+        },
+        "type": {
+          "id": "notes",
+          "title": {
+            "de": "Anmerkungen",
+            "en": "Notes"
+          }
+        }
+      }
+    ],
+    "creators": [
+      {
+        "person_or_org": {
+          "name": "Food and Veterinary Service of the Republic of Latvia",
+          "type": "organizational"
+        }
+      }
+    ],
+    "description": "<p>This dataset contains AMR monitoring results in animals and food at the isolate level pursuant to Article 9 of Directive 2003/99/EC and to Annex, part B, of Commission implementing Decision (EU) 2020/1729. In addition, the dataset includes any other results from isolates than the ones mentioned in the Commission implementing Decision (EU) 2020/1729. The quantitative minimum inhibitory concentration (MIC) data from dilution methods are included.</p>\n<p>Reporting authorities contributing to 2022 AMR data collection: Food and Veterinary Service of the Republic of Latvia</p>",
+    "languages": [
+      {
+        "id": "eng",
+        "title": {
+          "en": "English"
+        }
+      }
+    ],
+    "publication_date": "2024-02-28",
+    "publisher": "Zenodo",
+    "related_identifiers": [
+      {
+        "identifier": "10.2903/j.efsa.2024.8583",
+        "relation_type": {
+          "id": "iscitedby",
+          "title": {
+            "de": "Wird zitiert von",
+            "en": "Is cited by"
+          }
+        },
+        "resource_type": {
+          "id": "publication-report",
+          "title": {
+            "de": "Bericht",
+            "en": "Report"
+          }
+        },
+        "scheme": "doi"
+      }
+    ],
+    "resource_type": {
+      "id": "dataset",
+      "title": {
+        "de": "Datensatz",
+        "en": "Dataset"
+      }
+    },
+    "rights": [
+      {
+        "description": {
+          "en": "The Creative Commons Attribution license allows re-distribution and re-use of a licensed work on the condition that the creator is appropriately credited."
+        },
+        "icon": "cc-by-icon",
+        "id": "cc-by-4.0",
+        "props": {
+          "scheme": "spdx",
+          "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
+        },
+        "title": {
+          "en": "Creative Commons Attribution 4.0 International"
+        }
+      }
+    ],
+    "subjects": [
+      {
+        "subject": "antimicrobial resistance"
+      },
+      {
+        "subject": "zoonotic bacteria"
+      },
+      {
+        "subject": "indicator bacteria"
+      },
+      {
+        "subject": "ESBL"
+      },
+      {
+        "subject": "Latvia"
+      }
+    ],
+    "title": "Antimicrobial resistance monitoring results complementing the European Union Summary Report on Antimicrobial Resistance in zoonotic and indicator bacteria from humans, animals and food in 2021/2022 \u2013 Latvia"
+  },
+  "parent": {
+    "access": {
+      "owned_by": {
+        "user": "40429"
+      },
+      "settings": {
+        "accept_conditions_text": null,
+        "allow_guest_requests": false,
+        "allow_user_requests": false,
+        "secret_link_expiration": 0
+      }
+    },
+    "communities": {
+      "default": "e835d5a6-736e-4331-9727-fc97f7b4878b",
+      "entries": [
+        {
+          "access": {
+            "member_policy": "open",
+            "members_visibility": "public",
+            "record_submission_policy": "open",
+            "review_policy": "open",
+            "visibility": "public"
+          },
+          "children": {
+            "allow": false
+          },
+          "created": "2016-11-10T11:04:06.919144+00:00",
+          "custom_fields": {},
+          "deletion_status": {
+            "is_deleted": false,
+            "status": "P"
+          },
+          "id": "e835d5a6-736e-4331-9727-fc97f7b4878b",
+          "links": {},
+          "metadata": {
+            "curation_policy": "<p>Items subject to copyright restrictions should only be shared if these rights are not infringed by publishing on an open platform. All other evidence and supporting materials of relevant for food and feed safety will be accepted if the metadata provided is completed according to the guideline (<a href=\"https://doi.org/10.5281/zenodo.889741\">https://doi.org/10.5281/zenodo.889741</a>).</p>\r\n",
+            "page": "<p>The <strong>Knowledge Junction</strong> is a curated, open repository for the exchange of evidence and supporting materials used in food and feed safety risk assessments.</p>\r\n\r\n<p>Our aim is to improve transparency, reproducibility and evidence reuse.</p>\r\n\r\n<p>Anyone can use the platform and your submissions are welcome too, including:</p>\r\n\r\n<ul>\r\n\t<li>Evidence &ndash; reports, datasets, images, videos, laboratory outputs, etc.</li>\r\n\t<li>Supporting materials &ndash; software, tools, models, code, protocols, appraisal schemes, FAQs etc.</li>\r\n\t<li>Risk assessment &ndash; mandates, opinions, statements, guidance documents, annual and strategic plans provided by Member States.</li>\r\n</ul>\r\n\r\n<p>Each submission receives a digital object identifier (DOI), requires metadata acknowledging authors and contributors and has a license specifying the conditions of use.<br />\r\nIn this way the reuse of any object deposited can be tracked by the provider.</p>\r\n\r\n<p>The content of this repository can be used by EFSA&rsquo;s panels and working groups and any other interested parties when preparing for new risk assessments.</p>\r\n\r\n<p>The <strong>Knowledge Junction</strong> is a curated, open repository for the exchange of evidence and supporting materials used in food and feed safety risk assessments.</p>\r\n\r\n<p>Our aim is to improve transparency, reproducibility and evidence reuse.</p>\r\n\r\n<p>Anyone can use the platform and your submissions are welcome too, including:</p>\r\n\r\n<ul>\r\n\t<li>Evidence &ndash; reports, datasets, images, videos, laboratory outputs, etc.</li>\r\n\t<li>Supporting materials &ndash; software, tools, models, code, protocols, appraisal schemes, FAQs etc.</li>\r\n</ul>\r\n\r\n<p>Each submission receives a digital object identifier (DOI), requires metadata acknowledging authors and contributors and has a license specifying the conditions of use.<br />\r\nIn this way the reuse of any object deposited can be tracked by the provider.</p>\r\n\r\n<p>The content of this repository can be used by EFSA&rsquo;s panels and working groups and any other interested parties when preparing for new risk assessments.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p><em>Disclaimer: The European Food Safety Authority (EFSA) curates the Knowledge Junction to facilitate the exchange of evidence and supporting materials relevant for food and feed safety risk assessments. In addition to the information provided on its website:&nbsp;<a href=\"http://www.efsa.europa.eu/\" target=\"_blank\">http://www.efsa.europa.eu</a>.The linking policy, copyright policy and tweeter policy of EFSA&rsquo;s website apply mutatis mutandis and are available at:&nbsp;<a href=\"http://www.efsa.europa.eu/en/legalnotice\" target=\"_blank\">http://www.efsa.europa.eu/en/legalnotice</a>. The Notice on personal data protection and confidentiality also apply equally to the present community.</em></p>\r\n\r\n<p><em>All links are up to date at the time of the publication. If errors are brought to EFSA&rsquo;s attention, EFSA will try to correct them. However, please note that EFSA may not be held liable for errors, inaccuracies or inconsistencies with regard to texts available through the community being different from its scientific and administrative documents officially adopted and/or issued and/or endorsed. Nor may it be held liable for information provided by third parties for which EFSA is not responsible.</em></p>\r\n\r\n<p><em>All persons reproducing, redistributing, exploiting or making commercial use of digital objects published in the community are expected to adhere to the terms and conditions described by the license assigned to each published object. EFSA is not responsible for any misuse of the documents and files.</em></p>",
+            "title": "Knowledge Junction"
+          },
+          "revision_id": 0,
+          "slug": "efsa-kj",
+          "updated": "2023-01-09T07:47:22.156520+00:00"
+        }
+      ],
+      "ids": [
+        "e835d5a6-736e-4331-9727-fc97f7b4878b"
+      ]
+    },
+    "id": "10531772",
+    "pids": {
+      "doi": {
+        "client": "datacite",
+        "identifier": "10.5281/zenodo.10531772",
+        "provider": "datacite"
+      }
+    }
+  },
+  "pids": {
+    "doi": {
+      "client": "datacite",
+      "identifier": "10.5281/zenodo.10531773",
+      "provider": "datacite"
+    },
+    "oai": {
+      "identifier": "oai:zenodo.org:10531773",
+      "provider": "oai"
+    }
+  },
+  "revision_id": 4,
+  "stats": {
+    "all_versions": {
+      "data_volume": 16154853.0,
+      "downloads": 13,
+      "unique_downloads": 13,
+      "unique_views": 75,
+      "views": 75
+    },
+    "this_version": {
+      "data_volume": 16154853.0,
+      "downloads": 13,
+      "unique_downloads": 13,
+      "unique_views": 75,
+      "views": 75
+    }
+  },
+  "status": "published",
+  "updated": "2024-02-28T09:32:15.150210+00:00",
+  "versions": {
+    "index": 1,
+    "is_latest": true
+  }
+}

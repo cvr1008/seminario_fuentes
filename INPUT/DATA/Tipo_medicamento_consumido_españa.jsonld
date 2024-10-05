@@ -1,0 +1,619 @@
+{
+  "@context": {
+    "adms": "http://www.w3.org/ns/adms#",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "dct": "http://purl.org/dc/terms/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "gsp": "http://www.opengis.net/ont/geosparql#",
+    "locn": "http://www.w3.org/ns/locn#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "schema": "http://schema.org/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "time": "http://www.w3.org/2006/time#",
+    "vcard": "http://www.w3.org/2006/vcard/ns#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@graph": [
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/7d569a1a-04ba-47d6-8207-4c689610658f/format",
+      "@type": "dct:IMT",
+      "rdf:value": "text/csv",
+      "rdfs:label": "CSV"
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/be972ac2-fc48-4cb0-bafd-4335a270fd44/format",
+      "@type": "dct:IMT",
+      "rdf:value": "application/vnd.ms-excel",
+      "rdfs:label": "XLS"
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/37114e80-5de2-46ee-a0cf-ec5096c22b9c/format",
+      "@type": "dct:IMT",
+      "rdf:value": "text/html",
+      "rdfs:label": "HTML"
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/7d569a1a-04ba-47d6-8207-4c689610658f",
+      "@type": "dcat:Distribution",
+      "dcat:accessURL": "https://www.ine.es/jaxi/files/tpx/csv_bd/47951.csv",
+      "dct:format": {
+        "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/7d569a1a-04ba-47d6-8207-4c689610658f/format"
+      },
+      "dct:title": [
+        {
+          "@language": "en",
+          "@value": "CSV: Tab Separated"
+        },
+        {
+          "@language": "es",
+          "@value": "CSV: separado por tabuladores"
+        }
+      ]
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/57b6cff3-e391-4f8b-a5a1-92efc4da6672",
+      "@type": "dcat:Distribution",
+      "dcat:accessURL": "https://www.ine.es/jaxi/files/tpx/csv/47951.csv",
+      "dct:format": {
+        "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/57b6cff3-e391-4f8b-a5a1-92efc4da6672/format"
+      },
+      "dct:title": [
+        {
+          "@language": "en",
+          "@value": "Plain Text: separated by tab"
+        },
+        {
+          "@language": "es",
+          "@value": "Texto plano: separado por tabuladores"
+        }
+      ]
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1",
+      "@type": "dcat:Dataset",
+      "dcat:distribution": [
+        {
+          "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/f3e4326b-a96c-49eb-aa4f-ecde7adb33ae"
+        },
+        {
+          "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/81a4c655-3ae1-4aa7-86db-9719f06aac58"
+        },
+        {
+          "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/57b6cff3-e391-4f8b-a5a1-92efc4da6672"
+        },
+        {
+          "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/7d569a1a-04ba-47d6-8207-4c689610658f"
+        },
+        {
+          "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/be972ac2-fc48-4cb0-bafd-4335a270fd44"
+        },
+        {
+          "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/a0195e90-9e20-4c95-8fc2-5f51e2e82b21"
+        },
+        {
+          "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/37114e80-5de2-46ee-a0cf-ec5096c22b9c"
+        },
+        {
+          "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/c9286620-194f-4cca-af9e-685f74b98030"
+        },
+        {
+          "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/6d2ee304-69b1-4f01-bd0d-6f8ec8ae090f"
+        },
+        {
+          "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/45e9e343-9999-46a2-9109-321e6a2a0e1e"
+        }
+      ],
+      "dcat:keyword": [
+        {
+          "@language": "en",
+          "@value": "Medicines for cholesterol"
+        },
+        {
+          "@language": "es",
+          "@value": "Mujeres"
+        },
+        {
+          "@language": "es",
+          "@value": "Medicinas para el estómago y/o alteraciones digestivas"
+        },
+        {
+          "@language": "es",
+          "@value": "tipo de medicamento"
+        },
+        {
+          "@language": "es",
+          "@value": "Antibióticos"
+        },
+        {
+          "@language": "en",
+          "@value": "Medicines for allergies"
+        },
+        {
+          "@language": "en",
+          "@value": "Medicines to lower fever"
+        },
+        {
+          "@language": "es",
+          "@value": "Píldoras para no quedar embarazada"
+        },
+        {
+          "@language": "en",
+          "@value": "type of medicine"
+        },
+        {
+          "@language": "es",
+          "@value": "Medicamentos para la diabetes"
+        },
+        {
+          "@language": "en",
+          "@value": "Men"
+        },
+        {
+          "@language": "en",
+          "@value": "Medicines for rheumatism"
+        },
+        {
+          "@language": "en",
+          "@value": "Medicines for pain"
+        },
+        {
+          "@language": "es",
+          "@value": "VI"
+        },
+        {
+          "@language": "en",
+          "@value": "Statistics"
+        },
+        {
+          "@language": "en",
+          "@value": "Antidepressants stimulants"
+        },
+        {
+          "@language": "en",
+          "@value": "Other medicines"
+        },
+        {
+          "@language": "en",
+          "@value": "Unprescribed"
+        },
+        {
+          "@language": "es",
+          "@value": "Medicinas para el reuma"
+        },
+        {
+          "@language": "en",
+          "@value": "Medicines for heart problems"
+        },
+        {
+          "@language": "es",
+          "@value": "Medicinas para la tensión arterial"
+        },
+        {
+          "@language": "es",
+          "@value": "Otros medicamentos"
+        },
+        {
+          "@language": "en",
+          "@value": "European Health Survey"
+        },
+        {
+          "@language": "es",
+          "@value": "recetado"
+        },
+        {
+          "@language": "es",
+          "@value": "Medicinas para el corazón"
+        },
+        {
+          "@language": "en",
+          "@value": "Medicines for the stomach and/or digestive disorders"
+        },
+        {
+          "@language": "en",
+          "@value": "Hormones for menopause"
+        },
+        {
+          "@language": "es",
+          "@value": "Ambos sexos"
+        },
+        {
+          "@language": "es",
+          "@value": "Medicinas para el catarro gripe garganta bronquios"
+        },
+        {
+          "@language": "es",
+          "@value": "Hormonas para la menopausia"
+        },
+        {
+          "@language": "en",
+          "@value": "Medicines for the thyroid gland"
+        },
+        {
+          "@language": "en",
+          "@value": "Tranquilizers sedatives pills for sleeping"
+        },
+        {
+          "@language": "en",
+          "@value": "prescribed"
+        },
+        {
+          "@language": "en",
+          "@value": "Prescribed"
+        },
+        {
+          "@language": "es",
+          "@value": "Recetado"
+        },
+        {
+          "@language": "en",
+          "@value": "Medicines for coughing flu throat bronchi"
+        },
+        {
+          "@language": "es",
+          "@value": "Hombres"
+        },
+        {
+          "@language": "es",
+          "@value": "Estadísticas"
+        },
+        {
+          "@language": "en",
+          "@value": "No data recorded"
+        },
+        {
+          "@language": "es",
+          "@value": "Medicamentos para el tiroides"
+        },
+        {
+          "@language": "es",
+          "@value": "clase social"
+        },
+        {
+          "@language": "es",
+          "@value": "II"
+        },
+        {
+          "@language": "es",
+          "@value": "Antidepresivos estimulantes"
+        },
+        {
+          "@language": "es",
+          "@value": "Laxantes"
+        },
+        {
+          "@language": "en",
+          "@value": "social class"
+        },
+        {
+          "@language": "en",
+          "@value": "Tonics (vitamins minerals stimulants)"
+        },
+        {
+          "@language": "es",
+          "@value": "IV"
+        },
+        {
+          "@language": "en",
+          "@value": "Women"
+        },
+        {
+          "@language": "es",
+          "@value": "sexo"
+        },
+        {
+          "@language": "es",
+          "@value": "Reconstituyentes (vitaminas minerales tónicos)"
+        },
+        {
+          "@language": "es",
+          "@value": "Encuesta Europea de Salud"
+        },
+        {
+          "@language": "en",
+          "@value": "Medicines for diabetes"
+        },
+        {
+          "@language": "es",
+          "@value": "Medicamentos para el colesterol"
+        },
+        {
+          "@language": "en",
+          "@value": "Medicines for blood pressure"
+        },
+        {
+          "@language": "en",
+          "@value": "Both sexes"
+        },
+        {
+          "@language": "en",
+          "@value": "Laxatives"
+        },
+        {
+          "@language": "es",
+          "@value": "Medicamentos para la alergia"
+        },
+        {
+          "@language": "es",
+          "@value": "No recetado"
+        },
+        {
+          "@language": "es",
+          "@value": "Medicinas para el dolor"
+        },
+        {
+          "@language": "es",
+          "@value": "TOTAL"
+        },
+        {
+          "@language": "es",
+          "@value": "III"
+        },
+        {
+          "@language": "en",
+          "@value": "Contraceptive pills"
+        },
+        {
+          "@language": "es",
+          "@value": "No consta"
+        },
+        {
+          "@language": "es",
+          "@value": "Medicinas para bajar la fiebre"
+        },
+        {
+          "@language": "en",
+          "@value": "Antibiotics"
+        },
+        {
+          "@language": "en",
+          "@value": "sex"
+        },
+        {
+          "@language": "es",
+          "@value": "Tranquilizantes relajantes pastillas para dormir"
+        }
+      ],
+      "dcat:theme": {
+        "@id": "http://datos.gob.es/kos/sector-publico/sector/sociedad-bienestar"
+      },
+      "dct:conformsTo": {
+        "@id": "https://www.ine.es/dynt3/metadatos/es/RespuestaDatos.htm?oe=54088"
+      },
+      "dct:description": [
+        {
+          "@language": "en",
+          "@value": "Table of INEBase\nType of medicine taken in the last 2 weeks according to if it had been prescribed or not by sex and social class based on the reference person's occupation. Population aged 15 years old and over that had take medicines in the last 2 weeks. National. European Health Survey"
+        },
+        {
+          "@language": "es",
+          "@value": "Tabla de INEbase\nTipo de medicamento consumido en las últimas 2 semanas, según haya sido recetado o no por sexo y clase social basada en la ocupación de la persona de referencia. Población de 15 y más años que ha consumido cada tipo de medicamento en las últimas 2 semanas. Nacional. Encuesta Europea de Salud"
+        }
+      ],
+      "dct:identifier": "urn:ine:es:TABLA:PX:t15:p420:a2019:p05:07012",
+      "dct:language": [
+        "es",
+        "en"
+      ],
+      "dct:license": {
+        "@id": "https://www.ine.es/aviso_legal"
+      },
+      "dct:modified": {
+        "@type": "xsd:dateTime",
+        "@value": "2021-04-26T02:00:00+02:00"
+      },
+      "dct:publisher": {
+        "@id": "http://datos.gob.es/recurso/sector-publico/org/Organismo/EA0010587"
+      },
+      "dct:references": {
+        "@id": "https://www.ine.es/dyngs/IOE/es/operacion.htm?numinv=54088"
+      },
+      "dct:spatial": {
+        "@id": "http://datos.gob.es/recurso/sector-publico/territorio/Pais/España"
+      },
+      "dct:title": [
+        {
+          "@language": "en",
+          "@value": "Type of medicine taken in the last 2 weeks according to if it had been prescribed or not by sex and social class based on the reference person's occupation. Population aged 15 years old and over  ...  (API identifier: /t15/p420/a2019/p05/l0/07012.px)"
+        },
+        {
+          "@language": "es",
+          "@value": "Tipo de medicamento consumido en las últimas 2 semanas, según haya sido recetado o no por sexo y clase social basada en la ocupación de la persona de referencia. Población de 15 y más años que ...  (Identificador API: /t15/p420/a2019/p05/l0/07012.px)"
+        }
+      ]
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/6d2ee304-69b1-4f01-bd0d-6f8ec8ae090f",
+      "@type": "dcat:Distribution",
+      "dcat:accessURL": "https://servicios.ine.es/wstempus/js/es/DATOS_TABLA/47951?tip=AM",
+      "dct:format": {
+        "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/6d2ee304-69b1-4f01-bd0d-6f8ec8ae090f/format"
+      },
+      "dct:title": [
+        {
+          "@language": "en",
+          "@value": "Json"
+        },
+        {
+          "@language": "es",
+          "@value": "Json"
+        }
+      ]
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/be972ac2-fc48-4cb0-bafd-4335a270fd44",
+      "@type": "dcat:Distribution",
+      "dcat:accessURL": "https://www.ine.es/jaxi/files/tpx/xls/47951.xls",
+      "dct:format": {
+        "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/be972ac2-fc48-4cb0-bafd-4335a270fd44/format"
+      },
+      "dct:title": [
+        {
+          "@language": "es",
+          "@value": "Excel: Extensión XLS"
+        },
+        {
+          "@language": "en",
+          "@value": "Excel: XLS extension"
+        }
+      ]
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/45e9e343-9999-46a2-9109-321e6a2a0e1e/format",
+      "@type": "dct:IMT",
+      "rdf:value": "text/csv",
+      "rdfs:label": "CSV"
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/57b6cff3-e391-4f8b-a5a1-92efc4da6672/format",
+      "@type": "dct:IMT",
+      "rdf:value": "text/csv",
+      "rdfs:label": "CSV"
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/45e9e343-9999-46a2-9109-321e6a2a0e1e",
+      "@type": "dcat:Distribution",
+      "dcat:accessURL": "https://www.ine.es/jaxi/files/tpx/csv_bdsc/47951.csv",
+      "dct:format": {
+        "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/45e9e343-9999-46a2-9109-321e6a2a0e1e/format"
+      },
+      "dct:title": [
+        {
+          "@language": "en",
+          "@value": "CSV: Separated by ;"
+        },
+        {
+          "@language": "es",
+          "@value": "CSV: separado por ;"
+        }
+      ]
+    },
+    {
+      "@id": "http://datos.gob.es/recurso/sector-publico/org/Organismo/EA0010587",
+      "@type": "skos:Concept",
+      "skos:notation": "EA0010587",
+      "skos:prefLabel": "Instituto Nacional de Estadística"
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/81a4c655-3ae1-4aa7-86db-9719f06aac58/format",
+      "@type": "dct:IMT",
+      "rdf:value": "text/csv",
+      "rdfs:label": "CSV"
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/a0195e90-9e20-4c95-8fc2-5f51e2e82b21",
+      "@type": "dcat:Distribution",
+      "dcat:accessURL": "https://www.ine.es/jaxi/files/tpx/xlsx/47951.xlsx",
+      "dct:format": {
+        "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/a0195e90-9e20-4c95-8fc2-5f51e2e82b21/format"
+      },
+      "dct:title": [
+        {
+          "@language": "es",
+          "@value": "Excel: Extension XLSx"
+        },
+        {
+          "@language": "en",
+          "@value": "Excel: XLSx extension"
+        }
+      ]
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/c9286620-194f-4cca-af9e-685f74b98030",
+      "@type": "dcat:Distribution",
+      "dcat:accessURL": "https://www.ine.es/jaxi/files/tpx/px/47951.px",
+      "dct:format": {
+        "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/c9286620-194f-4cca-af9e-685f74b98030/format"
+      },
+      "dct:title": [
+        {
+          "@language": "en",
+          "@value": "Pc-Axis"
+        },
+        {
+          "@language": "es",
+          "@value": "Pc-Axis"
+        }
+      ]
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/f3e4326b-a96c-49eb-aa4f-ecde7adb33ae",
+      "@type": "dcat:Distribution",
+      "dcat:accessURL": "https://www.ine.es/jaxi/files/tpx/csv_c/47951.csv",
+      "dct:format": {
+        "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/f3e4326b-a96c-49eb-aa4f-ecde7adb33ae/format"
+      },
+      "dct:title": [
+        {
+          "@language": "en",
+          "@value": "Plain Text: separated by comma"
+        },
+        {
+          "@language": "es",
+          "@value": "Texto plano: separado por ,"
+        }
+      ]
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/f3e4326b-a96c-49eb-aa4f-ecde7adb33ae/format",
+      "@type": "dct:IMT",
+      "rdf:value": "text/csv",
+      "rdfs:label": "CSV"
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/81a4c655-3ae1-4aa7-86db-9719f06aac58",
+      "@type": "dcat:Distribution",
+      "dcat:accessURL": "https://www.ine.es/jaxi/files/tpx/csv_sc/47951.csv",
+      "dct:format": {
+        "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/81a4c655-3ae1-4aa7-86db-9719f06aac58/format"
+      },
+      "dct:title": [
+        {
+          "@language": "es",
+          "@value": "Texto plano: separado por ;"
+        },
+        {
+          "@language": "en",
+          "@value": "Plain Text: separated by semicolons"
+        }
+      ]
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/a0195e90-9e20-4c95-8fc2-5f51e2e82b21/format",
+      "@type": "dct:IMT",
+      "rdf:value": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "rdfs:label": "XLSX"
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/37114e80-5de2-46ee-a0cf-ec5096c22b9c",
+      "@type": "dcat:Distribution",
+      "dcat:accessURL": "https://www.ine.es/jaxi/Tabla.htm?tpx=47951",
+      "dct:format": {
+        "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/37114e80-5de2-46ee-a0cf-ec5096c22b9c/format"
+      },
+      "dct:title": [
+        {
+          "@language": "es",
+          "@value": "Html"
+        },
+        {
+          "@language": "en",
+          "@value": "Html"
+        }
+      ]
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/c9286620-194f-4cca-af9e-685f74b98030/format",
+      "@type": "dct:IMT",
+      "rdf:value": "text/pc-axis",
+      "rdfs:label": "PC-Axis"
+    },
+    {
+      "@id": "https://datos.gob.es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1/resource/6d2ee304-69b1-4f01-bd0d-6f8ec8ae090f/format",
+      "@type": "dct:IMT",
+      "rdf:value": "application/json",
+      "rdfs:label": "JSON"
+    }
+  ]
+}

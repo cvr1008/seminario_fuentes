@@ -1,11 +1,8 @@
-"C:/CLASE/practicas_fuentes/seminario_fuentes/INPUT/DATA/AMR - 2023 Interactive dashboard.csv"
-
 library(readr)
-Acc_Car <- read_delim("C:/CLASE/practicas_fuentes/seminario_fuentes/INPUT/DATA/AMR - 2023 Interactive dashboard_1.txt", 
-                      delim = ",", escape_double = FALSE, trim_ws = TRUE)
+library(dplyr)
 
-Acc_Car
-summary(Acc_Car)
-#View(Acc_Car) 
+AMR_2023_Interactive_dashboard_1 <- read_csv("C:/Users/usuario/seminario_fuentes/INPUT/DATA/AMR - 2023 Interactive dashboard_1.txt")
 
-#"C:\CLASE\practicas_fuentes\seminario_fuentes\INPUT\DATA\AMR - 2023 Interactive dashboard_1.txt"
+View(AMR_2023_Interactive_dashboard_1)
+
+

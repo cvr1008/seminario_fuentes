@@ -1,0 +1,121 @@
+﻿Sexo;Actividad económica;Recetado;Total
+Ambos sexos;TOTAL;TOTAL;100,00
+Ambos sexos;TOTAL;Solo recetado;44,15
+Ambos sexos;TOTAL;Solo no recetado;6,83
+Ambos sexos;TOTAL;Recetado y no recetado;7,85
+Ambos sexos;TOTAL;No ha consumido medicamentos;41,17
+Ambos sexos;Trabajando;TOTAL;100,00
+Ambos sexos;Trabajando;Solo recetado;32,50
+Ambos sexos;Trabajando;Solo no recetado;9,28
+Ambos sexos;Trabajando;Recetado y no recetado;7,26
+Ambos sexos;Trabajando;No ha consumido medicamentos;50,96
+Ambos sexos;En desempleo;TOTAL;100,00
+Ambos sexos;En desempleo;Solo recetado;38,77
+Ambos sexos;En desempleo;Solo no recetado;6,76
+Ambos sexos;En desempleo;Recetado y no recetado;7,54
+Ambos sexos;En desempleo;No ha consumido medicamentos;46,93
+Ambos sexos;Jubilado/a o prejubilado/a;TOTAL;100,00
+Ambos sexos;Jubilado/a o prejubilado/a;Solo recetado;74,13
+Ambos sexos;Jubilado/a o prejubilado/a;Solo no recetado;1,40
+Ambos sexos;Jubilado/a o prejubilado/a;Recetado y no recetado;9,86
+Ambos sexos;Jubilado/a o prejubilado/a;No ha consumido medicamentos;14,61
+Ambos sexos;Estudiando;TOTAL;100,00
+Ambos sexos;Estudiando;Solo recetado;21,20
+Ambos sexos;Estudiando;Solo no recetado;10,43
+Ambos sexos;Estudiando;Recetado y no recetado;4,19
+Ambos sexos;Estudiando;No ha consumido medicamentos;64,18
+Ambos sexos;Incapacitado/a para trabajar;TOTAL;100,00
+Ambos sexos;Incapacitado/a para trabajar;Solo recetado;79,25
+Ambos sexos;Incapacitado/a para trabajar;Solo no recetado;0,54
+Ambos sexos;Incapacitado/a para trabajar;Recetado y no recetado;10,41
+Ambos sexos;Incapacitado/a para trabajar;No ha consumido medicamentos;9,79
+Ambos sexos;Labores del hogar;TOTAL;100,00
+Ambos sexos;Labores del hogar;Solo recetado;62,26
+Ambos sexos;Labores del hogar;Solo no recetado;3,10
+Ambos sexos;Labores del hogar;Recetado y no recetado;10,03
+Ambos sexos;Labores del hogar;No ha consumido medicamentos;24,61
+Ambos sexos;Otros;TOTAL;100,00
+Ambos sexos;Otros;Solo recetado;42,31
+Ambos sexos;Otros;Solo no recetado;18,03
+Ambos sexos;Otros;Recetado y no recetado;9,78
+Ambos sexos;Otros;No ha consumido medicamentos;29,88
+Hombres;TOTAL;TOTAL;100,00
+Hombres;TOTAL;Solo recetado;40,08
+Hombres;TOTAL;Solo no recetado;6,63
+Hombres;TOTAL;Recetado y no recetado;6,07
+Hombres;TOTAL;No ha consumido medicamentos;47,22
+Hombres;Trabajando;TOTAL;100,00
+Hombres;Trabajando;Solo recetado;30,11
+Hombres;Trabajando;Solo no recetado;8,83
+Hombres;Trabajando;Recetado y no recetado;5,08
+Hombres;Trabajando;No ha consumido medicamentos;55,98
+Hombres;En desempleo;TOTAL;100,00
+Hombres;En desempleo;Solo recetado;32,75
+Hombres;En desempleo;Solo no recetado;5,30
+Hombres;En desempleo;Recetado y no recetado;7,10
+Hombres;En desempleo;No ha consumido medicamentos;54,85
+Hombres;Jubilado/a o prejubilado/a;TOTAL;100,00
+Hombres;Jubilado/a o prejubilado/a;Solo recetado;73,64
+Hombres;Jubilado/a o prejubilado/a;Solo no recetado;1,23
+Hombres;Jubilado/a o prejubilado/a;Recetado y no recetado;9,16
+Hombres;Jubilado/a o prejubilado/a;No ha consumido medicamentos;15,98
+Hombres;Estudiando;TOTAL;100,00
+Hombres;Estudiando;Solo recetado;14,90
+Hombres;Estudiando;Solo no recetado;9,35
+Hombres;Estudiando;Recetado y no recetado;2,95
+Hombres;Estudiando;No ha consumido medicamentos;72,79
+Hombres;Incapacitado/a para trabajar;TOTAL;100,00
+Hombres;Incapacitado/a para trabajar;Solo recetado;80,66
+Hombres;Incapacitado/a para trabajar;Solo no recetado;0,92
+Hombres;Incapacitado/a para trabajar;Recetado y no recetado;7,17
+Hombres;Incapacitado/a para trabajar;No ha consumido medicamentos;11,25
+Hombres;Labores del hogar;TOTAL;100,00
+Hombres;Labores del hogar;Solo recetado;54,91
+Hombres;Labores del hogar;Solo no recetado;0,00
+Hombres;Labores del hogar;Recetado y no recetado;9,82
+Hombres;Labores del hogar;No ha consumido medicamentos;35,27
+Hombres;Otros;TOTAL;100,00
+Hombres;Otros;Solo recetado;38,70
+Hombres;Otros;Solo no recetado;24,95
+Hombres;Otros;Recetado y no recetado;5,45
+Hombres;Otros;No ha consumido medicamentos;30,90
+Mujeres;TOTAL;TOTAL;100,00
+Mujeres;TOTAL;Solo recetado;48,01
+Mujeres;TOTAL;Solo no recetado;7,01
+Mujeres;TOTAL;Recetado y no recetado;9,53
+Mujeres;TOTAL;No ha consumido medicamentos;35,44
+Mujeres;Trabajando;TOTAL;100,00
+Mujeres;Trabajando;Solo recetado;35,40
+Mujeres;Trabajando;Solo no recetado;9,83
+Mujeres;Trabajando;Recetado y no recetado;9,89
+Mujeres;Trabajando;No ha consumido medicamentos;44,88
+Mujeres;En desempleo;TOTAL;100,00
+Mujeres;En desempleo;Solo recetado;44,65
+Mujeres;En desempleo;Solo no recetado;8,18
+Mujeres;En desempleo;Recetado y no recetado;7,97
+Mujeres;En desempleo;No ha consumido medicamentos;39,20
+Mujeres;Jubilado/a o prejubilado/a;TOTAL;100,00
+Mujeres;Jubilado/a o prejubilado/a;Solo recetado;74,70
+Mujeres;Jubilado/a o prejubilado/a;Solo no recetado;1,61
+Mujeres;Jubilado/a o prejubilado/a;Recetado y no recetado;10,70
+Mujeres;Jubilado/a o prejubilado/a;No ha consumido medicamentos;12,99
+Mujeres;Estudiando;TOTAL;100,00
+Mujeres;Estudiando;Solo recetado;26,97
+Mujeres;Estudiando;Solo no recetado;11,42
+Mujeres;Estudiando;Recetado y no recetado;5,32
+Mujeres;Estudiando;No ha consumido medicamentos;56,28
+Mujeres;Incapacitado/a para trabajar;TOTAL;100,00
+Mujeres;Incapacitado/a para trabajar;Solo recetado;77,19
+Mujeres;Incapacitado/a para trabajar;Solo no recetado;0,00
+Mujeres;Incapacitado/a para trabajar;Recetado y no recetado;15,14
+Mujeres;Incapacitado/a para trabajar;No ha consumido medicamentos;7,67
+Mujeres;Labores del hogar;TOTAL;100,00
+Mujeres;Labores del hogar;Solo recetado;62,36
+Mujeres;Labores del hogar;Solo no recetado;3,14
+Mujeres;Labores del hogar;Recetado y no recetado;10,03
+Mujeres;Labores del hogar;No ha consumido medicamentos;24,47
+Mujeres;Otros;TOTAL;100,00
+Mujeres;Otros;Solo recetado;45,07
+Mujeres;Otros;Solo no recetado;12,71
+Mujeres;Otros;Recetado y no recetado;13,11
+Mujeres;Otros;No ha consumido medicamentos;29,10

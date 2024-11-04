@@ -31,14 +31,15 @@ antibioticos_sin_receta <- antibioticos_sin_receta %>%
 
 consumo_comunidades <- antibioticos_sin_receta %>%
   group_by(`Comunidad.autónoma`) %>%
-  summarise(Total_Consumo = sum(as.numeric(value), na.rm = TRUE)) %>%
-  arrange(desc(Total_Consumo))
+  #summarise(Total_Consumo = sum(as.numeric(value), na.rm = TRUE)) %>%
+  arrange(desc(value))
 
 consumo_comunidades
+View(consumo_comunidades)
 
 
 
-ggplot(consumo_comunidades, aes(x = "", y = Total_Consumo, fill = `Comunidad.autónoma`)) +
+ggplot(consumo_comunidades, aes(x = "", y = value, fill = `Comunidad.autónoma`)) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar(theta = "y") +
   labs(title = "Consumo de Antibióticos por Comunidad Autónoma",

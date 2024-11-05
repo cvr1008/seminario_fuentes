@@ -3,7 +3,7 @@ library(dplyr)
 library(ggplot2)
 
 
-tipo_ccaa_consumo_o_no <- read_delim("C:/CLASE/practicas_fuentes/datos_ccaa/tipo_ccaa_consumo_o_no.csv", 
+tipo_ccaa_consumo_o_no <- read_delim("INPUT/DATA/datos_ccaa/tipo_ccaa_consumo_o_no.csv", 
                                      delim = ";", escape_double = FALSE, trim_ws = TRUE)
 View(tipo_ccaa_consumo_o_no)
 
@@ -43,8 +43,8 @@ sum(is.na(antibioticos_si$Total))  # Muestra el número de NAs
 
 consumo_comunidades <- antibioticos_si %>%
   group_by(`Comunidades y Ciudades Autónomas`) %>%
-  summarise(Total_Consumo = sum(as.numeric(Total), na.rm = TRUE)) %>%
-  arrange(desc(Total_Consumo))
+  #summarise(Total_Consumo = sum(as.numeric(Total), na.rm = TRUE)) %>%
+  arrange(desc(Total))
 
 consumo_comunidades
 
@@ -55,8 +55,9 @@ c_c_final
 
 
 # Crear el gráfico de barras
-ggplot(c_c_final, aes(x = reorder(`Comunidades y Ciudades Autónomas`, -Total_Consumo), y = Total_Consumo)) +
+ggplot(c_c_final, aes(x = reorder(`Comunidades y Ciudades Autónomas`, -Total), y = Total)) +
   geom_bar(stat = "identity", fill = "steelblue") +
   labs(x = "Comunidades Autónomas", y = "Total Consumo", title = "Consumo de antibióticos por Comunidad Autónoma") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+

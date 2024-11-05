@@ -6,7 +6,7 @@ library(RColorBrewer)
 
 # Leer el archivo .px
 archivo_px <- read.px("C:/Users/usuario/seminario_fuentes/INPUT/DATA/datos_ccaa/tipo_ccaa_recetado_o_no.px")
-
+View(archivo_px)
 df_px <- as.data.frame(archivo_px)
 
 # Ver las primeras filas
@@ -15,13 +15,13 @@ View(df_px)
 
 
 # quedarme solo con los antibióticos
-antibioticos <- df_px[df_px[["Tipo.de.medicamento"]] == "Antibióticos" & df_px$`Sexo` == "Ambos sexos", ]
-antibioticos
-View(antibioticos)
+antibiotic <- df_px[df_px[["Tipo.de.medicamento"]] == "Antibióticos" & df_px$`Sexo` == "Ambos sexos", ]
+antibiotic
+View(antibiotic)
 
 
 # qué comunidad autónoma se automedica más
-antibioticos_sin_receta <- antibioticos[antibioticos$`Recetado` == "No recetado",]
+antibioticos_sin_receta <- antibiotic[antibiotic$`Recetado` == "No recetado",]
 antibioticos_sin_receta
 View(antibioticos_sin_receta)
 

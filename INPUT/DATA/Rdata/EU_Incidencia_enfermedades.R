@@ -1,5 +1,7 @@
 library(dplyr)
 library(readr)
+library(ggplot2)
+library(plotly)
 Incidencia_enfermedades <- read_delim("INPUT/DATA/ECDC_encuesta_AMR_incidencia_enfermedades.csv", 
                       delim = ",", escape_double = FALSE, trim_ws = TRUE)
 
@@ -27,6 +29,7 @@ media_poblacion_genero <- incidencia_2022MF %>%
   ungroup()
 
 incidencia <- media_poblacion_genero %>%
+  mutate(grupo = substr(Population, 1, 3)) %>%
   select(-Unit, -Category, -CategoryIndex, -Value, -Distribution)%>%
   filter(!is.na(mean_value))
 
@@ -43,3 +46,34 @@ media_por_bacteria <- incidencia %>%
   ungroup()
 
 View(media_por_bacteria)
+
+
+ggplot(media_por_bacteria, aes(x = grupo, y = media_mean_value)) +
+  geom_boxplot() +
+  labs(title = "Distribution of Mean Incidence by Bacteria Group",
+       x = "Bacteria Group", y = "Mean Incidence") +
+  theme_minimal()
+
+
+
+# gráfico que te dice qué países tienen esa media para cada bacteria
+
+# Crear el conjunto de datos interactivo con highlight_key
+incidencia_keyed <- highlight_key(media_por_bacteria, ~RegionName)
+
+# Crear el gráfico ggplot con el texto configurado para el tooltip
+scatter_plot <- ggplot(incidencia_keyed, aes(x = grupo, y = media_mean_value, color = RegionName, text = paste("País:", RegionName))) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Population vs Mean Incidence Value by Region",
+       x = "Population", y = "Mean Incidence Value") +
+  theme_classic()
+
+# Convertir el gráfico ggplot en un gráfico interactivo de plotly con highlight
+interactive_scatter_plot <- ggplotly(scatter_plot, tooltip = "text") %>%
+  highlight(on = "plotly_click", off = "plotly_doubleclick", color = "red", opacityDim = 0.2)
+
+# cuando haces click en un país te dice solo los puntitos de ese país, cuando haces dobleckick en otra parte del gráfico, se desaparece.
+
+# Mostrar el gráfico interactivo
+interactive_scatter_plot

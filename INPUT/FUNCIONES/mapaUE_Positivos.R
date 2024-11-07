@@ -1,4 +1,7 @@
 library(sf)
+library(ggplot2)
+library(plotly)
+
 paises_UE <- c(
   "Cyprus", "France", "Lithuania", "Czechia", "Germany", 
   "Estonia", "Latvia", "Sweden", "Finland", "Luxembourg", 
@@ -19,6 +22,9 @@ world_map <- st_read("INPUT/DATA/mapaMundi")  # Cargar el mapa de países en for
 world_map_europe <- world_map %>% 
   filter(NAME %in% paises_UE)
 
+world_map_europe <- as.data.frame(world_map %>% filter(NAME %in% paises_UE))
+
+
 positivity_by_country <- paises_UE_df %>%
   group_by(NombrePais) %>%
   summarize(total_tested = sum(TotalMuestras, na.rm = TRUE),
@@ -35,13 +41,8 @@ world_map_europe <- world_map_europe %>%
 
 
 
-
-# Cargar librerías necesarias
-library(ggplot2)
-library(plotly)
-
 # Crear el gráfico de mapa de Europa con ggplot2
-p <- ggplot(world_map_europe) +
+mapa <- ggplot(world_map_europe) +
   geom_sf(aes(fill = positivity_rate)) +
   scale_fill_viridis_c(option = "plasma", na.value = "gray") +
   labs(title = "Tasa de Positividad por País en Europa",
@@ -51,7 +52,7 @@ p <- ggplot(world_map_europe) +
   theme(plot.title = element_text(hjust = 0.5))
 
 # Convertir el gráfico a interactivo con plotly
-interactive_map <- ggplotly(p)
+interactive_map <- ggplotly(mapa)
 
 # Mostrar el gráfico interactivo
 interactive_map

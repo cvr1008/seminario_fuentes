@@ -16,11 +16,11 @@ print(df_combinado)
 
 
 #seleccionamos las columnas que vamos a necesitar
-paises_UE_df<-df_combinado%>%
-  select(rep_Country_name,rep_Country_code,zoonosis_name,matrix_name,totUnitsTested,totUnitsPositive,sampUnitType_name,sampType_name,MIC_name,CUTOFFVALUE)%>%
-  filter(zoonosis_name != "Escherichia coli, non-pathogenic, unspecified")#filtramos las columnas que sean patogénicas
-
-
+paises_UE_df <- df_combinado %>%
+  select(rep_Country_name, rep_Country_code, zoonosis_name, matrix_name, 
+         totUnitsTested, totUnitsPositive, sampUnitType_name, sampType_name,MIC_name, CUTOFFVALUE) %>%
+  mutate(zoonosis_name = sub(" .*", "", zoonosis_name)) %>%  # Extraer solo la primera palabra
+  filter(zoonosis_name != "Escherichia coli, non-pathogenic, unspecified")
 
 
 # Nuevo vector con los nombres de las columnas

@@ -31,19 +31,18 @@ pib <- pib[, colSums(is.na(pib)) < nrow(pib)]
 pib
 
 
-pib_2023 <- pib %>% select(pais, `2023`)
-View(pib_2023)
+pib_2022 <- pib %>% select(pais, `2022`)
+View(pib_2022)
 
 
-# ggplot del pib en el 20223 (primero lo ponemos en descendente)
+# ggplot del pib en el 2022 (primero lo ponemos en descendente)
 
-pib_2023_desc <- pib_2023 %>% arrange(desc(`2023`))
+pib_2022_desc <- pib_2022 %>% arrange(desc(`2022`))
 
 
 # sustituir las etiquetas de los países
 
-
-pib_2023_desc <- pib_2023_desc %>%
+pib_2022_desc <- pib_2022_desc %>%
   mutate(pais = case_when(
     pais == "SK" ~ "Eslovaquia",
     pais == "SI" ~ "Slovenia",
@@ -57,13 +56,11 @@ pib_2023_desc <- pib_2023_desc %>%
   ))
 
 
-# Cargar ggplot2
-
 
 # Crear el gráfico de barras
-grafico_pib <- ggplot(pib_2023_desc, aes(x = reorder(pais, -`2023`), y = `2023`)) +
+grafico_pib <- ggplot(pib_2022_desc, aes(x = reorder(pais, -`2022`), y = `2022`)) +
   geom_bar(stat = "identity", fill = "gold") +
-  labs(x = "País", y = "Valor en 2023", title = "PIB por País en 2023") +
+  labs(x = "País", y = "Valor en 2022", title = "PIB por País en 2022") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Rotar etiquetas para mejor legibilidad
 

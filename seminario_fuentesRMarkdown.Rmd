@@ -14,8 +14,190 @@ knitr::opts_chunk$set(echo = TRUE)
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+## Librerías empleadas
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+```
+
+
+
+
+## Pregunta 1: Consumo de antibióticos en España
+Determinar el consumo de antibióticos por comunidades autónomas, diferenciando entre recetado y no recetado, para identificar tendencias de uso.
+
+
+
+## Pregunta 2: Relación entre PIB y resistencia a antibióticos en la UE
+Analizar si existe una relación significativa entre el Producto Interno Bruto de los países de la Unión Europea y los niveles de resistencia a antibióticos.
+
+```{r, eval=FALSE}
+pibPP <- read_table("INPUT/DATA/datos_pib.tsv")
+View(pibPP)
+
+str(pibPP)
+
+# Cambio de nombre columna
+colnames(pibPP)[1] <- "pais"
+
+# Nos quedamos con las últimas letras
+pibPP$pais <- substr(pibPP$pais, nchar(pibPP$pais) - 1, nchar(pibPP$pais))
+View(pibPP)
+
+lista_pais <- list("BE", "BG", "CZ", "DK", "DE", "EE", "IE", "EL", "ES", "FR", "HR", "IT", "CY", "LV", "LT", "LU", "HU", "MT", "NL",
+               "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE")
+
+# nos quedamos solo con los países de la UE
+
+
+pib <- pibPP %>% filter(pais %in% unlist(lista_pais))
+View(pib)
+
+
+# quitar la columna nula
+
+pib <- pib[, colSums(is.na(pib)) < nrow(pib)]
+pib
+
+
+pib_2022 <- pib %>% select(pais, `2022`)
+View(pib_2022)
+
+
+# ggplot del pib en el 2022 (primero lo ponemos en descendente)
+
+pib_2022_desc <- pib_2022 %>% arrange(desc(`2022`))
+
+
+# sustituir las etiquetas de los países
+
+pib_2022_desc <- pib_2022_desc %>%
+  mutate(pais = case_when(
+    pais == "SK" ~ "Eslovaquia",
+    pais == "SI" ~ "Slovenia",
+    pais == "EE" ~ "Estonia",
+    pais == "MT" ~ "Malta",
+    pais == "LV" ~ "Latvia",
+    pais == "HR" ~ "Croatia",
+    pais == "EL" ~ "Greece",
+    pais == "BG" ~ "Bulgaria",
+    TRUE ~ pais # Mantiene los nombres que no están en la lista
+  ))
+
+
+```
+ 
+Tras el tratamiento de estos datos se puede ver de manera gráfica la comparativa entre los países.
+
+```{r}
+grafico_pib <- ggplot(pib_2022_desc, aes(x = reorder(pais, -`2022`), y = `2022`)) +
+  geom_bar(stat = "identity", fill = "gold") +
+  labs(x = "País", y = "Valor en 2022", title = "PIB por País en 2022") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Rotar etiquetas para mejor legibilidad
+
+grafico_pib
+```
+
+Una vez observada la primera variable, generamos los datos del valor medio de la resistencia a antimicrobianos en los países europeos para comprobar si existe una relación o, efectivamente no tiene que ver.
+
+```{r, eval=FALSE}
+Incidencia_enfermedades <- read_delim("INPUT/DATA/ECDC_encuesta_AMR_incidencia_enfermedades.csv", 
+                      delim = ",", escape_double = FALSE, trim_ws = TRUE)
+
+Incidencia_enfermedades
+summary(Incidencia_enfermedades)
+
+View(Incidencia_enfermedades) 
+
+incidencia_2022 <- Incidencia_enfermedades %>%
+  filter(Time == 2022) 
+  
+incidencia_2022MF <- incidencia_2022 %>%  
+  filter(Category == 'Male' | Category == 'Female')
+
+View(incidencia_2022MF)
+
+
+incidencia_2022MF$Value <- as.numeric(incidencia_2022MF$Value)
+
+
+media_poblacion_genero <- incidencia_2022MF %>%
+  arrange(RegionCode, Population) %>%  # Ordenar los datos
+  group_by(RegionCode, Population) %>%
+  mutate(mean_value = (Value + lead(Value)) / 2) %>%
+  ungroup()
+
+incidencia <- media_poblacion_genero %>%
+  mutate(grupo = substr(Population, 1, 3)) %>%
+  select(-Unit, -Category, -CategoryIndex, -Value, -Distribution)%>%
+  filter(!is.na(mean_value))
+
+# Ver el dataframe
+print(incidencia)
+View(incidencia)
+
+
+media_por_bacteria <- incidencia %>%
+  mutate(grupo = substr(Population, 1, 3)) %>%                # Crear una columna con las primeras letras
+  arrange(grupo, RegionCode) %>%                              # Ordenar por grupo y RegionCode
+  group_by(grupo, RegionCode) %>%                             # Agrupar por grupo y RegionCode
+  summarise(media_mean_value = mean(mean_value, na.rm = TRUE)) %>%  # Calcular la media para cada combinación de grupo y RegionCode
+  ungroup()
+
+View(media_por_bacteria)
+
+# Dataframe final con el valor de media final de todas las bacterias
+media_por_pais <- media_por_bacteria %>%
+  group_by(RegionCode) %>%
+  summarise(media = mean(media_mean_value, na.rm = TRUE))
+
+```
+
+Gracias a estos datos podemos estudiar las bacterias que generan resistencia de manera individual, y ver su incidencia en los países.
+
+```{r}
+# gráfico que te dice qué bacteria tiene más incidencia
+ggplot(media_por_bacteria, aes(x = grupo, y = media_mean_value)) +
+  geom_boxplot() +
+  labs(title = "Distribution of Mean Incidence by Bacteria Group",
+       x = "Bacteria Group", y = "Mean Incidence") +
+  theme_minimal()
+
+
+# gráfico que te dice qué países tienen esa media para cada bacteria
+
+# Crear el conjunto de datos interactivo con highlight_key
+incidencia_keyed <- highlight_key(media_por_bacteria, ~RegionCode)
+
+# Crear el gráfico ggplot con el texto configurado para el tooltip
+scatter_plot <- ggplot(incidencia_keyed, aes(x = grupo, y = media_mean_value, color = RegionCode, text = paste("País:", RegionCode))) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Population vs Mean Incidence Value by Region",
+       x = "Population", y = "Mean Incidence Value") +
+  theme_classic()
+
+# Convertir el gráfico ggplot en un gráfico interactivo de plotly con highlight
+interactive_scatter_plot <- ggplotly(scatter_plot, tooltip = "text") %>%
+  highlight(on = "plotly_click", off = "plotly_doubleclick", color = "red", opacityDim = 0.2)
+
+# cuando haces click en un país te dice solo los puntitos de ese país, cuando haces dobleckick en otra parte del gráfico, se desaparece.
+
+# Mostrar el gráfico interactivo
+interactive_scatter_plot
+```
+
+
+## Pregunta 3: Consumo y resistencia en sectores específicos en la UE
+Se pretende explorar cómo el consumo de antibióticos en diferentes sectores se relaciona con los niveles de resistencia a antibióticos en diferentes países de la UE.
+
+
 ## Funcion para sacar los datos JSON
-Tenemos la carpeta "Resistencia_Antibioticos_UE" con 27 archivos .jsonld por lo que hemos creado 3 funciones para obtener los datos.
+Tenemos la carpeta "Resistencia_Antibioticos_UE" con 27 archivos .jsonld por lo que hemos creado 3 funciones para obtener los datos. Estos datos se corresponden a la ganadería de la UE.
 
 La funcion obtener_nombre obtiene una lista con los nombres de los archivos que contiene la carpeta
 
@@ -120,10 +302,12 @@ leer_archivo("carpeta_destino")
 
 
 ```
+
 ## Juntar todos los dataframes que tenemos en el enviroment
 1. Listar los nombres de todos los dataframes que terminan en ".xlsx" (ajusta si es necesario)
 2. Convertir los nombres a una lista de dataframes usando mget()
 3. Unir todos los dataframes en uno solo usando bind_rows
+
 ```{r}
 eval=FALSE
 
@@ -136,19 +320,24 @@ lista_dataframes <- mget(nombres_dataframes)
 df_combinado <- bind_rows(lista_dataframes, .id = "origen")
 
 ```
+
 ##Cargamos el globalEnviroment
 En el que tenemos guardado todos los dataframe de cada pais resultante de la funcion leer_archivo, y el dataframe df_combinado del codigo anterior
+
 ```{r}
 load("OUTPUT/paisesUE_datosAMR.RData")
 ```
+
 ##Modificación y obtencion del dataframe con los datos
 seleccionamos las columnas que vamos a necesitar y filtramos en la columna de las bacterias solo las patogénicas.
 
 Cambiamos los nombres de las columnas y lo asignamos al dataframe
+
 ```{r}
 
 paises_UE_df<-df_combinado%>%
   select(rep_Country_name,rep_Country_code,zoonosis_name,matrix_name,totUnitsTested,totUnitsPositive,sampUnitType_name,sampType_name,MIC_name,CUTOFFVALUE)%>%
+  mutate(zoonosis_name = sub(".*", "", zoonosis_name))%>% # Extraer solo la primera palabra
   filter(zoonosis_name != "Escherichia coli, non-pathogenic, unspecified")
 
 

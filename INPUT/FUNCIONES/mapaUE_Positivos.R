@@ -1,6 +1,10 @@
 library(sf)
 library(ggplot2)
 library(plotly)
+library(dplyr)
+library(leaflet)  # Para crear mapas interactivos
+library(sf)       # Para trabajar con datos espaciales (sf)
+library(viridis)
 
 paises_UE <- c(
   "Cyprus", "France", "Lithuania", "Czechia", "Germany", 
@@ -22,7 +26,7 @@ world_map <- st_read("INPUT/DATA/mapaMundi")  # Cargar el mapa de países en for
 world_map_europe <- world_map %>% 
   filter(NAME %in% paises_UE)
 
-world_map_europe <- as.data.frame(world_map %>% filter(NAME %in% paises_UE))
+world_map_europe <- world_map %>% filter(NAME %in% paises_UE)
 
 
 positivity_by_country <- paises_UE_df %>%
@@ -38,7 +42,7 @@ positivity_by_country$NombrePais <- as.character(positivity_by_country$NombrePai
 # Realizar el join usando las columnas correctas
 world_map_europe <- world_map_europe %>% 
   left_join(positivity_by_country, by = c("NAME" = "NombrePais"))
-
+world_map_europe
 
 
 # Crear el gráfico de mapa de Europa con ggplot2
@@ -51,12 +55,11 @@ mapa <- ggplot(world_map_europe) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 
+
 # Convertir el gráfico a interactivo con plotly
 interactive_map <- ggplotly(mapa)
 
 # Mostrar el gráfico interactivo
 interactive_map
-
-
 
 

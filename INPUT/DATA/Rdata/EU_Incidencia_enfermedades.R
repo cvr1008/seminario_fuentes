@@ -23,8 +23,8 @@ incidencia_2022MF$Value <- as.numeric(incidencia_2022MF$Value)
 
 
 media_poblacion_genero <- incidencia_2022MF %>%
-  arrange(RegionName, Population) %>%  # Ordenar los datos
-  group_by(RegionName, Population) %>%
+  arrange(RegionCode, Population) %>%  # Ordenar los datos
+  group_by(RegionCode, Population) %>%
   mutate(mean_value = (Value + lead(Value)) / 2) %>%
   ungroup()
 
@@ -40,9 +40,9 @@ View(incidencia)
 
 media_por_bacteria <- incidencia %>%
   mutate(grupo = substr(Population, 1, 3)) %>%                # Crear una columna con las primeras letras
-  arrange(grupo, RegionName) %>%                              # Ordenar por grupo y RegionName
-  group_by(grupo, RegionName) %>%                             # Agrupar por grupo y RegionName
-  summarise(media_mean_value = mean(mean_value, na.rm = TRUE)) %>%  # Calcular la media para cada combinación de grupo y RegionName
+  arrange(grupo, RegionCode) %>%                              # Ordenar por grupo y RegionCode
+  group_by(grupo, RegionCode) %>%                             # Agrupar por grupo y RegionCode
+  summarise(media_mean_value = mean(mean_value, na.rm = TRUE)) %>%  # Calcular la media para cada combinación de grupo y RegionCode
   ungroup()
 
 View(media_por_bacteria)
@@ -59,10 +59,10 @@ ggplot(media_por_bacteria, aes(x = grupo, y = media_mean_value)) +
 # gráfico que te dice qué países tienen esa media para cada bacteria
 
 # Crear el conjunto de datos interactivo con highlight_key
-incidencia_keyed <- highlight_key(media_por_bacteria, ~RegionName)
+incidencia_keyed <- highlight_key(media_por_bacteria, ~RegionCode)
 
 # Crear el gráfico ggplot con el texto configurado para el tooltip
-scatter_plot <- ggplot(incidencia_keyed, aes(x = grupo, y = media_mean_value, color = RegionName, text = paste("País:", RegionName))) +
+scatter_plot <- ggplot(incidencia_keyed, aes(x = grupo, y = media_mean_value, color = RegionCode, text = paste("País:", RegionCode))) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
   labs(title = "Population vs Mean Incidence Value by Region",
@@ -77,3 +77,9 @@ interactive_scatter_plot <- ggplotly(scatter_plot, tooltip = "text") %>%
 
 # Mostrar el gráfico interactivo
 interactive_scatter_plot
+
+# Dataframe final con el valor de media final de todas las bacterias
+media_por_pais <- media_por_bacteria %>%
+  group_by(RegionCode) %>%
+  summarise(media = mean(media_mean_value, na.rm = TRUE))
+

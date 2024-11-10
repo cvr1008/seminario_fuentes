@@ -1,19 +1,21 @@
 ---
 title: "seminario_fuentes"
-author: "Deyanira y Cristina"
-date: "`r Sys.Date()`"
-output: html_document
+output: 
+  html_document: 
+    toc: true
+    toc_depth: 6
+    toc_float: true
+    theme: united
+    highlight: tango
+    css: "Input\\style.css"  
+date: "r Sys.Date()"
+author: "Cristina Velazquez y Deyanira Escudero Ramos"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ## Librerías empleadas
 ```{r}
@@ -21,6 +23,7 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 library(plotly)
+library(sf)
 ```
 
 
@@ -34,7 +37,7 @@ Determinar el consumo de antibióticos por comunidades autónomas, diferenciando
 ## Pregunta 2: Relación entre PIB y resistencia a antibióticos en la UE
 Analizar si existe una relación significativa entre el Producto Interno Bruto de los países de la Unión Europea y los niveles de resistencia a antibióticos.
 
-```{r, eval=FALSE}
+```{r}
 pibPP <- read_table("INPUT/DATA/datos_pib.tsv")
 View(pibPP)
 
@@ -104,7 +107,7 @@ grafico_pib
 
 Una vez observada la primera variable, generamos los datos del valor medio de la resistencia a antimicrobianos en los países europeos para comprobar si existe una relación o, efectivamente no tiene que ver.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 Incidencia_enfermedades <- read_delim("INPUT/DATA/ECDC_encuesta_AMR_incidencia_enfermedades.csv", 
                       delim = ",", escape_double = FALSE, trim_ws = TRUE)
 
@@ -196,7 +199,7 @@ interactive_scatter_plot
 Se pretende explorar cómo el consumo de antibióticos en diferentes sectores se relaciona con los niveles de resistencia a antibióticos en diferentes países de la UE.
 
 
-## Funcion para sacar los datos JSON
+**Funcion para sacar los datos JSON**
 Tenemos la carpeta "Resistencia_Antibioticos_UE" con 27 archivos .jsonld por lo que hemos creado 3 funciones para obtener los datos. Estos datos se corresponden a la ganadería de la UE.
 
 La funcion obtener_nombre obtiene una lista con los nombres de los archivos que contiene la carpeta
@@ -204,8 +207,8 @@ La funcion obtener_nombre obtiene una lista con los nombres de los archivos que 
 La función obtener_archivo carga cada archivo, accede al enlace necesario y descarga la carpeta.zip (con los datos) de cada archivo y las guarda en una carpeta 
 
 La función leer_archivo recorre la carpeta que contiene los archivos.zip los descomprime y carga los datos excel. Hace un dataframe con los datos y los almacena en el global enviroment de cada uno de los paises.
-```{r cars}
-eval=FALSE
+```{r eval=FALSE}
+
 library(httr)
 library(tidyverse)
 library(jsonlite)
@@ -303,7 +306,7 @@ leer_archivo("carpeta_destino")
 
 ```
 
-## Juntar todos los dataframes que tenemos en el enviroment
+**Juntar los dataframes que tenemos en el enviroment**
 1. Listar los nombres de todos los dataframes que terminan en ".xlsx" (ajusta si es necesario)
 2. Convertir los nombres a una lista de dataframes usando mget()
 3. Unir todos los dataframes en uno solo usando bind_rows
@@ -321,14 +324,14 @@ df_combinado <- bind_rows(lista_dataframes, .id = "origen")
 
 ```
 
-##Cargamos el globalEnviroment
+**Cargamos el global enviroment**
 En el que tenemos guardado todos los dataframe de cada pais resultante de la funcion leer_archivo, y el dataframe df_combinado del codigo anterior
 
 ```{r}
-load("OUTPUT/paisesUE_datosAMR.RData")
+load("OUTPUT/paisesUE_datos_AMR.RData")
 ```
 
-##Modificación y obtencion del dataframe con los datos
+**Modificación y obtencion del dataframe con los datos**
 seleccionamos las columnas que vamos a necesitar y filtramos en la columna de las bacterias solo las patogénicas.
 
 Cambiamos los nombres de las columnas y lo asignamos al dataframe
@@ -346,12 +349,60 @@ nuevos_nombres <- c("NombrePais", "Codigo", "zoonosis_name","OrigenMuestra", "To
 colnames(paises_UE_df) <- nuevos_nombres
 ```
 
-## Including Plots
+**Mapa Interactivo de positivos en ganaderia por paises de la UE**
+```{r}
+paises_UE <- c(
+  "Cyprus", "France", "Lithuania", "Czechia", "Germany", 
+  "Estonia", "Latvia", "Sweden", "Finland", "Luxembourg", 
+  "Belgium", "Spain", "Denmark", "Romania", "Hungary", 
+  "Slovakia", "Poland", "Ireland", "Greece", "Austria", 
+  "Italy", "Netherlands", "Croatia", "Slovenia", "Bulgaria", 
+  "Portugal", "Malta"
+)
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+
+mapa_mudo <- st_read("INPUT/DATA/mapaMundi")  
+
+
+mapa_mundo_europa <- mapa_mudo %>% 
+  filter(NAME %in% paises_UE)
+
+mapa_mundo_europa <- mapa_mudo %>% filter(NAME %in% paises_UE)
+
+
+positivos_por_ciudad <- paises_UE_df %>%
+  group_by(NombrePais) %>%
+  summarize(total_pruebas = sum(TotalMuestras, na.rm = TRUE),
+            total_positivos= sum(MuestraPositiva, na.rm = TRUE)) %>%
+  mutate(ratio_positivo = (total_positivos / total_pruebas) * 100)
+
+# Unir datos de positividad al mapa
+mapa_mundo_europa$NAME <- as.character(mapa_mundo_europa$NAME)
+positivos_por_ciudad$NombrePais <- as.character(positivos_por_ciudad$NombrePais)
+
+# Realizar el join usando las columnas correctas
+mapa_mundo_europa <- mapa_mundo_europa %>% 
+  left_join(positivos_por_ciudad, by = c("NAME" = "NombrePais"))
+
+
+
+mapa <- ggplot(mapa_mundo_europa) +
+  geom_sf(aes(fill = ratio_positivo)) +
+  scale_fill_viridis_c(option = "plasma", na.value = "gray") +
+  labs(title = "Tasa de Positividad por País en Europa",
+       fill = "Tasa de Positividad (%)") +
+  coord_sf(xlim = c(-30, 50), ylim = c(35, 72), expand = FALSE) +  # Ajustar límites para hacer zoom en Europa
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+# Convertir el gráfico a interactivo con plotly
+mapa_interactivo <- ggplotly(mapa)
+
+mapa_interactivo
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+

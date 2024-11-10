@@ -20,34 +20,34 @@ paises_UE <- c(
 
 # Suponiendo que tienes un objeto `world_map` con las geometrías de países
 # y `positivity_by_country` es un data frame con las tasas de positividad por país
-world_map <- st_read("INPUT/DATA/mapaMundi")  # Cargar el mapa de países en formato `sf`
+mapa_mudo <- st_read("INPUT/DATA/mapaMundi")  # Cargar el mapa de países en formato `sf`
 
 #Filtramos para que solo contenga 
-world_map_europe <- world_map %>% 
+mapa_mundo_europa <- mapa_mudo %>% 
   filter(NAME %in% paises_UE)
 
-world_map_europe <- world_map %>% filter(NAME %in% paises_UE)
+mapa_mundo_europa <- mapa_mudo %>% filter(NAME %in% paises_UE)
 
 
-positivity_by_country <- paises_UE_df %>%
+positivos_por_ciudad <- paises_UE_df %>%
   group_by(NombrePais) %>%
-  summarize(total_tested = sum(TotalMuestras, na.rm = TRUE),
-            total_positive = sum(MuestraPositiva, na.rm = TRUE)) %>%
-  mutate(positivity_rate = (total_positive / total_tested) * 100)
+  summarize(total_pruebas = sum(TotalMuestras, na.rm = TRUE),
+            total_positivos= sum(MuestraPositiva, na.rm = TRUE)) %>%
+  mutate(ratio_positivo = (total_positivos / total_pruebas) * 100)
 
 # Unir datos de positividad al mapa
-world_map_europe$NAME <- as.character(world_map_europe$NAME)
-positivity_by_country$NombrePais <- as.character(positivity_by_country$NombrePais)
+mapa_mundo_europa$NAME <- as.character(mapa_mundo_europa$NAME)
+positivos_por_ciudad$NombrePais <- as.character(positivos_por_ciudad$NombrePais)
 
 # Realizar el join usando las columnas correctas
-world_map_europe <- world_map_europe %>% 
-  left_join(positivity_by_country, by = c("NAME" = "NombrePais"))
-world_map_europe
+mapa_mundo_europa <- mapa_mundo_europa %>% 
+  left_join(positivos_por_ciudad, by = c("NAME" = "NombrePais"))
+mapa_mundo_europa
 
 
 # Crear el gráfico de mapa de Europa con ggplot2
-mapa <- ggplot(world_map_europe) +
-  geom_sf(aes(fill = positivity_rate)) +
+mapa <- ggplot(mapa_mundo_europa) +
+  geom_sf(aes(fill = ratio_positivo)) +
   scale_fill_viridis_c(option = "plasma", na.value = "gray") +
   labs(title = "Tasa de Positividad por País en Europa",
        fill = "Tasa de Positividad (%)") +
@@ -57,9 +57,9 @@ mapa <- ggplot(world_map_europe) +
 
 
 # Convertir el gráfico a interactivo con plotly
-interactive_map <- ggplotly(mapa)
+mapa_interactivo <- ggplotly(mapa)
 
 # Mostrar el gráfico interactivo
-interactive_map
+mapa_interactivo
 
 

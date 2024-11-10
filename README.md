@@ -11,5 +11,3 @@ El principal objeto de estudio de este seminario es el impacto que pueden tener 
 
 3. **Consumo y resistencia en sectores específicos en la UE**: Explorar cómo el consumo de antibióticos en sectores como el personal, hospitalario y ganadero se relaciona con los niveles de resistencia a antibióticos en diferentes países de la UE.
 
-4. **Evolución del consumo de antibióticos en la ganadería de la UE**: Estudiar la evolución del uso de antibióticos en el sector ganadero de la UE a lo largo del tiempo, con el fin de observar tendencias y cambios en políticas de administración de antibióticos en animales.
-

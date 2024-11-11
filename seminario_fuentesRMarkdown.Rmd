@@ -1,5 +1,5 @@
 ---
-title: "seminario_fuentes"
+title: "AMR: Resistencia a Antimicrobianos"
 output: 
   html_document: 
     toc: true
@@ -8,7 +8,7 @@ output:
     theme: united
     highlight: tango
     css: "Input\\style.css"  
-date: "r Sys.Date()"
+date: r Sys.Date()
 author: "Cristina Velazquez y Deyanira Escudero Ramos"
 ---
 
@@ -24,6 +24,14 @@ library(dplyr)
 library(ggplot2)
 library(plotly)
 library(sf)
+library(pxR)
+library(RColorBrewer)
+library(httr)
+library(tidyverse)
+library(jsonlite)
+library(readxl)
+library(rjson)
+library(tidyr)
 ```
 
 
@@ -32,6 +40,113 @@ library(sf)
 ## Pregunta 1: Consumo de antibióticos en España
 Determinar el consumo de antibióticos por comunidades autónomas, diferenciando entre recetado y no recetado, para identificar tendencias de uso.
 
+```{r}
+tipo_ccaa_consumo_o_no <- read_delim("INPUT/DATA/datos_ccaa/tipo_ccaa_consumo_o_no.csv", 
+                                     delim = ";", escape_double = FALSE, trim_ws = TRUE)
+View(tipo_ccaa_consumo_o_no)
+
+typeof(tipo_ccaa_consumo_o_no)
+class(tipo_ccaa_consumo_o_no)
+
+antibioticos <- tipo_ccaa_consumo_o_no %>% 
+  filter(`Tipo de medicamento` == "Antibióticos")
+
+antibioticos <- tipo_ccaa_consumo_o_no[tipo_ccaa_consumo_o_no$`Tipo de medicamento` == "Antibióticos" & tipo_ccaa_consumo_o_no$`Sexo` == "Ambos sexos",]
+antibioticos
+View(antibioticos)
+
+# Esta tabla enseña que el 3,54% de la población española en la última encuesta reconoce 
+# haber consumido antibióticos en las últimas 2 semanas (En el año 2021)
+
+
+# Comunidad que más consume
+
+antibioticos_si <- antibioticos[antibioticos$`Sí o no` == "Sí",]
+antibioticos_si
+View(antibioticos_si)
+
+
+antibioticos_si$Total <- gsub(",", ".", antibioticos_si$Total)
+
+# Limpia espacios y caracteres no numéricos (si es necesario)
+antibioticos_si$Total <- gsub(" ", "", antibioticos_si$Total)
+
+# Convierte a numérico
+antibioticos_si$Total <- as.numeric(antibioticos_si$Total)
+
+# Revisa si hay NA después de la conversión
+sum(is.na(antibioticos_si$Total))  # Muestra el número de NAs
+
+
+
+consumo_comunidades <- antibioticos_si %>%
+  group_by(`Comunidades y Ciudades Autónomas`) %>%
+  #summarise(Total_Consumo = sum(as.numeric(Total), na.rm = TRUE)) %>%
+  arrange(desc(Total))
+
+consumo_comunidades
+
+c_c_final <- consumo_comunidades %>%
+  mutate(`Comunidades y Ciudades Autónomas` = ifelse(is.na(`Comunidades y Ciudades Autónomas`), "Total País", `Comunidades y Ciudades Autónomas`))
+c_c_final
+
+```
+
+Con estos datos podemos observar de manera gráfica la tendencia de consumo de antibióticos por comunidad autónoma en este país.
+
+```{r}
+ggplot(c_c_final, aes(x = reorder(`Comunidades y Ciudades Autónomas`, -Total), y = Total)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(x = "Comunidades Autónomas", y = "Total Consumo", title = "Consumo de antibióticos por Comunidad Autónoma") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+```
+
+
+A continuación estudiaremos si esa cantidad de antibiótico se ha consumido de forma regulada, o por el contrario, no está recetado, favoreciendo así el autoconsumo de los mismos, lo cual se está considerando como una de las posibles causas de la resistencia a los antibióticos
+
+```{r}
+# Leer el archivo .px
+archivo_px <- read.px("C:/Users/usuario/seminario_fuentes/INPUT/DATA/datos_ccaa/tipo_ccaa_recetado_o_no.px")
+View(archivo_px)
+df_px <- as.data.frame(archivo_px)
+
+
+
+# quedarme solo con los antibióticos
+antibiotic <- df_px[df_px[["Tipo.de.medicamento"]] == "Antibióticos" & df_px$`Sexo` == "Ambos sexos", ]
+antibiotic
+
+
+# qué comunidad autónoma se automedica más
+antibioticos_sin_receta <- antibiotic[antibiotic$`Recetado` == "No recetado",]
+antibioticos_sin_receta
+View(antibioticos_sin_receta)
+
+antibioticos_sin_receta <- antibioticos_sin_receta %>%
+  filter(value != 0)
+
+
+consumo_comunidades <- antibioticos_sin_receta %>%
+  group_by(`Comunidad.autónoma`) %>%
+  #summarise(Total_Consumo = sum(as.numeric(value), na.rm = TRUE)) %>%
+  arrange(desc(value))
+
+consumo_comunidades
+
+```
+
+```{r}
+ggplot(consumo_comunidades, aes(x = "", y = value, fill = `Comunidad.autónoma`)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  labs(title = "Consumo de Antibióticos por Comunidad Autónoma",
+       fill = "Comunidad Autónoma") +
+  theme_void()  # Elimina el fondo y los ejes
+```
+
+
 
 
 ## Pregunta 2: Relación entre PIB y resistencia a antibióticos en la UE
@@ -39,16 +154,12 @@ Analizar si existe una relación significativa entre el Producto Interno Bruto d
 
 ```{r}
 pibPP <- read_table("INPUT/DATA/datos_pib.tsv")
-View(pibPP)
-
-str(pibPP)
 
 # Cambio de nombre columna
 colnames(pibPP)[1] <- "pais"
 
 # Nos quedamos con las últimas letras
 pibPP$pais <- substr(pibPP$pais, nchar(pibPP$pais) - 1, nchar(pibPP$pais))
-View(pibPP)
 
 lista_pais <- list("BE", "BG", "CZ", "DK", "DE", "EE", "IE", "EL", "ES", "FR", "HR", "IT", "CY", "LV", "LT", "LU", "HU", "MT", "NL",
                "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE")
@@ -57,7 +168,6 @@ lista_pais <- list("BE", "BG", "CZ", "DK", "DE", "EE", "IE", "EL", "ES", "FR", "
 
 
 pib <- pibPP %>% filter(pais %in% unlist(lista_pais))
-View(pib)
 
 
 # quitar la columna nula
@@ -67,7 +177,6 @@ pib
 
 
 pib_2022 <- pib %>% select(pais, `2022`)
-View(pib_2022)
 
 
 # ggplot del pib en el 2022 (primero lo ponemos en descendente)
@@ -107,106 +216,65 @@ grafico_pib
 
 Una vez observada la primera variable, generamos los datos del valor medio de la resistencia a antimicrobianos en los países europeos para comprobar si existe una relación o, efectivamente no tiene que ver.
 
-```{r, eval=TRUE}
-Incidencia_enfermedades <- read_delim("INPUT/DATA/ECDC_encuesta_AMR_incidencia_enfermedades.csv", 
-                      delim = ",", escape_double = FALSE, trim_ws = TRUE)
+```{r, eval=FALSE}
 
-Incidencia_enfermedades
-summary(Incidencia_enfermedades)
+Incidencia_enfermedades <-  read_csv("INPUT/DATA/ECDC_encuesta_AMR_incidencia_enfermedades.csv")
 
-View(Incidencia_enfermedades) 
-
-incidencia_2022 <- Incidencia_enfermedades %>%
-  filter(Time == 2022) 
-  
-incidencia_2022MF <- incidencia_2022 %>%  
+incidencia_2022MF <- Incidencia_enfermedades %>%
+  filter(Time == 2022) %>%
   filter(Category == 'Male' | Category == 'Female')
-
-View(incidencia_2022MF)
-
 
 incidencia_2022MF$Value <- as.numeric(incidencia_2022MF$Value)
 
+media_poblacion <- incidencia_2022MF %>%
+  select(-Unit, -HealthTopic, -Time, -Distribution) %>%
+  mutate(grupo = substr(Population, 1, 3))
 
-media_poblacion_genero <- incidencia_2022MF %>%
-  arrange(RegionCode, Population) %>%  # Ordenar los datos
-  group_by(RegionCode, Population) %>%
-  mutate(mean_value = (Value + lead(Value)) / 2) %>%
-  ungroup()
+otra <- media_poblacion %>%
+  select(-Category, -CategoryIndex, -Population) %>%
+  arrange(RegionCode, grupo) %>%    
+  group_by(RegionCode, grupo) %>%   
+  summarise(mean_value = mean(Value, na.rm = TRUE))  
 
-incidencia <- media_poblacion_genero %>%
-  mutate(grupo = substr(Population, 1, 3)) %>%
-  select(-Unit, -Category, -CategoryIndex, -Value, -Distribution)%>%
-  filter(!is.na(mean_value))
+otra$mean_value[is.nan(otra$mean_value)] <- 0
 
-# Ver el dataframe
-print(incidencia)
-View(incidencia)
-
-
-media_por_bacteria <- incidencia %>%
-  mutate(grupo = substr(Population, 1, 3)) %>%                # Crear una columna con las primeras letras
-  arrange(grupo, RegionCode) %>%                              # Ordenar por grupo y RegionCode
-  group_by(grupo, RegionCode) %>%                             # Agrupar por grupo y RegionCode
-  summarise(media_mean_value = mean(mean_value, na.rm = TRUE)) %>%  # Calcular la media para cada combinación de grupo y RegionCode
-  ungroup()
-
-View(media_por_bacteria)
-
-# Dataframe final con el valor de media final de todas las bacterias
-media_por_pais <- media_por_bacteria %>%
+media_region <- otra %>%
   group_by(RegionCode) %>%
-  summarise(media = mean(media_mean_value, na.rm = TRUE))
+  summarise(mean_value_region = mean(mean_value, na.rm = TRUE))  
 
-```
 
-Gracias a estos datos podemos estudiar las bacterias que generan resistencia de manera individual, y ver su incidencia en los países.
-
-```{r}
-# gráfico que te dice qué bacteria tiene más incidencia
-ggplot(media_por_bacteria, aes(x = grupo, y = media_mean_value)) +
+ggplot(otra, aes(x = grupo, y = mean_value)) +
   geom_boxplot() +
   labs(title = "Distribution of Mean Incidence by Bacteria Group",
        x = "Bacteria Group", y = "Mean Incidence") +
   theme_minimal()
 
 
-# gráfico que te dice qué países tienen esa media para cada bacteria
+incidencia_keyed <- highlight_key(otra, ~RegionCode)
 
-# Crear el conjunto de datos interactivo con highlight_key
-incidencia_keyed <- highlight_key(media_por_bacteria, ~RegionCode)
-
-# Crear el gráfico ggplot con el texto configurado para el tooltip
-scatter_plot <- ggplot(incidencia_keyed, aes(x = grupo, y = media_mean_value, color = RegionCode, text = paste("País:", RegionCode))) +
+scatter_plot <- ggplot(incidencia_keyed, aes(x = grupo, y = mean_value, color = RegionCode, text = paste("País:", RegionCode))) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
   labs(title = "Population vs Mean Incidence Value by Region",
        x = "Population", y = "Mean Incidence Value") +
   theme_classic()
 
-# Convertir el gráfico ggplot en un gráfico interactivo de plotly con highlight
 interactive_scatter_plot <- ggplotly(scatter_plot, tooltip = "text") %>%
   highlight(on = "plotly_click", off = "plotly_doubleclick", color = "red", opacityDim = 0.2)
 
-# cuando haces click en un país te dice solo los puntitos de ese país, cuando haces dobleckick en otra parte del gráfico, se desaparece.
-
-# Mostrar el gráfico interactivo
 interactive_scatter_plot
 ```
 
 
-## Pregunta 3: Consumo y resistencia en sectores específicos en la UE
-Se pretende explorar cómo el consumo de antibióticos en diferentes sectores se relaciona con los niveles de resistencia a antibióticos en diferentes países de la UE.
+Ahora cargamos el environment para poder ver la incidencia de las distintas bacterias por cada país y para ver cuál es la bacteria que más afecta en toda la Unión Europea.
 
+```{r}
+load("OUTPUT/datos_y_graficos_incidencia.RData")
 
-**Funcion para sacar los datos JSON**
-Tenemos la carpeta "Resistencia_Antibioticos_UE" con 27 archivos .jsonld por lo que hemos creado 3 funciones para obtener los datos. Estos datos se corresponden a la ganadería de la UE.
+```
 
-La funcion obtener_nombre obtiene una lista con los nombres de los archivos que contiene la carpeta
+A continuación, se presenta una función que permite abrir una carpeta con numerosos archivos de extensión .json con la misma estructura y leerlos.
 
-La función obtener_archivo carga cada archivo, accede al enlace necesario y descarga la carpeta.zip (con los datos) de cada archivo y las guarda en una carpeta 
-
-La función leer_archivo recorre la carpeta que contiene los archivos.zip los descomprime y carga los datos excel. Hace un dataframe con los datos y los almacena en el global enviroment de cada uno de los paises.
 ```{r eval=FALSE}
 
 library(httr)
@@ -269,9 +337,6 @@ obtener_archivo("INPUT/DATA/Resistecia_Antibioticos_UE")
 
 
 
-
-
-
 leer_archivo <- function(carpeta) {
   carpeta_destino <- carpeta
   archivos_zip <- list.files(carpeta_destino, pattern = "\\.zip$", full.names = TRUE)
@@ -300,9 +365,6 @@ leer_archivo <- function(carpeta) {
 
 
 leer_archivo("carpeta_destino")
-
-
-
 
 ```
 
@@ -404,5 +466,45 @@ mapa_interactivo
 
 ```
 
+
+
+## Pregunta 3: Consumo y resistencia en sectores específicos en la UE. 
+Explorar cómo el consumo de antibióticos en sectores como el personal, hospitalario y ganadero se relaciona con los niveles de resistencia a antibióticos en diferentes países de la UE.
+
+Otro de los factores a estudiar era el consumo/administración de este tipo de los medicamentos por parte de los hospitales y la ciudadanía de manera individual, y eso se ve reflejado en los siguientes datos extraídos de la encuesta europea anual.
+
+
+```{r}
+library(tidyverse)
+library(rjson)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+
+DDD_Europa_Json <- fromJSON(file = "INPUT/DATA/DDD_1000_habitantes_paises.JSON")
+
+DDD_Europa_df <- do.call(rbind, lapply(DDD_Europa_Json, function(x) {
+  data.frame(Country = x$Country, 
+             DDD_per_1000_inhabitants_per_day = as.numeric(x$`DDD per 1000 inhabitants per day`))
+}))
+
+
+```
+
+**Gráfico de barras de la Dosis de antibióticos media Diaria Definida de los países ordenados de mayor a menor consumo**
+
+```{r}
+grafico_DDD <- ggplot(DDD_Europa_df, aes(x = reorder(Country, -DDD_per_1000_inhabitants_per_day), 
+                          y = DDD_per_1000_inhabitants_per_day)) +
+  geom_bar(stat = "identity", fill = "turquoise") +
+  labs(title = "DDD por 1000 habitantes por día en Europa", 
+       x = "País", 
+       y = "DDD por 1000 habitantes por día") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+grafico_DDD
+
+
+```
 
 

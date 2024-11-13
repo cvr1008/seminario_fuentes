@@ -8,16 +8,16 @@ output:
     theme: united
     highlight: tango
     css: "Input\\style.css"  
-date: r Sys.Date()
-author: "Cristina Velazquez y Deyanira Escudero Ramos"
+date: "13/11/2024"
+author: "Cristina Velazquez Romano y Deyanira Escudero Ramos"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 ## Librerías empleadas
+
 ```{r}
 library(readr)
 library(dplyr)
@@ -34,26 +34,18 @@ library(rjson)
 library(tidyr)
 ```
 
-
-
-
 ## Pregunta 1: Consumo de antibióticos en España
+
 Determinar el consumo de antibióticos por comunidades autónomas, diferenciando entre recetado y no recetado, para identificar tendencias de uso.
 
 ```{r}
 tipo_ccaa_consumo_o_no <- read_delim("INPUT/DATA/datos_ccaa/tipo_ccaa_consumo_o_no.csv", 
                                      delim = ";", escape_double = FALSE, trim_ws = TRUE)
-View(tipo_ccaa_consumo_o_no)
-
-typeof(tipo_ccaa_consumo_o_no)
-class(tipo_ccaa_consumo_o_no)
 
 antibioticos <- tipo_ccaa_consumo_o_no %>% 
   filter(`Tipo de medicamento` == "Antibióticos")
 
 antibioticos <- tipo_ccaa_consumo_o_no[tipo_ccaa_consumo_o_no$`Tipo de medicamento` == "Antibióticos" & tipo_ccaa_consumo_o_no$`Sexo` == "Ambos sexos",]
-antibioticos
-View(antibioticos)
 
 # Esta tabla enseña que el 3,54% de la población española en la última encuesta reconoce 
 # haber consumido antibióticos en las últimas 2 semanas (En el año 2021)
@@ -62,16 +54,11 @@ View(antibioticos)
 # Comunidad que más consume
 
 antibioticos_si <- antibioticos[antibioticos$`Sí o no` == "Sí",]
-antibioticos_si
-View(antibioticos_si)
-
 
 antibioticos_si$Total <- gsub(",", ".", antibioticos_si$Total)
 
-# Limpia espacios y caracteres no numéricos (si es necesario)
 antibioticos_si$Total <- gsub(" ", "", antibioticos_si$Total)
 
-# Convierte a numérico
 antibioticos_si$Total <- as.numeric(antibioticos_si$Total)
 
 # Revisa si hay NA después de la conversión
@@ -81,7 +68,6 @@ sum(is.na(antibioticos_si$Total))  # Muestra el número de NAs
 
 consumo_comunidades <- antibioticos_si %>%
   group_by(`Comunidades y Ciudades Autónomas`) %>%
-  #summarise(Total_Consumo = sum(as.numeric(Total), na.rm = TRUE)) %>%
   arrange(desc(Total))
 
 consumo_comunidades
@@ -103,26 +89,21 @@ ggplot(c_c_final, aes(x = reorder(`Comunidades y Ciudades Autónomas`, -Total), 
 
 ```
 
-
 A continuación estudiaremos si esa cantidad de antibiótico se ha consumido de forma regulada, o por el contrario, no está recetado, favoreciendo así el autoconsumo de los mismos, lo cual se está considerando como una de las posibles causas de la resistencia a los antibióticos
 
 ```{r}
 # Leer el archivo .px
 archivo_px <- read.px("C:/Users/usuario/seminario_fuentes/INPUT/DATA/datos_ccaa/tipo_ccaa_recetado_o_no.px")
-View(archivo_px)
 df_px <- as.data.frame(archivo_px)
 
 
 
 # quedarme solo con los antibióticos
 antibiotic <- df_px[df_px[["Tipo.de.medicamento"]] == "Antibióticos" & df_px$`Sexo` == "Ambos sexos", ]
-antibiotic
 
 
 # qué comunidad autónoma se automedica más
 antibioticos_sin_receta <- antibiotic[antibiotic$`Recetado` == "No recetado",]
-antibioticos_sin_receta
-View(antibioticos_sin_receta)
 
 antibioticos_sin_receta <- antibioticos_sin_receta %>%
   filter(value != 0)
@@ -130,7 +111,6 @@ antibioticos_sin_receta <- antibioticos_sin_receta %>%
 
 consumo_comunidades <- antibioticos_sin_receta %>%
   group_by(`Comunidad.autónoma`) %>%
-  #summarise(Total_Consumo = sum(as.numeric(value), na.rm = TRUE)) %>%
   arrange(desc(value))
 
 consumo_comunidades
@@ -146,10 +126,8 @@ ggplot(consumo_comunidades, aes(x = "", y = value, fill = `Comunidad.autónoma`)
   theme_void()  # Elimina el fondo y los ejes
 ```
 
-
-
-
 ## Pregunta 2: Relación entre PIB y resistencia a antibióticos en la UE
+
 Analizar si existe una relación significativa entre el Producto Interno Bruto de los países de la Unión Europea y los niveles de resistencia a antibióticos.
 
 ```{r}
@@ -201,7 +179,7 @@ pib_2022_desc <- pib_2022_desc %>%
 
 
 ```
- 
+
 Tras el tratamiento de estos datos se puede ver de manera gráfica la comparativa entre los países.
 
 ```{r}
@@ -243,7 +221,7 @@ media_region <- otra %>%
   summarise(mean_value_region = mean(mean_value, na.rm = TRUE))  
 
 
-ggplot(otra, aes(x = grupo, y = mean_value)) +
+boxplot <- ggplot(otra, aes(x = grupo, y = mean_value)) +
   geom_boxplot() +
   labs(title = "Distribution of Mean Incidence by Bacteria Group",
        x = "Bacteria Group", y = "Mean Incidence") +
@@ -265,17 +243,23 @@ interactive_scatter_plot <- ggplotly(scatter_plot, tooltip = "text") %>%
 interactive_scatter_plot
 ```
 
-
 Ahora cargamos el environment para poder ver la incidencia de las distintas bacterias por cada país y para ver cuál es la bacteria que más afecta en toda la Unión Europea.
 
 ```{r}
 load("OUTPUT/datos_y_graficos_incidencia.RData")
 
 ```
+```{r}
+boxplot
+
+interactive_scatter_plot
+
+```
+
 
 A continuación, se presenta una función que permite abrir una carpeta con numerosos archivos de extensión .json con la misma estructura y leerlos.
 
-```{r eval=FALSE}
+```{r, eval=FALSE}
 
 library(httr)
 library(tidyverse)
@@ -368,10 +352,7 @@ leer_archivo("carpeta_destino")
 
 ```
 
-**Juntar los dataframes que tenemos en el enviroment**
-1. Listar los nombres de todos los dataframes que terminan en ".xlsx" (ajusta si es necesario)
-2. Convertir los nombres a una lista de dataframes usando mget()
-3. Unir todos los dataframes en uno solo usando bind_rows
+**Juntar los dataframes que tenemos en el enviroment** 1. Listar los nombres de todos los dataframes que terminan en ".xlsx" (ajusta si es necesario) 2. Convertir los nombres a una lista de dataframes usando mget() 3. Unir todos los dataframes en uno solo usando bind_rows
 
 ```{r}
 eval=FALSE
@@ -386,15 +367,13 @@ df_combinado <- bind_rows(lista_dataframes, .id = "origen")
 
 ```
 
-**Cargamos el global enviroment**
-En el que tenemos guardado todos los dataframe de cada pais resultante de la funcion leer_archivo, y el dataframe df_combinado del codigo anterior
+**Cargamos el global enviroment** En el que tenemos guardado todos los dataframe de cada pais resultante de la funcion leer_archivo, y el dataframe df_combinado del codigo anterior
 
 ```{r}
 load("OUTPUT/paisesUE_datos_AMR.RData")
 ```
 
-**Modificación y obtencion del dataframe con los datos**
-seleccionamos las columnas que vamos a necesitar y filtramos en la columna de las bacterias solo las patogénicas.
+**Modificación y obtencion del dataframe con los datos** seleccionamos las columnas que vamos a necesitar y filtramos en la columna de las bacterias solo las patogénicas.
 
 Cambiamos los nombres de las columnas y lo asignamos al dataframe
 
@@ -412,7 +391,8 @@ colnames(paises_UE_df) <- nuevos_nombres
 ```
 
 **Mapa Interactivo de positivos en ganaderia por paises de la UE**
-```{r}
+
+```{r, eval=FALSE}
 paises_UE <- c(
   "Cyprus", "France", "Lithuania", "Czechia", "Germany", 
   "Estonia", "Latvia", "Sweden", "Finland", "Luxembourg", 
@@ -466,13 +446,11 @@ mapa_interactivo
 
 ```
 
+## Pregunta 3: Consumo y resistencia en sectores específicos en la UE.
 
-
-## Pregunta 3: Consumo y resistencia en sectores específicos en la UE. 
 Explorar cómo el consumo de antibióticos en sectores como el personal, hospitalario y ganadero se relaciona con los niveles de resistencia a antibióticos en diferentes países de la UE.
 
 Otro de los factores a estudiar era el consumo/administración de este tipo de los medicamentos por parte de los hospitales y la ciudadanía de manera individual, y eso se ve reflejado en los siguientes datos extraídos de la encuesta europea anual.
-
 
 ```{r}
 library(tidyverse)
@@ -506,5 +484,3 @@ grafico_DDD
 
 
 ```
-
-

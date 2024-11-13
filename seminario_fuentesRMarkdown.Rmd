@@ -34,6 +34,14 @@ library(rjson)
 library(tidyr)
 ```
 
+
+Cargar environment
+```{r}
+load("OUTPUT/enviroment")
+```
+
+
+
 ## Pregunta 1: Consumo de antibióticos en España
 
 Determinar el consumo de antibióticos por comunidades autónomas, diferenciando entre recetado y no recetado, para identificar tendencias de uso.
@@ -93,7 +101,7 @@ A continuación estudiaremos si esa cantidad de antibiótico se ha consumido de 
 
 ```{r}
 # Leer el archivo .px
-archivo_px <- read.px("C:/Users/usuario/seminario_fuentes/INPUT/DATA/datos_ccaa/tipo_ccaa_recetado_o_no.px")
+archivo_px <- read.px("INPUT/DATA/datos_ccaa/tipo_ccaa_recetado_o_no.px")
 df_px <- as.data.frame(archivo_px)
 
 
@@ -243,18 +251,35 @@ interactive_scatter_plot <- ggplotly(scatter_plot, tooltip = "text") %>%
 interactive_scatter_plot
 ```
 
-Ahora cargamos el environment para poder ver la incidencia de las distintas bacterias por cada país y para ver cuál es la bacteria que más afecta en toda la Unión Europea.
+Este código cargado en el entorno, es capaz de generar gráficos que permitan ver la incidencia de las distintas bacterias por cada país y para ver cuál es la bacteria que más afecta en toda la Unión Europea.
 
 ```{r}
-load("OUTPUT/datos_y_graficos_incidencia.RData")
+boxplot_in <- ggplot(otra, aes(x = grupo, y = mean_value)) +
+  geom_boxplot() +
+  labs(title = "Distribution of Mean Incidence by Bacteria Group",
+       x = "Bacteria Group", y = "Mean Incidence") +
+  theme_minimal()
+boxplot_in
 
 ```
+
 ```{r}
-boxplot
+incidencia_keyed <- highlight_key(otra, ~RegionCode)
+
+scatter_plot <- ggplot(incidencia_keyed, aes(x = grupo, y = mean_value, color = RegionCode, text = paste("País:", RegionCode))) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Population vs Mean Incidence Value by Region",
+       x = "Population", y = "Mean Incidence Value") +
+  theme_classic()
+
+interactive_scatter_plot <- ggplotly(scatter_plot, tooltip = "text") %>%
+  highlight(on = "plotly_click", off = "plotly_doubleclick", color = "red", opacityDim = 0.2)
 
 interactive_scatter_plot
-
 ```
+
+
 
 
 A continuación, se presenta una función que permite abrir una carpeta con numerosos archivos de extensión .json con la misma estructura y leerlos.
@@ -354,8 +379,8 @@ leer_archivo("carpeta_destino")
 
 **Juntar los dataframes que tenemos en el enviroment** 1. Listar los nombres de todos los dataframes que terminan en ".xlsx" (ajusta si es necesario) 2. Convertir los nombres a una lista de dataframes usando mget() 3. Unir todos los dataframes en uno solo usando bind_rows
 
-```{r}
-eval=FALSE
+```{r, eval=FALSE}
+
 
 nombres_dataframes <- ls(pattern = "_AMR_PUB\\.xlsx$")
 
@@ -369,9 +394,7 @@ df_combinado <- bind_rows(lista_dataframes, .id = "origen")
 
 **Cargamos el global enviroment** En el que tenemos guardado todos los dataframe de cada pais resultante de la funcion leer_archivo, y el dataframe df_combinado del codigo anterior
 
-```{r}
-load("OUTPUT/paisesUE_datos_AMR.RData")
-```
+
 
 **Modificación y obtencion del dataframe con los datos** seleccionamos las columnas que vamos a necesitar y filtramos en la columna de las bacterias solo las patogénicas.
 

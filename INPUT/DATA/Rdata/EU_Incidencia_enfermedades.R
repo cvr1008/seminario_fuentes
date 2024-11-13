@@ -37,7 +37,7 @@ media_region <- otra %>%
 
 # gráficos
 
-ggplot(otra, aes(x = grupo, y = mean_value)) +
+boxplot_in <- ggplot(otra, aes(x = grupo, y = mean_value)) +
   geom_boxplot() +
   labs(title = "Distribution of Mean Incidence by Bacteria Group",
        x = "Bacteria Group", y = "Mean Incidence") +

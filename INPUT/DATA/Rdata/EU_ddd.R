@@ -5,7 +5,7 @@ library(tidyr)
 library(ggplot2)
 
 
-DDD_Europa_Json <- fromJSON(file = "INPUT/DATA/DDD_1000_habitantes_paises..JSON")
+DDD_Europa_Json <- fromJSON(file = "INPUT/DATA/DDD_1000_habitantes_paises.JSON")
 
 DDD_Europa_Json
 View(DDD_Europa_Json)

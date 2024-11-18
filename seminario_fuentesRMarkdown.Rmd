@@ -35,9 +35,10 @@ library(tidyr)
 ```
 
 
+
 Cargar environment
 ```{r}
-load("OUTPUT/enviroment")
+load("OUTPUT/enviroment.RData")
 ```
 
 
@@ -400,7 +401,7 @@ df_combinado <- bind_rows(lista_dataframes, .id = "origen")
 
 Cambiamos los nombres de las columnas y lo asignamos al dataframe
 
-```{r}
+```{r, eval=FALSE}
 
 paises_UE_df<-df_combinado%>%
   select(rep_Country_name,rep_Country_code,zoonosis_name,matrix_name,totUnitsTested,totUnitsPositive,sampUnitType_name,sampType_name,MIC_name,CUTOFFVALUE)%>%
@@ -415,7 +416,12 @@ colnames(paises_UE_df) <- nuevos_nombres
 
 **Mapa Interactivo de positivos en ganaderia por paises de la UE**
 
-```{r, eval=FALSE}
+```{r,message=FALSE,warning=FALSE}
+library(sf)
+library(ggplot2)
+library(plotly)
+library(dplyr)
+library(viridis)
 paises_UE <- c(
   "Cyprus", "France", "Lithuania", "Czechia", "Germany", 
   "Estonia", "Latvia", "Sweden", "Finland", "Luxembourg", 
@@ -431,14 +437,15 @@ mapa_mudo <- st_read("INPUT/DATA/mapaMundi")
 
 
 mapa_mundo_europa <- mapa_mudo %>% 
-  filter(NAME %in% paises_UE)
+  dplyr::filter(NAME %in% paises_UE)
 
-mapa_mundo_europa <- mapa_mudo %>% filter(NAME %in% paises_UE)
+mapa_mundo_europa <- mapa_mudo %>% dplyr::filter(NAME %in% paises_UE)
 
 
 positivos_por_ciudad <- paises_UE_df %>%
+  dplyr::filter(NombrePais != "United Kingdom (Northern Ireland)")%>%
   group_by(NombrePais) %>%
-  summarize(total_pruebas = sum(TotalMuestras, na.rm = TRUE),
+  dplyr::summarize(total_pruebas = sum(TotalMuestras, na.rm = TRUE),
             total_positivos= sum(MuestraPositiva, na.rm = TRUE)) %>%
   mutate(ratio_positivo = (total_positivos / total_pruebas) * 100)
 

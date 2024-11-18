@@ -8,7 +8,11 @@ output:
     theme: united
     highlight: tango
     css: "Input\\style.css"  
+<<<<<<< HEAD
 date: "18/11/2024"
+=======
+date: "`r Sys.Date()`"
+>>>>>>> 87cd58f26961ae19812cbcd807adae3006a128c7
 author: "Cristina Velazquez Romano y Deyanira Escudero Ramos"
 ---
 

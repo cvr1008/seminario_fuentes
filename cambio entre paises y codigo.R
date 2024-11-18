@@ -10,7 +10,7 @@ lista_codigos_paises <- list("AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL
 
 DDD_Europa_df <- DDD_Europa_df %>%
   mutate(Country = case_when(
-    Country == "Eslovaquia" ~ "SK",
+    Country == "Slovakia" ~ "SK",
     Country == "Belgium" ~ "BE",
     Country == "Cyprus" ~ "CY",
     Country == "Greece" ~ "EL",
@@ -22,13 +22,24 @@ DDD_Europa_df <- DDD_Europa_df %>%
     Country == "Spain" ~ "ES",
     Country == "Ireland" ~ "IE",
     Country == "Italy" ~ "IT",
-    Country == "Croatia" ~ "",
     Country == "Luxembourg" ~ "LU",
     Country == "Portugal" ~ "PT",
-    Country == "Iceland" ~ "",
     Country == "Czechia" ~ "CZ",
-    Country == "Norway" ~ "",
-    
-    
-    
+    Country == "Finland" ~ "FI",
+    Country == "Austria" ~ "AT",
+    Country == "Norway" ~ "DE",
+    Country == "Denmark" ~ "DK",
+    Country == "Estonia" ~ "EE",
+    Country == "Hungary" ~ "HU",
+    Country == "Croatia" ~ "HR",
+    Country == "Lithuania" ~ "LT",
+    Country == "Latvia" ~ "LV",
+    Country == "Netherlands" ~ "NL",
+    Country == "Iceland" ~ "SE",
+    Country == "Slovenia" ~ "SI",
   ))
+
+
+
+
+  

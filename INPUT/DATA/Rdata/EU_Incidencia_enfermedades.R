@@ -20,18 +20,29 @@ media_poblacion <- incidencia_2022MF %>%
   select(-Unit, -HealthTopic, -Time, -Distribution) %>%
   mutate(grupo = substr(Population, 1, 3))
 
+
+lista_codigos_paises <- list("AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", 
+                             "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK") 
+
+
 # Calcular la media de 'Value' por 'RegionCode' y 'grupo'
 otra <- media_poblacion %>%
   select(-Category, -CategoryIndex, -Population) %>%
   arrange(RegionCode, grupo) %>%    # Ordena los datos
   group_by(RegionCode, grupo) %>%   # Agrupa por RegionCode y grupo
-  summarise(mean_value = mean(Value, na.rm = TRUE))  # Calcula la media en cada grupo y desagrupa
+  summarise(mean_value = mean(Value, na.rm = TRUE))%>%
+  filter(RegionCode %in% lista_codigos_paises)  # Calcula la media en cada grupo y desagrupa
 
 otra$mean_value[is.nan(otra$mean_value)] <- 0
 
+
 media_region <- otra %>%
   group_by(RegionCode) %>%
-  summarise(mean_value_region = mean(mean_value, na.rm = TRUE))  # Calcular la media por RegionCode
+  summarise(mean_value_region = mean(mean_value, na.rm = TRUE))
+
+
+
+
 
 # --------------------------------------------------------------------
 

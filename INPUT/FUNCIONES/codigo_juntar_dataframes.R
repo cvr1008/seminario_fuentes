@@ -23,10 +23,18 @@ paises_UE_df <- df_combinado %>%
   filter(zoonosis_name != "Escherichia coli, non-pathogenic, unspecified")
 
 
-# Nuevo vector con los nombres de las columnas
-nuevos_nombres <- c("NombrePais", "Codigo", "zoonosis_name","OrigenMuestra", "TotalMuestras","MuestraPositiva","Tipo_Unidad_Muestra","TipoMuestra","MIC_name","ValorCorte")  # Modifica según el número de columnas
 
-# Asignar los nuevos nombres de las columnas al data frame
-colnames(paises_UE_df) <- nuevos_nombres
+# Renombrar las columnas utilizando rename de dplyr
+paises_UE_df <- paises_UE_df %>%
+  rename(
+    NombrePais = rep_Country_name,
+    Codigo = rep_Country_code,
+    OrigenMuestra = matrix_name,
+    TotalMuestras = totUnitsTested,
+    MuestraPositiva = totUnitsPositive,
+    Tipo_Unidad_Muestra = sampUnitType_name,
+    TipoMuestra = sampType_name,
+    ValorCorte = CUTOFFVALUE
+  )
 
 

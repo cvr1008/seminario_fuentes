@@ -38,7 +38,8 @@ otra$mean_value[is.nan(otra$mean_value)] <- 0
 
 media_region <- otra %>%
   group_by(RegionCode) %>%
-  summarise(mean_value_region = mean(mean_value, na.rm = TRUE))
+  summarise(mean_value_region = mean(mean_value, na.rm = TRUE))%>%
+  arrange(desc(mean_value_region))
 
 
 
@@ -46,7 +47,27 @@ media_region <- otra %>%
 
 # --------------------------------------------------------------------
 
-# gráficos
+# graficos positivos generales
+
+# Crear el gráfico usando los datos ordenados
+grafico <- ggplot(media_region, aes(x = reorder(RegionCode, -mean_value_region), y = mean_value_region)) +
+  geom_bar(stat = "identity", fill = "skyblue", color = "blue") +
+  labs(
+    title = "Media de Incidencia por Región (Orden Descendente)",
+    x = "País",
+    y = "Media de Incidencia"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+# Mostrar el gráfico
+print(grafico)
+
+
+
+# gráficos bacterias
 
 boxplot_in <- ggplot(otra, aes(x = grupo, y = mean_value)) +
   geom_boxplot() +

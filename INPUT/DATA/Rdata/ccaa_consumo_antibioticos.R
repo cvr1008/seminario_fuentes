@@ -5,17 +5,13 @@ library(ggplot2)
 
 tipo_ccaa_consumo_o_no <- read_delim("INPUT/DATA/datos_ccaa/tipo_ccaa_consumo_o_no.csv", 
                                      delim = ";", escape_double = FALSE, trim_ws = TRUE)
-View(tipo_ccaa_consumo_o_no)
 
-typeof(tipo_ccaa_consumo_o_no)
-class(tipo_ccaa_consumo_o_no)
 
 antibioticos <- tipo_ccaa_consumo_o_no %>% 
   filter(`Tipo de medicamento` == "Antibióticos")
 
 antibioticos <- tipo_ccaa_consumo_o_no[tipo_ccaa_consumo_o_no$`Tipo de medicamento` == "Antibióticos" & tipo_ccaa_consumo_o_no$`Sexo` == "Ambos sexos",]
 antibioticos
-View(antibioticos)
 
 # Esta tabla enseña que el 3,54% de la población española en la última encuesta reconoce 
 # haber consumido antibióticos en las últimas 2 semanas (En el año 2021)
@@ -25,7 +21,6 @@ View(antibioticos)
 
 antibioticos_si <- antibioticos[antibioticos$`Sí o no` == "Sí",]
 antibioticos_si
-View(antibioticos_si)
 
 
 antibioticos_si$Total <- gsub(",", ".", antibioticos_si$Total)
@@ -41,15 +36,19 @@ sum(is.na(antibioticos_si$Total))  # Muestra el número de NAs
 
 
 
-consumo_comunidades <- antibioticos_si %>%
+consumo <- antibioticos_si %>%
   group_by(`Comunidades y Ciudades Autónomas`) %>%
   #summarise(Total_Consumo = sum(as.numeric(Total), na.rm = TRUE)) %>%
   arrange(desc(Total))
 
-consumo_comunidades
+consumo
 
-c_c_final <- consumo_comunidades %>%
-  mutate(`Comunidades y Ciudades Autónomas` = ifelse(is.na(`Comunidades y Ciudades Autónomas`), "Total País", `Comunidades y Ciudades Autónomas`))
+c_c_final <- consumo %>%
+  mutate(`Comunidades y Ciudades Autónomas` = ifelse(is.na(`Comunidades y Ciudades Autónomas`), "Total País", `Comunidades y Ciudades Autónomas`))%>%
+  dplyr::rename(comunidades_autonomas = `Comunidades y Ciudades Autónomas`)%>%
+  select(comunidades_autonomas, Total)%>%
+  dplyr::rename(total_consumo_ccaa = Total)
+
 c_c_final
 
 

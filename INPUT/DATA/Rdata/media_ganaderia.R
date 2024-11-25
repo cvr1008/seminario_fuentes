@@ -32,6 +32,8 @@ otra <- otra %>%
 media_nueva<-otra %>%
   filter(grupo %in% c("Ent", "Esc")) %>%
   mutate(grupo = recode(grupo, "Ent" = "Enterococcus", "Esc" = "Escherichia"))
+
+
 #Filtro las bacterias comunes
 media_ganaderia_nueva<-media_ganaderia %>%
   filter(zoonosis_name %in% c("Enterococcus,", "Escherichia")) %>%
@@ -60,6 +62,14 @@ tabla_unida <- full_join(x=media_ganaderia_nueva, y= media_nueva,
 ggplot(data = tabla_unida, aes(x = Valores, y = Codigo)) +
   geom_bar(aes(fill = zoonosis_name), position = "dodge", stat = "identity") +
   facet_wrap(facets = vars(Variable), nrow = 1)
+
+
+# ahora sacamos tabla sencillita para unirla con los positivos en personas
+
+positivos_animales <- media_nueva%>%
+  group_by(RegionCode)%>%
+  summarise(media = mean(mean_value, na.rm = TRUE))
+
 
 
 

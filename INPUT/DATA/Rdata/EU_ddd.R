@@ -17,6 +17,7 @@ DDD_Europa_df <- do.call(rbind, lapply(DDD_Europa_Json, function(x) {
 
 
 
+
 DDD_Europa_df <- DDD_Europa_df %>%
   mutate(Country = case_when(
     Country == "Slovakia" ~ "SK",
@@ -47,7 +48,8 @@ DDD_Europa_df <- DDD_Europa_df %>%
     Country == "Iceland" ~ "SE",
     Country == "Slovenia" ~ "SI",
   ))%>%
-  mutate(DDD_per_1000_inhabitants_per_day = DDD_per_1000_inhabitants_per_day/10)
+  mutate(DDD_per_100_inhabitants_per_day = DDD_per_1000_inhabitants_per_day/10)%>%
+  select(-DDD_per_1000_inhabitants_per_day)
 
 
 

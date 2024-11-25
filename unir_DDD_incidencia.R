@@ -7,8 +7,13 @@
 
 
 
-# porcentaje de personas que consumen antibiótico de forma diaria por cada país en sector hospitalario y comunidad.
+# porcentaje de personas que consumen antibiótico de forma anual por cada país en sector hospitalario y comunidad.
 DDD_Europa_df
+new
+
+paises_consumo_ab_sectores<-left_join(x = DDD_Europa_df, y = new, by = "Country")
+#positivos_resist_sectores<- 
+
 
 # porcentaje de la población que da positivo en resistencia de los encuestados
 media_region
@@ -16,3 +21,6 @@ media_region
 # aquí separado por bacterias para unirlo con las bacterias de la ganadería para ver si hay coincidencias
 # las bacterias son las que provocan que se dé positivo en resistencia
 otra
+
+
+

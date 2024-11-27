@@ -1,11 +1,12 @@
 library(readr)
 library(readxl)
+library(dplyr)
 antibioticos_europa_ganaderia <- read_csv("INPUT/DATA/antibioticos_europa_ganaderia.csv")
 
 View(antibioticos_europa_ganaderia)
 
 antib <- antibioticos_europa_ganaderia%>%
-  mutate(Entity = case_when(
+  dplyr::mutate(Entity = case_when(
     Entity == "Slovakia" ~ "SK",
     Entity == "Belgium" ~ "BE",
     Entity == "Cyprus" ~ "CY",
@@ -35,9 +36,9 @@ antib <- antibioticos_europa_ganaderia%>%
     Entity == "Slovenia" ~ "SI",
   ))%>%
   drop_na()%>%
-  select(-Code)%>%
-  filter(Year == "2015")%>%
-  rename(Country = Entity)%>%
+  dplyr::select(-Code)%>%
+  dplyr::filter(Year == "2015")%>%
+  dplyr::rename(Country = Entity)
   
 
 
@@ -46,10 +47,10 @@ ant_europa_g <- read_excel("INPUT/DATA/consumo_ganaderia_2022.xlsx", skip = 3)
 View(ant_europa_g)
 
 a_e_g <- ant_europa_g %>%
-  select("Country", "...5")%>%
-  rename(Antibiotic_use_in_livestock_1000_PCU = `...5`)%>%
-  mutate(Year = "2022")%>%
-  mutate(Country = case_when(
+  dplyr::select("Country", "...5")%>%
+  dplyr::rename(Antibiotic_use_in_livestock_1000_PCU = `...5`)%>%
+  dplyr::mutate(Year = "2022")%>%
+  dplyr::mutate(Country = case_when(
     Country == "Slovakia" ~ "SK",
     Country == "Belgium" ~ "BE",
     Country == "Cyprus" ~ "CY",
@@ -79,11 +80,11 @@ a_e_g <- ant_europa_g %>%
     Country == "Slovenia" ~ "SI",
   ))%>%
   drop_na()%>%
-  relocate(3, .before = 2)
+  dplyr::relocate(3, .before = 2)
   
 new <- a_e_g %>%
-  select(-Year)%>%
-  mutate(Antibiotic_use_in_livestock_100_PCU = as.numeric(Antibiotic_use_in_livestock_1000_PCU)/10)%>%
-  mutate(Antibiotic_day_livestock_100_PCU = Antibiotic_use_in_livestock_100_PCU/365)%>%
-  select(-Antibiotic_use_in_livestock_1000_PCU, -Antibiotic_use_in_livestock_100_PCU)
+  dplyr::select(-Year)%>%
+  dplyr::mutate(Antibiotic_use_in_livestock_100_PCU = as.numeric(Antibiotic_use_in_livestock_1000_PCU)/10)%>%
+  dplyr::mutate(Antibiotic_day_livestock_100_PCU = Antibiotic_use_in_livestock_100_PCU/365)%>%
+  dplyr::select(-Antibiotic_use_in_livestock_1000_PCU, -Antibiotic_use_in_livestock_100_PCU)
   

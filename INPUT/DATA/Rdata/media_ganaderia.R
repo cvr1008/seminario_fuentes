@@ -4,7 +4,7 @@ library(dplyr)
 # Calcular la media basada en la proporción de positivos
 media_ganaderia <- paises_UE_df %>%
   group_by(Codigo, zoonosis_name) %>%
-  summarise(
+  dplyr::summarise(
     media = mean((MuestraPositiva / TotalMuestras)*100, na.rm = TRUE)
   ) %>%
   ungroup()
@@ -51,7 +51,7 @@ library(ggplot2)
 
 tabla_unida <- full_join(x=media_ganaderia_nueva, y= media_nueva, 
   by = c("Codigo" = "RegionCode", "zoonosis_name" = "grupo")) %>% 
-  rename(mediaGanaderia=media, mediaEnPoblacion=mean_value) %>% 
+  dplyr::rename(mediaGanaderia=media, mediaEnPoblacion=mean_value) %>% 
   pivot_longer(.,names_to = "Variable", values_to = "Valores", cols = c(mediaGanaderia:mediaEnPoblacion)) %>% 
   mutate(zoonosis_name = factor(zoonosis_name, levels = c("Escherichia","Enterococcus"))) %>% 
   mutate(Variable = factor(Variable, levels = c("mediaGanaderia","mediaEnPoblacion"))) %>% 
@@ -68,7 +68,7 @@ ggplot(data = tabla_unida, aes(x = Valores, y = Codigo)) +
 
 positivos_animales <- media_nueva%>%
   group_by(RegionCode)%>%
-  summarise(media = mean(mean_value, na.rm = TRUE))
+  dplyr::summarise(media = mean(mean_value, na.rm = TRUE))
 
 
 

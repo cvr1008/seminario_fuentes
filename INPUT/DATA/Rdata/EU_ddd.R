@@ -62,12 +62,12 @@ DDD_Europa_df <- DDD_Europa_df %>%
 
 
 
-grafico_DDD <- ggplot(DDD_Europa_df, aes(x = reorder(Country, -DDD_per_1000_inhabitants_per_day), 
-                          y = DDD_per_1000_inhabitants_per_day)) +
+grafico_DDD <- ggplot(DDD_Europa_df, aes(x = reorder(Country, -DDD_per_100_inhabitants_per_day), 
+                          y = DDD_per_100_inhabitants_per_day)) +
   geom_bar(stat = "identity", fill = "turquoise") +
-  labs(title = "DDD por 1000 habitantes por día en Europa", 
+  labs(title = "DDD por 100 habitantes por día en Europa", 
        x = "País", 
-       y = "DDD por 1000 habitantes por día") +
+       y = "DDD por 100 habitantes por día") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 grafico_DDD
 

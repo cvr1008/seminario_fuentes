@@ -42,7 +42,7 @@ pib_2022_desc <- pib_2022 %>% arrange(desc(`2022`))
 
 # sustituir las etiquetas de los países
 
-pib_2022_desc <- pib_2022_desc %>%
+pib_2022_desc_gr <- pib_2022_desc %>%
   mutate(pais = case_when(
     pais == "SK" ~ "Eslovaquia",
     pais == "SI" ~ "Slovenia",
@@ -58,7 +58,7 @@ pib_2022_desc <- pib_2022_desc %>%
 
 
 # Crear el gráfico de barras
-grafico_pib <- ggplot(pib_2022_desc, aes(x = reorder(pais, -`2022`), y = `2022`)) +
+grafico_pib <- ggplot(pib_2022_desc_gr, aes(x = reorder(pais, -`2022`), y = `2022`)) +
   geom_bar(stat = "identity", fill = "gold") +
   labs(x = "País", y = "Valor en 2022", title = "PIB por País en 2022") +
   theme_minimal() +

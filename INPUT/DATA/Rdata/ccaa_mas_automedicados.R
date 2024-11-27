@@ -3,9 +3,10 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 library(RColorBrewer)
+library(tidyr)
 
 # Leer el archivo .px
-archivo_px <- read.px("INPUT/DATA/Rdata/ccaa_mas_automedicados.R")
+archivo_px <- read.px("INPUT/DATA/datos_ccaa/tipo_ccaa_recetado_o_no.px")
 View(archivo_px)
 df_px <- as.data.frame(archivo_px)
 
@@ -29,7 +30,11 @@ consumo_comunidades <- antibioticos_sin_receta %>%
   arrange(desc(value)) %>%
   select(Comunidad.autónoma, value)%>%
   dplyr::rename(comunidades_autonomas = Comunidad.autónoma)%>%
-  dplyr::rename(porcentaje_automedicacion = value)
+  dplyr::rename(porcentaje_automedicacion = value)%>%
+  dplyr::mutate(comunidades_autonomas = case_when(
+    comunidades_autonomas == "Total" ~ "Total País",
+    TRUE ~ comunidades_autonomas
+  ))
   
 
 
@@ -39,7 +44,7 @@ View(consumo_comunidades)
 
 
 
-ggplot(consumo_comunidades, aes(x = "", y = value, fill = `Comunidad.autónoma`)) +
+ggplot(consumo_comunidades, aes(x = "", y = porcentaje_automedicacion, fill = comunidades_autonomas)) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar(theta = "y") +
   labs(title = "Consumo de Antibióticos por Comunidad Autónoma",
@@ -50,8 +55,18 @@ ggplot(consumo_comunidades, aes(x = "", y = value, fill = `Comunidad.autónoma`)
 
 # CARGAR ccaa_consumo_antibioticos
 c_c_final
+consumo_comunidades
 
-# unir_consumo_autoconsumo <- 
+unir_consumo_autoconsumo <- inner_join(c_c_final, consumo_comunidades, by = "comunidades_autonomas")%>%
+  mutate(porcentaje_automedicacion = total_consumo_ccaa * porcentaje_automedicacion/100)%>%
+  pivot_longer(.,names_to = "Variable", values_to = "Valores", cols = c(total_consumo_ccaa:porcentaje_automedicacion)) %>% 
+  mutate(Variable = factor(Variable, levels = c("total_consumo_ccaa","porcentaje_automedicacion")))
 
+
+ggplot(unir_consumo_autoconsumo, aes(fill = Variable, y = Valores, x = reorder(comunidades_autonomas, -Valores))) +
+  geom_bar(position = "stack", stat = "identity") +
+  scale_fill_manual(values = c("total_consumo_ccaa" = "lightgreen", 
+                               "porcentaje_automedicacion" = "tomato")) +
+  labs(x = "Comunidades Autónomas", y = "Valores")
 
 

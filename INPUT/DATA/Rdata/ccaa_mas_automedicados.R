@@ -5,7 +5,7 @@ library(ggplot2)
 library(RColorBrewer)
 
 # Leer el archivo .px
-archivo_px <- read.px("C:/Users/usuario/seminario_fuentes/INPUT/DATA/datos_ccaa/tipo_ccaa_recetado_o_no.px")
+archivo_px <- read.px("INPUT/DATA/Rdata/ccaa_mas_automedicados.R")
 View(archivo_px)
 df_px <- as.data.frame(archivo_px)
 

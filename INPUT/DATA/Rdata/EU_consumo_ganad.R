@@ -1,5 +1,6 @@
 library(readr)
 library(readxl)
+library(dplyr)
 antibioticos_europa_ganaderia <- read_csv("INPUT/DATA/antibioticos_europa_ganaderia.csv")
 
 View(antibioticos_europa_ganaderia)
@@ -37,7 +38,7 @@ antib <- antibioticos_europa_ganaderia%>%
   drop_na()%>%
   select(-Code)%>%
   filter(Year == "2015")%>%
-  rename(Country = Entity)
+  dplyr::rename(Country = Entity)
   
 
 
@@ -47,7 +48,7 @@ View(ant_europa_g)
 
 a_e_g <- ant_europa_g %>%
   select("Country", "...5")%>%
-  rename(Antibiotic_use_in_livestock_1000_PCU = `...5`)%>%
+  dplyr::rename(Antibiotic_use_in_livestock_1000_PCU = `...5`)%>%
   mutate(Year = "2022")%>%
   mutate(Country = case_when(
     Country == "Slovakia" ~ "SK",

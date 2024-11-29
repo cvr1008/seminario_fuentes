@@ -6,7 +6,7 @@ library(leaflet)  # Para crear mapas interactivos
 library(sf)       # Para trabajar con datos espaciales (sf)
 library(viridis)
 
-paises_UE <- c(
+paises_UE_mapa <- c(
   "Cyprus", "France", "Lithuania", "Czechia", "Germany", 
   "Estonia", "Latvia", "Sweden", "Finland", "Luxembourg", 
   "Belgium", "Spain", "Denmark", "Romania", "Hungary", 
@@ -14,40 +14,56 @@ paises_UE <- c(
   "Italy", "Netherlands", "Croatia", "Slovenia", "Bulgaria", 
   "Portugal", "Malta"
 )
+ 
 
 
 
 
-# Suponiendo que tienes un objeto `world_map` con las geometrías de países
-# y `positivity_by_country` es un data frame con las tasas de positividad por país
-mapa_mudo <- st_read("INPUT/DATA/mapaMundi")  # Cargar el mapa de países en formato `sf`
+mapa_mundo <- st_read("INPUT/DATA/mapaMundi")  # Cargar el mapa de países en formato `sf`
 
-#Filtramos para que solo contenga 
-mapa_mundo_europa <- mapa_mudo %>% 
-  filter(NAME %in% paises_UE)
+#Filtramos y cambiamos a codigo para poder unir 
+mapa_mundo_europa <- mapa_mundo %>% 
+  filter(NAME %in% paises_UE_mapa) %>% 
+  mutate(NAME = case_when(
+    NAME == "Slovakia" ~ "SK",
+    NAME == "Belgium" ~ "BE",
+  NAME == "Cyprus" ~ "CY",
+  NAME == "Greece" ~ "EL",
+  NAME == "Romania" ~ "RO",
+  NAME == "Bulgaria" ~ "BG",
+  NAME == "France" ~ "FR",
+  NAME == "Malta" ~ "MT",
+  NAME == "Poland" ~ "PL",
+  NAME == "Spain" ~ "ES",
+  NAME == "Ireland" ~ "IE",
+  NAME == "Italy" ~ "IT",
+  NAME == "Luxembourg" ~ "LU",
+  NAME == "Portugal" ~ "PT",
+  NAME == "Czechia" ~ "CZ",
+  NAME == "Finland" ~ "FI",
+  NAME == "Austria" ~ "AT",
+  NAME == "Norway" ~ "DE",
+  NAME == "Denmark" ~ "DK",
+  NAME == "Estonia" ~ "EE",
+  NAME == "Hungary" ~ "HU",
+  NAME == "Croatia" ~ "HR",
+  NAME == "Lithuania" ~ "LT",
+  NAME == "Latvia" ~ "LV",
+  NAME == "Netherlands" ~ "NL",
+  NAME == "Iceland" ~ "SE",
+  NAME == "Slovenia" ~ "SI",
+))
 
-mapa_mundo_europa <- mapa_mudo %>% filter(NAME %in% paises_UE)
-
-
-positivos_por_ciudad <- paises_UE_df %>%
-  group_by(NombrePais) %>%
-  summarize(total_pruebas = sum(TotalMuestras, na.rm = TRUE),
-            total_positivos= sum(MuestraPositiva, na.rm = TRUE)) %>%
-  mutate(ratio_positivo = (total_positivos / total_pruebas) * 100)
-
-# Unir datos de positividad al mapa
-mapa_mundo_europa$NAME <- as.character(mapa_mundo_europa$NAME)
-positivos_por_ciudad$NombrePais <- as.character(positivos_por_ciudad$NombrePais)
 
 # Realizar el join usando las columnas correctas
-mapa_mundo_europa <- mapa_mundo_europa %>% 
-  left_join(positivos_por_ciudad, by = c("NAME" = "NombrePais"))
-mapa_mundo_europa
+mapa_mundo_europa <-left_join(x=mapa_mundo_europa,y=media_region, by = c("NAME" = "RegionCode")) %>% 
+  dplyr::rename(Porcentaje_positivos=mean_value_region)
+
 
 
 # Crear el gráfico de mapa de Europa con ggplot2
 mapa <- ggplot(mapa_mundo_europa) +
-  geom_sf(aes(fill = ratio_positivo)) +
+  geom_sf(aes(fill = Porcentaje_positivos)) +
   scale_fill_viridis_c(option = "plasma", na.value = "gray") +
   labs(title = "Tasa de Positividad por País en Europa",
        fill = "Tasa de Positividad (%)") +

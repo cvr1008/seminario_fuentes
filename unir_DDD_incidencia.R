@@ -5,7 +5,7 @@
 # necesita que se cargue el archivo EU_ddd y EU_Incidencia_enfermedades
 
 
-
+library(dplyr)
 library(tidyr)
 
 
@@ -14,7 +14,26 @@ library(tidyr)
 DDD_Europa_df # consumo personas antibiótico
 new # consumo ganadería antibiótico
 
-paises_consumo_ab_sectores<-left_join(x = DDD_Europa_df, y = new, by = "Country")
+paises_consumo_ab_sectores<-left_join(x = DDD_Europa_df, y = new, by = "Country")%>%
+  mutate(DDD_per_100_inhabitants_per_year = DDD_per_100_inhabitants_per_day*365*500)%>%
+  mutate(Antibiotic_use_in_livestock_100_PCU = Antibiotic_use_in_livestock_100_PCU*32.4/100)%>%
+  dplyr::select(-DDD_per_100_inhabitants_per_day)%>%
+  left_join(x = ., y = media_region, by = c("Country" = "RegionCode"))%>%
+  group_by(Country, mean_value_region)%>%
+  dplyr::rename("100 habitantes (mg)" = DDD_per_100_inhabitants_per_year, "100 PCU (mg)" = Antibiotic_use_in_livestock_100_PCU, "Valor" = mean_value_region)%>%
+  pivot_longer(., names_to = "Consumo", values_to = "Dosis", cols= c(2:3))
+
+
+ggplot(paises_consumo_ab_sectores,aes(x=Dosis, y=Valor))+
+  geom_point(aes(color=factor(Consumo)))+
+  geom_smooth(method = 'lm',aes(colour=factor(Consumo)))+
+  labs(title = 'Relación entre el consumo de antibióticos y resistencia antimicrobiana',
+       y='Incidencia',
+       x= 'Consumo',
+       colour='Consumo en dosis')
+
+
+
 
 positivos_resist_sectores<-left_join(x = media_region, y = positivos_animales, by = "RegionCode")%>%
   dplyr::rename(porcentaje_posit_animales = media)%>%

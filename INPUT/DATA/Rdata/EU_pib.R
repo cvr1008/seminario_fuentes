@@ -4,7 +4,6 @@ library(ggplot2)
 #--------------------------------
 # "INPUT/DATA/datos_pib.tsv"
 pibPP <- read_table("INPUT/DATA/datos_pib.tsv")
-View(pibPP)
 
 str(pibPP)
 
@@ -13,7 +12,7 @@ colnames(pibPP)[1] <- "pais"
 
 # Nos quedamos con las últimas letras
 pibPP$pais <- substr(pibPP$pais, nchar(pibPP$pais) - 1, nchar(pibPP$pais))
-View(pibPP)
+
 
 lista_pais <- list("BE", "BG", "CZ", "DK", "DE", "EE", "IE", "EL", "ES", "FR", "HR", "IT", "CY", "LV", "LT", "LU", "HU", "MT", "NL",
                "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE")
@@ -22,7 +21,7 @@ lista_pais <- list("BE", "BG", "CZ", "DK", "DE", "EE", "IE", "EL", "ES", "FR", "
 
 
 pib <- pibPP %>% filter(pais %in% unlist(lista_pais))
-View(pib)
+
 
 
 # quitar la columna nula
@@ -32,7 +31,6 @@ pib
 
 
 pib_2022 <- pib %>% select(pais, `2022`)
-View(pib_2022)
 
 
 # ggplot del pib en el 2022 (primero lo ponemos en descendente)

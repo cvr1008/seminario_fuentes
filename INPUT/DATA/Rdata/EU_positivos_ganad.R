@@ -3,7 +3,6 @@ library(readxl)
 library(dplyr)
 antibioticos_europa_ganaderia <- read_csv("INPUT/DATA/antibioticos_europa_ganaderia.csv")
 
-View(antibioticos_europa_ganaderia)
 
 antib <- antibioticos_europa_ganaderia%>%
   dplyr::mutate(Entity = case_when(
@@ -44,7 +43,7 @@ antib <- antibioticos_europa_ganaderia%>%
 
 ant_europa_g <- read_excel("INPUT/DATA/consumo_ganaderia_2022.xlsx", skip = 3)
 
-View(ant_europa_g)
+
 
 a_e_g <- ant_europa_g %>%
   dplyr::select("Country", "...5")%>%
@@ -84,7 +83,6 @@ a_e_g <- ant_europa_g %>%
   
 new <- a_e_g %>%
   dplyr::select(-Year)%>%
-  dplyr::mutate(Antibiotic_use_in_livestock_100_PCU = as.numeric(Antibiotic_use_in_livestock_1000_PCU)/10)%>%
-  dplyr::mutate(Antibiotic_day_livestock_100_PCU = Antibiotic_use_in_livestock_100_PCU/365)%>%
-  dplyr::select(-Antibiotic_use_in_livestock_1000_PCU, -Antibiotic_use_in_livestock_100_PCU)
+  dplyr::mutate(Antibiotic_use_in_livestock_100_PCU = as.numeric(Antibiotic_use_in_livestock_1000_PCU)/10) %>%
+  dplyr::select(-Antibiotic_use_in_livestock_1000_PCU)
   

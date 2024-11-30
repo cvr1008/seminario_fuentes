@@ -31,9 +31,10 @@ otra <- media_poblacion %>%
   arrange(RegionCode, grupo) %>%    # Ordena los datos
   group_by(RegionCode, grupo) %>%   # Agrupa por RegionCode y grupo
   summarise(mean_value = mean(Value, na.rm = TRUE))%>%
-  filter(RegionCode %in% lista_codigos_paises)  # Calcula la media en cada grupo y desagrupa
-
-otra$mean_value[is.nan(otra$mean_value)] <- 0
+  filter(RegionCode %in% lista_codigos_paises) %>%   # Calcula la media en cada grupo y desagrupa
+  drop_na() %>% 
+  mutate(grupo = recode(grupo, "Ent" = "Enterococcus", "Esc" = "Escherichia","Aci"="Acinetobacter",
+                        "Kle"="Klebsiella","Pse" = "Pseudomonas","Sta"="Staphylococcus", "Str"="Streptococcus"))
 
 
 media_region <- otra %>%
@@ -62,22 +63,20 @@ grafico <- ggplot(media_region, aes(x = reorder(RegionCode, -mean_value_region),
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
-# Mostrar el gráfico
-print(grafico)
+grafico
 
+# gráficos bacterias en personas
 
-
-# gráficos bacterias
-
-boxplot_in <- ggplot(otra, aes(x = grupo, y = mean_value)) +
+boxplot_baterias_personas <- ggplot(otra, aes(x = grupo, y = mean_value, fill=grupo)) +
   geom_boxplot() +
-  labs(title = "Distribution of Mean Incidence by Bacteria Group",
-       x = "Bacteria Group", y = "Mean Incidence") +
-  theme_minimal()
+  labs(title = "Incidencia de bacterias en personas ",
+       x = "bacterias", y = "Incidencia media") +
+  theme(legend.position="none")
+
+boxplot_baterias_personas
 
 
-
-# gráfico que te dice qué países tienen esa media para cada bacteria
+# GRAFICO INTERACTIVO que te dice qué países tienen esa media para cada bacteria
 
 # Crear el conjunto de datos interactivo con highlight_key
 incidencia_keyed <- highlight_key(otra, ~RegionCode)

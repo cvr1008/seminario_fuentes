@@ -14,15 +14,13 @@ df_px <- as.data.frame(archivo_px)
 
 # quedarme solo con los antibióticos
 antibiotic <- df_px[df_px[["Tipo.de.medicamento"]] == "Antibióticos" & df_px$`Sexo` == "Ambos sexos", ]
-antibiotic
+
 
 
 # qué comunidad autónoma se automedica más
-antibioticos_sin_receta <- antibiotic[antibiotic$`Recetado` == "No recetado",]
-antibioticos_sin_receta
-
-consumo_comunidades <- antibioticos_sin_receta %>%
-  filter(value != 0)%>%
+consumo_comunidades <- antibiotic%>%
+  dplyr::filter(`Recetado` == "No recetado") %>%
+  dplyr::filter(value != 0)%>%
   group_by(`Comunidad.autónoma`) %>%
   arrange(desc(value)) %>%
   select(Comunidad.autónoma, value)%>%
@@ -32,21 +30,6 @@ consumo_comunidades <- antibioticos_sin_receta %>%
     comunidades_autonomas == "Total" ~ "Total País",
     TRUE ~ comunidades_autonomas
   ))
-  
-
-
-
-consumo_comunidades
-
-
-
-ggplot(consumo_comunidades, aes(x = "", y = "Automedicación (%)", fill = comunidades_autonomas)) +
-  geom_bar(stat = "identity", width = 1) +
-  coord_polar(theta = "y") +
-  labs(title = "Consumo de Antibióticos por Comunidad Autónoma",
-       fill = "Comunidad Autónoma") +
-  theme_void()  # Elimina el fondo y los ejes
-
 
 
 # CARGAR ccaa_consumo_antibioticos
@@ -64,7 +47,9 @@ ggplot(unir_consumo_autoconsumo, aes(fill = Variable, y = Valores, x = reorder(c
   geom_bar(position = "stack", stat = "identity") +
   scale_fill_manual(values = c("Consumo total" = "lightgreen", 
                                "Automedicación (%)" = "tomato")) +
-  labs(x = "Comunidades Autónomas", y = "Porcentaje de Consumo")+
+  labs(x = "Comunidades Autónomas", y = "Porcentaje de Consumo", title = "Automedicación según el consumo de antibióticos por CCAA ")+
+  theme_minimal()+
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
 
 

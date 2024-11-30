@@ -19,7 +19,7 @@ new # consumo ganadería antibiótico
 #UNION FINAL CON GRÁFICO 
 paises_consumo_ab_sectores<-left_join(x = DDD_Europa_df, y = new, by = "Country")%>%
   mutate(DDD_per_100_inhabitants_per_year = DDD_per_100_inhabitants_per_day*365/100*100)%>%
-  mutate(Antibiotic_use_in_livestock_1000_PCU = Antibiotic_use_in_livestock_100_PCU)%>%
+  mutate(Antibiotic_use_in_livestock_1000_PCU = Antibiotic_use_in_livestock_100_PCU*10)%>%
   dplyr::select(-DDD_per_100_inhabitants_per_day)%>%
   left_join(x = ., y = media_region, by = c("Country" = "RegionCode"))%>%
   group_by(Country, mean_value_region)%>%

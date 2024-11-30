@@ -1,6 +1,7 @@
 library(readr)
 library(readxl)
 library(dplyr)
+library(tidyr)
 antibioticos_europa_ganaderia <- read_csv("INPUT/DATA/antibioticos_europa_ganaderia.csv")
 
 View(antibioticos_europa_ganaderia)

@@ -1,0 +1,48 @@
+1. Animal. 2024 Feb;18(2):101060. doi: 10.1016/j.animal.2023.101060. Epub 2023 Dec 
+21.
+
+Global antimicrobial use in livestock farming: an estimate for cattle, chickens, 
+and pigs.
+
+Ardakani Z(1), Aragrande M(2), Canali M(2).
+
+Author information:
+(1)Department of Agricultural and Food Science, University of Bologna, Viale 
+Giuseppe Fanin 44, Bologna 40127, Italy. Electronic address: 
+zahra.ardakani@unibo.it.
+(2)Department of Agricultural and Food Science, University of Bologna, Viale 
+Giuseppe Fanin 44, Bologna 40127, Italy.
+
+Livestock farming substantially contributes to the global economy and food 
+security. However, it poses crucial environmental, animal welfare, and public 
+health challenges. The main objective of this study is to quantify the global 
+antimicrobial use (AMU) in cattle, chicken, and pig farming. This information is 
+important for understanding the potential impact of farm AMU on the emergence 
+and spread of antimicrobial resistance among animals and humans. Using the 
+United States Department of Agriculture Production, Supply, and Distribution and 
+the Food and Agriculture Organization databases, we estimated the total supply 
+of cattle (in heads) and its distribution into four weight categories: calves 
+(26%), cows (41%), heifers (4%), and bulls of more than one year (29%). 
+Similarly, we calculated the total supply of pigs (in heads) and divided it into 
+two weight categories: pigs (96%) and sows (4%). For chickens, we considered one 
+weight category. We attributed to each category a standard weight according to 
+the parameters set by the European Medicines Agency (EMA) to determine the 
+animal biomass at risk of antimicrobial treatment, or population correction unit 
+(PCU). Finally, we estimated the global PCUs and then the global AMU based on 
+the average administered to the three species (in mg of active ingredients per 
+kg PCU). With this method, we estimated a global annual AMU of 76 060 tonnes of 
+antimicrobial active ingredients (2019-2021 average), of which 40 697 tonnes (or 
+53.5%) for cattle, 4 243 tonnes (or 5.6%) for chickens, and 31 120 tonnes (or 
+40.9%) for pigs. According to our assessment, global AMU leads to almost 20 000 
+tonnes less than the previous estimates due to a different evaluation of PCUs. 
+In previous studies, PCUs were calculated on the liveweight at slaughtering of 
+animals, while our method considers the age and sex of animals and their average 
+weight at treatment. Our results are consistent with the World Organization for 
+Animal Health (WOAH) estimate of 76 704 tonnes of veterinary antimicrobials 
+globally consumed in 2018 for the total of food-producing animals (the WOAH 
+estimation is based on sales and import data).
+
+Copyright © 2023 The Author(s). Published by Elsevier B.V. All rights reserved.
+
+DOI: 10.1016/j.animal.2023.101060
+PMID: 38217891 [Indexed for MEDLINE]

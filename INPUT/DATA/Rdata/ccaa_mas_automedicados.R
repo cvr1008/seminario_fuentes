@@ -7,11 +7,9 @@ library(tidyr)
 
 # Leer el archivo .px
 archivo_px <- read.px("INPUT/DATA/datos_ccaa/tipo_ccaa_recetado_o_no.px")
-View(archivo_px)
 df_px <- as.data.frame(archivo_px)
 
 # Ver las primeras filas
-head(df_px)
 
 
 # quedarme solo con los antibióticos
@@ -22,7 +20,6 @@ antibiotic
 # qué comunidad autónoma se automedica más
 antibioticos_sin_receta <- antibiotic[antibiotic$`Recetado` == "No recetado",]
 antibioticos_sin_receta
-View(antibioticos_sin_receta)
 
 consumo_comunidades <- antibioticos_sin_receta %>%
   filter(value != 0)%>%
@@ -30,7 +27,7 @@ consumo_comunidades <- antibioticos_sin_receta %>%
   arrange(desc(value)) %>%
   select(Comunidad.autónoma, value)%>%
   dplyr::rename(comunidades_autonomas = Comunidad.autónoma)%>%
-  dplyr::rename(porcentaje_automedicacion = value)%>%
+  dplyr::rename("Automedicación (%)" = value)%>%
   dplyr::mutate(comunidades_autonomas = case_when(
     comunidades_autonomas == "Total" ~ "Total País",
     TRUE ~ comunidades_autonomas
@@ -40,11 +37,10 @@ consumo_comunidades <- antibioticos_sin_receta %>%
 
 
 consumo_comunidades
-View(consumo_comunidades)
 
 
 
-ggplot(consumo_comunidades, aes(x = "", y = porcentaje_automedicacion, fill = comunidades_autonomas)) +
+ggplot(consumo_comunidades, aes(x = "", y = "Automedicación (%)", fill = comunidades_autonomas)) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar(theta = "y") +
   labs(title = "Consumo de Antibióticos por Comunidad Autónoma",
@@ -58,15 +54,17 @@ c_c_final
 consumo_comunidades
 
 unir_consumo_autoconsumo <- inner_join(c_c_final, consumo_comunidades, by = "comunidades_autonomas")%>%
-  mutate(porcentaje_automedicacion = total_consumo_ccaa * porcentaje_automedicacion/100)%>%
-  pivot_longer(.,names_to = "Variable", values_to = "Valores", cols = c(total_consumo_ccaa:porcentaje_automedicacion)) %>% 
-  mutate(Variable = factor(Variable, levels = c("total_consumo_ccaa","porcentaje_automedicacion")))
+  mutate("Automedicación (%)" = total_consumo_ccaa * `Automedicación (%)`/100)%>%
+  dplyr::rename("Consumo total" = total_consumo_ccaa)%>%
+  pivot_longer(.,names_to = "Variable", values_to = "Valores", cols = c("Consumo total":"Automedicación (%)")) %>% 
+  mutate(Variable = factor(Variable, levels = c("Consumo total","Automedicación (%)")))
 
 
 ggplot(unir_consumo_autoconsumo, aes(fill = Variable, y = Valores, x = reorder(comunidades_autonomas, -Valores))) +
   geom_bar(position = "stack", stat = "identity") +
-  scale_fill_manual(values = c("total_consumo_ccaa" = "lightgreen", 
-                               "porcentaje_automedicacion" = "tomato")) +
-  labs(x = "Comunidades Autónomas", y = "Valores")
+  scale_fill_manual(values = c("Consumo total" = "lightgreen", 
+                               "Automedicación (%)" = "tomato")) +
+  labs(x = "Comunidades Autónomas", y = "Porcentaje de Consumo")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 

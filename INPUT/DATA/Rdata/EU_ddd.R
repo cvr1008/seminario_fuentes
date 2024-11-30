@@ -15,7 +15,11 @@ DDD_Europa_df <- do.call(rbind, lapply(DDD_Europa_Json, function(x) {
              DDD_per_1000_inhabitants_per_day = as.numeric(x$`DDD per 1000 inhabitants per day`))
 }))
 
-
+# lapply: Aplica una función a cada elemento de una lista y devuelve una lista con los resultados
+# function(x): Define una función anónima que será aplicada a cada elemento x de la lista DDD_Europa_Json.
+# x$Country: Extrae el campo Country del elemento x.
+# x$'DDD per 1000 inhabitants per day': Extrae el campo DDD per 1000 inhabitants per day de x y lo convierte en numérico con as.numeric.
+# data.frame(...): Crea un dataframe con dos columnas
 
 
 DDD_Europa_df <- DDD_Europa_df %>%

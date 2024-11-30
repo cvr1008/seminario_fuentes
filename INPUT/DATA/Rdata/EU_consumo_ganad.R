@@ -86,6 +86,6 @@ a_e_g <- ant_europa_g %>%
 new <- a_e_g %>%
   select(-Year)%>%
   mutate(Antibiotic_use_in_livestock_100_PCU = as.numeric(Antibiotic_use_in_livestock_1000_PCU)/10)%>%
-  mutate(Antibiotic_day_livestock_100_PCU = Antibiotic_use_in_livestock_100_PCU/365)%>%
-  select(-Antibiotic_use_in_livestock_1000_PCU, -Antibiotic_use_in_livestock_100_PCU)
+  #mutate(Antibiotic_day_livestock_100_PCU = Antibiotic_use_in_livestock_100_PCU/365)%>%
+  select(-Antibiotic_use_in_livestock_1000_PCU)
   

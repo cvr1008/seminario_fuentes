@@ -14,13 +14,16 @@ library(tidyr)
 DDD_Europa_df # consumo personas antibiótico
 new # consumo ganadería antibiótico
 
+
+
+#UNION FINAL CON GRÁFICO 
 paises_consumo_ab_sectores<-left_join(x = DDD_Europa_df, y = new, by = "Country")%>%
-  mutate(DDD_per_100_inhabitants_per_year = DDD_per_100_inhabitants_per_day*365*500)%>%
-  mutate(Antibiotic_use_in_livestock_100_PCU = Antibiotic_use_in_livestock_100_PCU*32.4/100)%>%
+  mutate(DDD_per_100_inhabitants_per_year = DDD_per_100_inhabitants_per_day*365/100*100)%>%
+  mutate(Antibiotic_use_in_livestock_1000_PCU = Antibiotic_use_in_livestock_100_PCU)%>%
   dplyr::select(-DDD_per_100_inhabitants_per_day)%>%
   left_join(x = ., y = media_region, by = c("Country" = "RegionCode"))%>%
   group_by(Country, mean_value_region)%>%
-  dplyr::rename("100 habitantes (mg)" = DDD_per_100_inhabitants_per_year, "100 PCU (mg)" = Antibiotic_use_in_livestock_100_PCU, "Valor" = mean_value_region)%>%
+  dplyr::rename("100 habitantes (mg)" = DDD_per_100_inhabitants_per_year, "1000 PCU (mg)" = Antibiotic_use_in_livestock_100_PCU, "Valor" = mean_value_region)%>%
   pivot_longer(., names_to = "Consumo", values_to = "Dosis", cols= c(2:3))
 
 
@@ -72,9 +75,10 @@ positivos_sinPivotar<-left_join(x = media_region, y = positivos_animales, by = "
 
 positivos_PIB<-full_join(y= pib_2022_desc ,x=positivos_sinPivotar,by=c('RegionCode'='pais')) %>% 
   dplyr::rename(PIB='2022') %>% 
+  dplyr::rename(Animales=porcentaje_posit_animales, Personas = porcentaje_posit_personas)%>%
   group_by(RegionCode) %>% 
-  pivot_longer(.,names_to = "Variable", values_to = "Valores", cols = c(porcentaje_posit_personas:porcentaje_posit_animales)) %>% 
-  mutate(Variable = factor(Variable, levels = c("porcentaje_posit_personas","porcentaje_posit_animales"))) %>% 
+  pivot_longer(.,names_to = "Variable", values_to = "Valores", cols = c(Personas:Animales)) %>% 
+  mutate(Variable = factor(Variable, levels = c("Personas","Animales"))) %>% 
   filter(Valores!=0.00)
 
 ggplot(positivos_PIB,aes(x=PIB, y=Valores))+

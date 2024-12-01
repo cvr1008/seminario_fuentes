@@ -4,7 +4,7 @@
 
 # necesita que se cargue el archivo EU_ddd y EU_Incidencia_enfermedades
 
-
+library(ggplot2)
 library(dplyr)
 library(tidyr)
 
@@ -36,6 +36,9 @@ ggplot(paises_consumo_ab_sectores,aes(x=Dosis, y=Valor))+
        colour='Consumo en dosis')
 
 
+positivos_animales <- bacterias_personas%>%
+  group_by(RegionCode)%>%
+  dplyr::summarise(media = mean(mean_value, na.rm = TRUE))
 
 
 positivos_resist_sectores<-left_join(x = media_region, y = positivos_animales, by = "RegionCode")%>%
@@ -46,16 +49,6 @@ positivos_resist_sectores<-left_join(x = media_region, y = positivos_animales, b
   mutate(Variable = factor(Variable, levels = c("porcentaje_posit_personas","porcentaje_posit_animales"))) %>% 
   filter(Valores!=0.00)
 
-
-positivos_animales # positivo animales resistencia antibiotico
-media_region # positivo personas resistencia antibiotico
-
-# aquí separado por bacterias para unirlo con las bacterias de la ganadería para ver si hay coincidencias
-# las bacterias son las que provocan que se dé positivo en resistencia
-otra
-
-library(ggplot2)
-
 #GRAFICA DE BARRAS DE ENTRE MEDIA DE POSITIVOS EN ANIMALES Y PERSONAS
 ggplot(data = positivos_resist_sectores, aes(y = Valores, x = RegionCode)) +
   geom_bar(aes(fill = Variable), position = "dodge", stat = "identity")+
@@ -64,6 +57,18 @@ ggplot(data = positivos_resist_sectores, aes(y = Valores, x = RegionCode)) +
        fill='Medias')+
   scale_fill_manual(values = c("porcentaje_posit_personas" = 'violet', 
                                "porcentaje_posit_animales" = "blue")) 
+
+
+
+positivos_animales # positivo animales resistencia antibiotico
+media_region # positivo personas resistencia antibiotico
+
+# aquí separado por bacterias para unirlo con las bacterias de la ganadería para ver si hay coincidencias
+# las bacterias son las que provocan que se dé positivo en resistencia
+otra
+
+
+
 
 
 

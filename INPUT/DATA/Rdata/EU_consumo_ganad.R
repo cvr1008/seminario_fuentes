@@ -6,8 +6,6 @@ library(tidyr)
 
 ant_europa_g <- read_excel("INPUT/DATA/consumo_ganaderia_2022.xlsx", skip = 3)
 
-View(ant_europa_g)
-
 
 # Procesamiento inicial de los datos
 a_e_g <- ant_europa_g %>%

@@ -25,6 +25,7 @@ library(dplyr)
 library(ggplot2)
 library(httr)
 library(jsonlite)
+library(patchwork)
 library(pxR)
 library(plotly)
 library(RColorBrewer)
@@ -35,6 +36,8 @@ library(rlang)
 library(sf)
 library(tidyr)
 library(tidyverse)
+library(viridis)
+
 
 ```
 
@@ -79,7 +82,6 @@ consumo <- antibioticos %>%
   group_by(`Comunidades y Ciudades Autónomas`) %>%
   arrange(desc(Total))
 
-consumo
 
 c_c_final <- consumo %>%
   mutate(`Comunidades y Ciudades Autónomas` = ifelse(is.na(`Comunidades y Ciudades Autónomas`), "Total País", `Comunidades y Ciudades Autónomas`))%>%
@@ -87,7 +89,6 @@ c_c_final <- consumo %>%
   select(comunidades_autonomas, Total)%>%
   dplyr::rename(total_consumo_ccaa = Total)
 
-c_c_final
 
 
 ```
@@ -250,212 +251,12 @@ cambio_codigo_nombre <- function(Tabla, columna) {
 ```
 
 
+**Función para abrir los archivos de las bacterias resistentes en la ganadería**
 
-## Pregunta 2: Relación entre PIB y resistencia a antibióticos en la UE
+Para abrir los datos relativos a la AMR en la ganadería, se presenta una función que permite abrir una carpeta con numerosos archivos de extensión .json con la misma estructura y leerlos.
 
-Analizar si existe una relación significativa entre el Producto Interno Bruto de los países de la Unión Europea y los niveles de resistencia a antibióticos.
-
-```{r}
-pib <- read_table("INPUT/DATA/datos_pib.tsv")
-
-
-# Cambio de nombre columna
-colnames(pib)[1] <- "pais"
-
-# Nos quedamos con las últimas letras
-pib$pais <- substr(pib$pais, nchar(pib$pais) - 1, nchar(pib$pais))
-
-
-lista_pais <- list("BE", "BG", "CZ", "DK", "DE", "EE", "IE", "EL", "ES", "FR", "HR", "IT", "CY", "LV", "LT", "LU", "HU", "MT", "NL",
-               "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE")
-
-# nos quedamos solo con los países de la UE
-
-
-  # Filtrar los datos, quitar columnas nulas y seleccionar las columnas necesarias en una tubería
-pib_2022_desc <- pib %>%
-  dplyr::filter(pais %in% unlist(lista_pais)) %>%  # Filtrar por los países en 'lista_pais'
-  dplyr::select(where(~ all(!is.na(.)))) %>% # Eliminar columnas con todos los valores nulos
-  dplyr::select(pais, `2022`) %>%                 # Seleccionar las columnas 'pais' y '2022'
-  arrange(desc(`2022`))                    # Ordenar por el PIB del 2022 en orden descendente
-
-
-
-```
-
-Tras el tratamiento de estos datos se puede ver de manera gráfica la comparativa entre los países.
-
-```{r}
-grafico_pib <- ggplot(pib_2022_desc, aes(x = reorder(pais, -`2022`), y = `2022`)) +
-  geom_bar(stat = "identity", fill = "gold") +
-  labs(x = "País", y = "Valor en 2022", title = "PIB por País en 2022") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Rotar etiquetas para mejor legibilidad
-
-grafico_pib
-```
-
-Una vez observada la primera variable, generamos los datos del valor medio de la resistencia a antimicrobianos en los países europeos para comprobar si existe una relación o, efectivamente no tiene que ver.
 
 ```{r, eval=FALSE}
-
-Incidencia_enfermedades <-  read_csv("INPUT/DATA/ECDC_encuesta_AMR_incidencia_enfermedades.csv")
-
-incidencia_2022MF <- Incidencia_enfermedades %>%
-  filter(Time == 2022) %>%
-  filter(Category == 'Male' | Category == 'Female')
-
-incidencia_2022MF$Value <- as.numeric(incidencia_2022MF$Value)
-
-media_poblacion <- incidencia_2022MF %>%
-  select(-Unit, -HealthTopic, -Time, -Distribution) %>%
-  mutate(grupo = substr(Population, 1, 3))
-
-lista_codigos_paises <- list("AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", 
-                             "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK") 
-
-
-# Calcular la media de 'Value' por 'RegionCode' y 'grupo'
-otra <- media_poblacion %>%
-  select(-Category, -CategoryIndex, -Population) %>%
-  arrange(RegionCode, grupo) %>%    # Ordena los datos
-  group_by(RegionCode, grupo) %>%   # Agrupa por RegionCode y grupo
-  summarise(mean_value = mean(Value, na.rm = TRUE))%>%
-  filter(RegionCode %in% lista_codigos_paises)  # Calcula la media en cada grupo y desagrupa
-
-
-otra <- media_poblacion %>%
-  select(-Category, -CategoryIndex, -Population) %>%
-  arrange(RegionCode, grupo) %>%    
-  group_by(RegionCode, grupo) %>%   
-  summarise(mean_value = mean(Value, na.rm = TRUE))  
-
-otra$mean_value[is.nan(otra$mean_value)] <- 0
-
-media_region <- otra %>%
-  group_by(RegionCode) %>%
-  summarise(mean_value_region = mean(mean_value, na.rm = TRUE))  
-
-
-boxplot <- ggplot(otra, aes(x = grupo, y = mean_value)) +
-  geom_boxplot() +
-  labs(title = "Distribution of Mean Incidence by Bacteria Group",
-       x = "Bacteria Group", y = "Mean Incidence") +
-  theme_minimal()
-
-
-incidencia_keyed <- highlight_key(otra, ~RegionCode)
-
-scatter_plot <- ggplot(incidencia_keyed, aes(x = grupo, y = mean_value, color = RegionCode, text = paste("País:", RegionCode))) +
-  geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(title = "Population vs Mean Incidence Value by Region",
-       x = "Population", y = "Mean Incidence Value") +
-  theme_classic()
-
-interactive_scatter_plot <- ggplotly(scatter_plot, tooltip = "text") %>%
-  highlight(on = "plotly_click", off = "plotly_doubleclick", color = "red", opacityDim = 0.2)
-
-interactive_scatter_plot
-```
-
-Este código cargado en el entorno, es capaz de generar gráficos que permitan ver la incidencia de las distintas bacterias por cada país y para ver cuál es la bacteria que más afecta en toda la Unión Europea.
-
-```{r}
-boxplot_in <- ggplot(otra, aes(x = grupo, y = mean_value)) +
-  geom_boxplot() +
-  labs(title = "Distribution of Mean Incidence by Bacteria Group",
-       x = "Bacteria Group", y = "Mean Incidence") +
-  theme_minimal()
-boxplot_in
-
-```
-
-```{r}
-incidencia_keyed <- highlight_key(otra, ~RegionCode)
-
-scatter_plot <- ggplot(incidencia_keyed, aes(x = grupo, y = mean_value, color = RegionCode, text = paste("País:", RegionCode))) +
-  geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(title = "Population vs Mean Incidence Value by Region",
-       x = "Population", y = "Mean Incidence Value") +
-  theme_classic()
-
-interactive_scatter_plot <- ggplotly(scatter_plot, tooltip = "text") %>%
-  highlight(on = "plotly_click", off = "plotly_doubleclick", color = "red", opacityDim = 0.2)
-
-interactive_scatter_plot
-```
-
-## Pregunta 3: Consumo y resistencia en sectores específicos en la UE.
-
-Explorar cómo el consumo de antibióticos en sectores como el personal (comunitario), hospitalario y ganadero se relaciona con los niveles de resistencia a antibióticos en diferentes países de la UE.
-
-Uno de los factores a estudiar era el consumo/administración de este tipo de los medicamentos por parte de los hospitales y la ciudadanía de manera individual, y eso se ve reflejado en los siguientes datos extraídos de la encuesta europea anual.
-
-```{r}
-
-DDD_Europa_Json <- fromJSON(file = "INPUT/DATA/DDD_1000_habitantes_paises.JSON")
-
-
-DDD_Europa_df <- do.call(rbind, lapply(DDD_Europa_Json, function(x) {
-  data.frame(Country = x$Country, 
-             DDD_per_1000_inhabitants_per_day = as.numeric(x$`DDD per 1000 inhabitants per day`))
-}))
-
-# lapply: Aplica una función a cada elemento de una lista y devuelve una lista con los resultados
-# function(x): Define una función anónima que será aplicada a cada elemento x de la lista DDD_Europa_Json.
-# x$Country: Extrae el campo Country del elemento x.
-# x$'DDD per 1000 inhabitants per day': Extrae el campo DDD per 1000 inhabitants per day de x y lo convierte en numérico con as.numeric.
-# data.frame(...): Crea un dataframe con dos columnas
-
-
-# Usar la función 'cambio_nombre_codigo' para convertir nombres de países en códigos
-DDD_Europa_df <- cambio_nombre_codigo(DDD_Europa_df, "Country")
-
-# Añadir columna para calcular DDD por cada 100 habitantes y eliminar la columna original
-DDD_Europa_df <- DDD_Europa_df %>%
-  dplyr::mutate(DDD_per_100_inhabitants_per_day = DDD_per_1000_inhabitants_per_day / 10) %>%
-  dplyr::filter(Country %in% unlist(lista_pais)) %>%
-  select(-DDD_per_1000_inhabitants_per_day)
-
-
-
-```
-
-Al tratarse del número de dosis estándar consumidas diariamente por cada 1000 personas, se divide entre 10 para que se convierta en el número de dosis diarias por cada 100 habitantes.
-
-Si se considera que cada dosis se consume por una persona diferente, el resultado de la segunda columna significa que el x% de la población de cada país consume antibiótico de forma diaria en el sector hospitalario y comunitario.
-
-
-**Gráfico de barras de la Dosis de antibióticos media Diaria Definida de los países ordenados de mayor a menor consumo**
-
-```{r}
-grafico_DDD <- ggplot(DDD_Europa_df, aes(x = reorder(Country, -DDD_per_100_inhabitants_per_day), 
-                          y = DDD_per_100_inhabitants_per_day)) +
-  geom_bar(stat = "identity", fill = "turquoise") +
-  labs(title = "DDD por 100 habitantes por día en Europa", 
-       x = "País", 
-       y = "DDD por 100 habitantes por día") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-grafico_DDD
-
-
-```
-
-Se puede analizar de forma individual, para determinar qué país consume más antibióticos de forma registrada por el sistema de salud, o por el contrario, se puede comparar con otros factores que se están estudiando como posibles causantes de la resistencia a los antibióticos para encontrar relaciones con el porcentaje de la población de los diferentes países de la UE que han dado positivo en resistencia a los antimicrobianos.
-
-A continuación se pretende estudiar el consumo de antibióticos por parte de los animales de granja suministrados por los profesionales del sector, que en ocasiones resultan en sobremedicación. Este problema se suele dar como resultado de un tratamiento (no necesario) cuyo objetivo es tener animales sanos y sin ninguna enfermedad para poder venderlos y que el producto cárnico no se desperdicie sin perder dinero.
-
-Para abrir los datos relativos a la ganadería, se presenta una función que permite abrir una carpeta con numerosos archivos de extensión .json con la misma estructura y leerlos.
-
-```{r, eval=FALSE}
-
-library(httr)
-library(tidyverse)
-library(jsonlite)
-library(readxl)
-library(rjson)
 
 obtener_nombre<-function(carpeta){
   archivos <- as.list(list.files(path =carpeta))
@@ -542,7 +343,8 @@ leer_archivo("carpeta_destino")
 
 ```
 
-**Juntar los dataframes que tenemos en el enviroment** 1. Listar los nombres de todos los dataframes que terminan en ".xlsx" (ajusta si es necesario) 2. Convertir los nombres a una lista de dataframes usando mget() 3. Unir todos los dataframes en uno solo usando bind_rows
+**Juntar los dataframes que tenemos en el enviroment** 
+1. Listar los nombres de todos los dataframes que terminan en ".xlsx" (ajusta si es necesario) 2. Convertir los nombres a una lista de dataframes usando mget() 3. Unir todos los dataframes en uno solo usando bind_rows
 
 ```{r, eval=FALSE}
 
@@ -555,11 +357,14 @@ lista_dataframes <- mget(nombres_dataframes)
  
 df_combinado <- bind_rows(lista_dataframes, .id = "origen")
 
+
 ```
+
 
 **Carga del global enviroment** El entorno en el que guardan todos los dataframes de cada pais resultantes de la función leer_archivo, y el dataframe df_combinado del codigo anterior se ha cargado anteriormente ya que incluye otros datos que ya se han empleado.
 
-**Modificación y obtencion del dataframe con los datos** seleccionamos las columnas que vamos a necesitar y filtramos en la columna de las bacterias solo las patogénicas.
+**Modificación y obtencion del dataframe con los datos** 
+seleccionamos las columnas que vamos a necesitar y filtramos en la columna de las bacterias solo las patogénicas.
 
 Cambiamos los nombres de las columnas y lo asignamos al dataframe
 
@@ -574,9 +379,280 @@ paises_UE_df<-df_combinado%>%
 nuevos_nombres <- c("NombrePais", "Codigo", "zoonosis_name","OrigenMuestra", "TotalMuestras","MuestraPositiva","Tipo_Unidad_Muestra","TipoMuestra","MIC_name","ValorCorte")  # Modifica según el número de columnas
 
 colnames(paises_UE_df) <- nuevos_nombres
+
 ```
 
-**Mapa Interactivo de positivos en ganaderia por paises de la UE**
+
+
+## Pregunta 2: Consumo y resistencia en sectores específicos en la UE.
+
+Explorar cómo el consumo de antibióticos en sectores como el personal (comunitario), hospitalario y ganadero se relaciona con los niveles de resistencia a antibióticos en diferentes países de la UE.
+
+Uno de los factores a estudiar era el consumo/administración de este tipo de los medicamentos por parte de los hospitales y la ciudadanía de manera individual, y eso se ve reflejado en los siguientes datos extraídos de la encuesta europea anual.
+
+```{r}
+
+
+lista_pais <- list("BE", "BG", "CZ", "DK", "DE", "EE", "IE", "EL", "ES", "FR", "HR", "IT", "CY", "LV", "LT", "LU", "HU", "MT", "NL",
+               "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE")
+
+
+DDD_Europa_Json<- jsonlite::fromJSON("INPUT/DATA/DDD_1000_habitantes_paises.JSON")
+
+DDD_Europa_df <- cambio_nombre_codigo(DDD_Europa_Json, "Country")
+# Usar la función 'cambio_nombre_codigo' para convertir nombres de países en códigos
+
+
+DDD_Europa_df <- DDD_Europa_df%>%
+  mutate(DDD_per_1000_inhabitants_per_day = as.numeric(`DDD per 1000 inhabitants per day`))%>%
+  mutate(DDD_per_100_inhabitants_per_day = DDD_per_1000_inhabitants_per_day / 10) %>%
+  dplyr::filter(Country %in% unlist(lista_pais)) %>%
+  select(-DDD_per_1000_inhabitants_per_day, -`DDD per 1000 inhabitants per day`)
+
+# Añadir columna para calcular DDD por cada 100 habitantes y eliminar la columna original
+
+
+```
+
+Al tratarse del número de dosis estándar consumidas diariamente por cada 1000 personas, se divide entre 10 para que se convierta en el número de dosis diarias por cada 100 habitantes.
+
+Si se considera que cada dosis se consume por una persona diferente, el resultado de la segunda columna significa que el x% de la población de cada país consume antibiótico de forma diaria en el sector hospitalario y comunitario.
+
+
+**Gráfico de barras de la Dosis de antibióticos media Diaria Definida de los países ordenados de mayor a menor consumo**
+
+```{r}
+grafico_DDD <- ggplot(DDD_Europa_df, aes(x = reorder(Country, -DDD_per_100_inhabitants_per_day), 
+                          y = DDD_per_100_inhabitants_per_day)) +
+  geom_bar(stat = "identity", fill = "turquoise") +
+  labs(title = "DDD por 100 habitantes por día en Europa", 
+       x = "País", 
+       y = "DDD por 100 habitantes por día") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+grafico_DDD
+
+
+```
+
+Se puede analizar de forma individual, para determinar qué país consume más antibióticos de forma registrada por el sistema de salud, o por el contrario, se puede comparar con otros factores que se están estudiando como posibles causantes de la resistencia a los antibióticos para encontrar relaciones con el porcentaje de la población de los diferentes países de la UE que han dado positivo en resistencia a los antimicrobianos.
+
+
+A continuación se pretende estudiar el consumo de antibióticos por parte de los animales de granja suministrados por los profesionales del sector, que en ocasiones resultan en sobremedicación. 
+Este problema se suele dar como resultado de un tratamiento (no necesario) cuyo objetivo es tener animales sanos y sin ninguna enfermedad para poder venderlos y que el producto cárnico no se desperdicie sin perder dinero.
+
+
+La apertura y muestra de los datos sobre la tendencia de consumo de antibióticos en la ganadería se realiza de la siguiente manera:
+
+```{r}
+
+ant_europa_g <- read_excel("INPUT/DATA/consumo_ganaderia_2022.xlsx", skip = 3)
+
+
+# Procesamiento inicial de los datos
+a_e_g <- ant_europa_g %>%
+  select("Country", "...5") %>%  # Seleccionar las columnas relevantes
+  dplyr::rename(Antibiotic_use_in_livestock_1000_PCU = `...5`) %>%  # Renombrar columnas
+  mutate(Year = "2022") %>%  # Añadir la columna de año
+  cambio_nombre_codigo("Country") %>%  # Usar la función para cambiar nombres de países a códigos
+  drop_na() %>%  # Eliminar filas con valores NA
+  relocate(3, .before = 2)  # Reubicar la columna 'Year' antes de 'Country'
+
+# Crear un nuevo data frame con datos modificados
+new <- a_e_g %>%
+  select(-Year) %>%  # Eliminar la columna 'Year'
+  mutate(Antibiotic_use_in_livestock_100_PCU = as.numeric(Antibiotic_use_in_livestock_1000_PCU) / 10) %>%  # Calcular el nuevo indicador
+  select(-Antibiotic_use_in_livestock_1000_PCU)  # Eliminar la columna original
+```
+
+La incidencia de la AMR se registra mediante una encuesta europea en la cual se escoge un grupo de individuos al azar de cada país y se analiza la presencia de bacterias resistentes a determinados antibióticos. Para simplificar la representación y obtener conclusiones más claras, se hace la media entre los registros positivos de todos los antibióticos referentes a la misma bacteria para obtener la incidencia media de la misma.
+Además, también se calcula media entre todas las bacterias para obtener un valor orientativo acerca del porcentaje de los encuestados de cada país que presenta resistencia ante los antibióticos.
+
+```{r}
+
+# Cargar el archivo CSV de incidencia de enfermedades
+Incidencia_enfermedades <-  read_csv("INPUT/DATA/ECDC_encuesta_AMR_incidencia_enfermedades.csv")
+
+# Filtrar los datos para el año 2022 y las categorías Male y Female
+incidencia_2022MF <- Incidencia_enfermedades %>%
+  dplyr::filter(Time == 2022) %>%
+  dplyr::filter(Category == 'Male' | Category == 'Female')
+
+# Convertir 'Value' a numérico
+incidencia_2022MF$Value <- as.numeric(incidencia_2022MF$Value)
+
+# Crear el dataframe media_poblacion con una nueva columna 'grupo'
+media_poblacion <- incidencia_2022MF %>%
+  dplyr::select(-Unit, -HealthTopic, -Time, -Distribution) %>%
+  mutate(grupo = substr(Population, 1, 3))
+
+
+lista_codigos_paises <- list("AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", 
+                             "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK") 
+
+
+# Calcular la media de 'Value' por 'RegionCode' y 'grupo'
+otra <- media_poblacion %>%
+  select(-Category, -CategoryIndex, -Population) %>%
+  arrange(RegionCode, grupo) %>%    # Ordena los datos
+  group_by(RegionCode, grupo) %>%   # Agrupa por RegionCode y grupo
+  dplyr::summarise(mean_value = mean(Value, na.rm = TRUE))%>%
+  dplyr::filter(RegionCode %in% lista_codigos_paises) %>%   # Calcula la media en cada grupo y desagrupa
+  tidyr::drop_na() %>% 
+  mutate(grupo = recode(grupo, "Ent" = "Enterococcus", "Esc" = "Escherichia","Aci"="Acinetobacter",
+                        "Kle"="Klebsiella","Pse" = "Pseudomonas","Sta"="Staphylococcus", "Str"="Streptococcus"))
+
+
+media_region <- otra %>%
+  group_by(RegionCode) %>%
+  summarise(mean_value_region = mean(mean_value, na.rm = TRUE))%>%
+  arrange(desc(mean_value_region))
+
+bacterias_personas<-otra %>%
+  dplyr::filter(grupo %in% c("Enterococcus", "Escherichia")) 
+
+```
+
+
+
+
+**Gráfico sobre la relación entre el consumo de AB y la AMR**
+
+```{r}
+paises_consumo_ab_sectores<-left_join(x = DDD_Europa_df, y = new, by = "Country")%>%
+  mutate(DDD_per_100_inhabitants_per_year = DDD_per_100_inhabitants_per_day*365/100*100)%>%
+  mutate(Antibiotic_use_in_livestock_1000_PCU = Antibiotic_use_in_livestock_100_PCU*10)%>%
+  dplyr::select(-DDD_per_100_inhabitants_per_day)%>%
+  left_join(x = ., y = media_region, by = c("Country" = "RegionCode"))%>%
+  group_by(Country, mean_value_region)%>%
+  dplyr::rename("100 habitantes (mg)" = DDD_per_100_inhabitants_per_year, "1000 PCU (mg)" = Antibiotic_use_in_livestock_100_PCU, "Valor" = mean_value_region)%>%
+  pivot_longer(., names_to = "Consumo", values_to = "Dosis", cols= c(2:3))
+
+
+ggplot(paises_consumo_ab_sectores,aes(x=Dosis, y=Valor))+
+  geom_point(aes(color=factor(Consumo)))+
+  geom_smooth(method = 'lm',aes(colour=factor(Consumo)))+
+  labs(title = 'Relación entre el consumo de antibióticos y resistencia antimicrobiana',
+       y='Incidencia',
+       x= 'Consumo',
+       colour='Consumo en dosis')
+
+```
+
+
+
+**Gráfico acerca de la relación entre la resistencia antimicrobiana de animales de ganadería y personas**
+
+```{r}
+positivos_animales <- bacterias_personas%>%
+  group_by(RegionCode)%>%
+  dplyr::summarise(media = mean(mean_value, na.rm = TRUE))
+
+
+positivos_resist_sectores<-left_join(x = media_region, y = positivos_animales, by = "RegionCode")%>%
+  dplyr::rename(Animales = media)%>%
+  dplyr::rename(Personas = mean_value_region) %>% 
+  arrange(desc(Personas))%>%
+  group_by(RegionCode) %>% 
+  pivot_longer(.,names_to = "Variable", values_to = "Valores", cols = c(Personas:Animales)) %>% 
+  mutate(Variable = factor(Variable, levels = c("Personas","Animales"))) %>% 
+  filter(Valores!=0.00)
+
+#GRAFICA DE BARRAS DE ENTRE MEDIA DE POSITIVOS EN ANIMALES Y PERSONAS
+ggplot(data = positivos_resist_sectores, aes(y = Valores, x = RegionCode)) +
+  geom_bar(aes(fill = Variable), position = "dodge", stat = "identity")+
+  labs(title='Media por paises de positivos en animales y en personas',
+       x='Paises',
+       fill='% medio positivos')+
+  scale_fill_manual(values = c("Personas" = 'violet', 
+                               "Animales" = "blue")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+```
+
+```{r}
+
+# Calcular la media basada en la proporción de positivos
+media_ganaderia <- paises_UE_df %>%
+  group_by(Codigo, zoonosis_name) %>%
+  dplyr::summarise(
+    media = mean((MuestraPositiva / TotalMuestras)*100, na.rm = TRUE)) %>%
+  ungroup() %>% 
+  tidyr::drop_na()
+
+
+table(factor(otra$grupo))
+table(factor(media_ganaderia$zoonosis_name))
+#Observamos que las unicas bacterias comunes son Enterococcus y Escherichia
+
+
+
+#Filtro solo las bacterias comunes y les cambio el nombre de las bacterias comunes
+bacterias_personas<-otra %>%
+  dplyr::filter(grupo %in% c("Enterococcus", "Escherichia")) 
+  
+
+#Filtro las bacterias comunes
+media_ganaderia_nueva<-media_ganaderia %>%
+  filter(zoonosis_name %in% c("Enterococcus,", "Escherichia")) %>%
+  mutate(zoonosis_name = recode(zoonosis_name, "Enterococcus," = "Enterococcus"))
+
+```
+
+
+**Boxplot de la distribución de las bacteras resistentes en ganadería y ciudadanos**
+
+```{r}
+#BOXPLOT DE BACTERIAS QUE AFECTAN A ANIMALES Y BACTERIAS
+
+boxplot_bac_ganaderia<-ggplot(media_ganaderia,aes(x=zoonosis_name, y=media, fill=zoonosis_name)) + 
+  geom_boxplot() +
+  labs(title = "Incidencia de bacterias en ganadería ",
+       x = "Bacterias", y = "Incidencia media")  +
+  theme(legend.position="none",
+  axis.text.x = element_text(angle = 45, hjust = 1))
+
+boxplot_baterias_personas <- ggplot(otra, aes(x = grupo, y = mean_value, fill=grupo)) +
+  geom_boxplot() +
+  labs(title = "Incidencia de bacterias en personas ",
+       x = "Bacterias", y = "Incidencia media") +
+  theme(legend.position="none",
+  axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+boxplot_bac_ganaderia + boxplot_baterias_personas
+
+
+```
+
+
+
+
+
+
+
+**Reflejo de la presencia de las bacterias resistentes en animales en la presencia de las mismas en humanos**
+
+```{r}
+tabla_unida <- full_join(x=media_ganaderia_nueva, y= bacterias_personas, 
+  by = c("Codigo" = "RegionCode", "zoonosis_name" = "grupo")) %>% 
+  dplyr::rename(Ganaderia=media, Poblacion=mean_value) %>% 
+  pivot_longer(.,names_to = "Variable", values_to = "Valores", cols = c(Ganaderia:Poblacion)) %>% 
+  mutate(Bacteria = factor(zoonosis_name, levels = c("Escherichia","Enterococcus"))) %>% 
+  mutate(Variable = factor(Variable, levels = c("Ganaderia","Poblacion"))) %>% 
+  tidyr::drop_na()
+
+
+
+ggplot(data = tabla_unida, aes(x = Valores, y = Codigo)) +
+  geom_bar(aes(fill = Bacteria), position = "dodge", stat = "identity") +
+  facet_wrap(facets = vars(Variable), nrow = 1)+
+  labs(x = "Porcentaje de incidencia")
+```
+
+
+
+**Mapa Interactivo de los positivos AMR por paises de la UE**
 
 ```{r,message=FALSE,warning=FALSE}
 library(sf)
@@ -635,5 +711,103 @@ mapa <- ggplot(mapa_mundo_europa) +
 mapa_interactivo <- ggplotly(mapa)
 
 mapa_interactivo
+
+```
+
+
+
+
+
+## Pregunta 3: Relación entre PIB y resistencia a antibióticos en la UE
+
+Analizar si existe una relación significativa entre el Producto Interno Bruto de los países de la Unión Europea y los niveles de resistencia a antibióticos.
+
+```{r}
+pib <- read_table("INPUT/DATA/datos_pib.tsv")
+
+
+# Cambio de nombre columna
+colnames(pib)[1] <- "pais"
+
+# Nos quedamos con las últimas letras
+pib$pais <- substr(pib$pais, nchar(pib$pais) - 1, nchar(pib$pais))
+
+lista_pais <- list("BE", "BG", "CZ", "DK", "DE", "EE", "IE", "EL", "ES", "FR", "HR", "IT", "CY", "LV", "LT", "LU", "HU", "MT", "NL",
+               "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE")
+
+# nos quedamos solo con los países de la UE
+
+
+  # Filtrar los datos, quitar columnas nulas y seleccionar las columnas necesarias en una tubería
+pib_2022_desc <- pib %>%
+  dplyr::filter(pais %in% unlist(lista_pais)) %>%  # Filtrar por los países en 'lista_pais'
+  dplyr::select(where(~ all(!is.na(.)))) %>% # Eliminar columnas con todos los valores nulos
+  dplyr::select(pais, `2022`) %>%                 # Seleccionar las columnas 'pais' y '2022'
+  arrange(desc(`2022`))                    # Ordenar por el PIB del 2022 en orden descendente
+
+
+```
+
+Tras el tratamiento de estos datos se puede ver de manera gráfica la comparativa entre los países.
+
+```{r}
+grafico_pib <- ggplot(pib_2022_desc, aes(x = reorder(pais, -`2022`), y = `2022`)) +
+  geom_bar(stat = "identity", fill = "gold") +
+  labs(x = "País", y = "Valor en 2022", title = "PIB por País en 2022") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Rotar etiquetas para mejor legibilidad
+
+grafico_pib
+
+```
+
+Una vez observada la primera variable, generamos los datos del valor medio de la resistencia a antimicrobianos en los países europeos para comprobar si existe una relación o, efectivamente no tiene que ver.
+
+Este código cargado en el entorno, es capaz de generar gráficos que permitan ver la incidencia de las bacterias en cada país.
+
+```{r}
+# graficos positivos generales
+
+# Crear el gráfico usando los datos ordenados
+grafico <- ggplot(media_region, aes(x = reorder(RegionCode, -mean_value_region), y = mean_value_region)) +
+  geom_bar(stat = "identity", fill = "skyblue", color = "blue") +
+  labs(
+    title = "Media de Incidencia por Región (Orden Descendente)",
+    x = "País",
+    y = "Media de Incidencia"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+grafico
+
+```
+
+
+Con el objetivo de estudiar la relación entre el nivel económico y el de AMR de la UE, hemos hecho una regresión cuya variable independiente será el PIB y la dependiente, en el eje y, es el porcentaje de población animal y humana resistente a antibióticos representado en un factor dividido entre los dos grupos. La gráfica final es una de dispersión en la cual cada punto se corresponde con un país de la Unión Europea y cada color representa un nivel del factor.
+
+
+```{r}
+positivos_sinPivotar<-left_join(x = media_region, y = positivos_animales, by = "RegionCode")%>%
+  dplyr::rename(porcentaje_posit_animales = media)%>%
+  dplyr::rename(porcentaje_posit_personas = mean_value_region)
+
+positivos_PIB<-full_join(y= pib_2022_desc ,x=positivos_sinPivotar,by=c('RegionCode'='pais')) %>% 
+  dplyr::rename(PIB='2022') %>% 
+  dplyr::rename(Animales=porcentaje_posit_animales, Personas = porcentaje_posit_personas)%>%
+  group_by(RegionCode) %>% 
+  pivot_longer(.,names_to = "Variable", values_to = "Valores", cols = c(Personas:Animales)) %>% 
+  mutate(Variable = factor(Variable, levels = c("Personas","Animales"))) %>% 
+  filter(Valores!=0.00)
+
+final<-ggplot(positivos_PIB,aes(x=PIB, y=Valores))+
+  geom_point(aes(color=factor(Variable)))+
+  geom_smooth(method = 'lm',aes(colour=factor(Variable)))+
+  labs(title = 'Relación entre PIB y resistencia antimicrobiana',
+       y='Positivos en AMR',
+       colour='Poblaciones de positivos')
+final
 
 ```

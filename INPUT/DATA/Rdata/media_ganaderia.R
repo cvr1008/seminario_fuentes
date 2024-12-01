@@ -1,5 +1,7 @@
-
+library(patchwork)
 library(dplyr)
+library(tidyr)
+library(ggplot2)
 
 # Calcular la media basada en la proporción de positivos
 media_ganaderia <- paises_UE_df %>%
@@ -7,22 +9,12 @@ media_ganaderia <- paises_UE_df %>%
   dplyr::summarise(
     media = mean((MuestraPositiva / TotalMuestras)*100, na.rm = TRUE)) %>%
   ungroup() %>% 
-  drop_na()
+  tidyr::drop_na()
 
 
-
-
-
-lista_codigos_paises <- list("AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", 
-                             "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK")
-
-#Cargamos el df de las bacterias que afectan a las personas
-otra <- otra %>% 
-  dplyr::filter(RegionCode %in% lista_codigos_paises)
-
-#Las unicas bacterias comunes son Enterococcus y Escherichia
 table(factor(otra$grupo))
 table(factor(media_ganaderia$zoonosis_name))
+#Observamos que las unicas bacterias comunes son Enterococcus y Escherichia
 
 
 
@@ -41,22 +33,22 @@ summary(media_ganaderia_nueva)
 summary(bacterias_personas)
 
 #Hago un join usando de union el codigo y las bacterias comunes
-library(tidyr)
-library(ggplot2)
+
 
 tabla_unida <- full_join(x=media_ganaderia_nueva, y= bacterias_personas, 
   by = c("Codigo" = "RegionCode", "zoonosis_name" = "grupo")) %>% 
-  dplyr::rename(mediaGanaderia=media, mediaEnPoblacion=mean_value) %>% 
-  pivot_longer(.,names_to = "Variable", values_to = "Valores", cols = c(mediaGanaderia:mediaEnPoblacion)) %>% 
-  mutate(zoonosis_name = factor(zoonosis_name, levels = c("Escherichia","Enterococcus"))) %>% 
-  mutate(Variable = factor(Variable, levels = c("mediaGanaderia","mediaEnPoblacion"))) %>% 
-  drop_na()
+  dplyr::rename(Ganaderia=media, Poblacion=mean_value) %>% 
+  pivot_longer(.,names_to = "Variable", values_to = "Valores", cols = c(Ganaderia:Poblacion)) %>% 
+  mutate(Bacteria = factor(zoonosis_name, levels = c("Escherichia","Enterococcus"))) %>% 
+  mutate(Variable = factor(Variable, levels = c("Ganaderia","Poblacion"))) %>% 
+  tidyr::drop_na()
 
 
 
 ggplot(data = tabla_unida, aes(x = Valores, y = Codigo)) +
-  geom_bar(aes(fill = zoonosis_name), position = "dodge", stat = "identity") +
-  facet_wrap(facets = vars(Variable), nrow = 1)
+  geom_bar(aes(fill = Bacteria), position = "dodge", stat = "identity") +
+  facet_wrap(facets = vars(Variable), nrow = 1)+
+  labs(x = "Porcentaje de incidencia")
 
 
 # ahora sacamos tabla sencillita para unirla con los positivos en personas
@@ -66,7 +58,7 @@ positivos_animales <- bacterias_personas%>%
   dplyr::summarise(media = mean(mean_value, na.rm = TRUE))
 
 
-#BOXPLOT DE BACTERIAS QUE AFECTAN A ANIMALES
+#BOXPLOT DE BACTERIAS QUE AFECTAN A ANIMALES Y BACTERIAS
 
 boxplot_bac_ganaderia<-ggplot(media_ganaderia,aes(x=zoonosis_name, y=media, fill=zoonosis_name)) + 
   geom_boxplot() +
@@ -82,7 +74,6 @@ boxplot_baterias_personas <- ggplot(otra, aes(x = grupo, y = mean_value, fill=gr
   axis.text.x = element_text(angle = 45, hjust = 1))
 
 
-library(patchwork)
 boxplot_bac_ganaderia + boxplot_baterias_personas
 
 

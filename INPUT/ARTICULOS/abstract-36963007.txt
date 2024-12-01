@@ -1,0 +1,52 @@
+1. PLOS Glob Public Health. 2023 Feb 1;3(2):e0001305. doi: 
+10.1371/journal.pgph.0001305. eCollection 2023.
+
+Global trends in antimicrobial use in food-producing animals: 2020 to 2030.
+
+Mulchandani R(1), Wang Y(1), Gilbert M(2)(3), Van Boeckel TP(1)(4).
+
+Author information:
+(1)Health Geography and Policy Group, ETH Zürich, Zurich, Switzerland.
+(2)Spatial Epidemiology Lab, Université Libre de Bruxelles, Brussels, Belgium.
+(3)Fonds National de la Recherche Scientifique, Brussels, Belgium.
+(4)Center for Diseases Dynamics, Economics, and Policy, New Delhi, India.
+
+Use of antimicrobials in farming has enabled the growth of intensive animal 
+production and helped in meeting the global increase in demand for animal 
+protein. However, the widespread use of veterinary antimicrobials drives 
+antimicrobial resistance, with important consequences for animal health, and 
+potentially human health. Global monitoring of antimicrobial use is essential: 
+first, to track progress in reducing the reliance of farming on antimicrobials. 
+Second, to identify countries where antimicrobial-stewardship efforts should be 
+targeted to curb antimicrobial resistance. Data on usage of antimicrobials in 
+food animals were collected from 42 countries. Multivariate regression models 
+were used in combination with projections of animal counts for cattle, sheep, 
+chicken, and pigs from the Food and Agriculture Organization to estimate global 
+antimicrobial usage of veterinary antimicrobials in 2020 and 2030. Maps of 
+animal densities were used to identify geographic hotspots of antimicrobial use. 
+In each country, estimates of antimicrobial use (tonnes) were calibrated to 
+match continental-level reports of antimicrobial use intensity (milligrams per 
+kilogram of animal) from the World Organization for Animal Health, as well as 
+country-level reports of antimicrobial use from countries that made this 
+information publicly available. Globally, antimicrobial usage was estimated at 
+99,502 tonnes (95% CI 68,535-198,052) in 2020 and is projected, based on current 
+trends, to increase by 8.0% to 107,472 tonnes (95% CI: 75,927-202,661) by 2030. 
+Hotspots of antimicrobial use were overwhelmingly in Asia (67%), while <1% were 
+in Africa. Findings indicate higher global antimicrobial usage in 2030 compared 
+to prior projections that used data from 2017; this is likely associated with an 
+upward revision of antimicrobial use in Asia/Oceania (~6,000 tonnes) and the 
+Americas (~4,000 tonnes). National-level reporting of antimicrobial use should 
+be encouraged to better evaluate the impact of national policies on 
+antimicrobial use levels.
+
+Copyright: © 2023 Mulchandani et al. This is an open access article distributed 
+under the terms of the Creative Commons Attribution License, which permits 
+unrestricted use, distribution, and reproduction in any medium, provided the 
+original author and source are credited.
+
+DOI: 10.1371/journal.pgph.0001305
+PMCID: PMC10021213
+PMID: 36963007
+
+Conflict of interest statement: The authors have declared no competing interests 
+exist.

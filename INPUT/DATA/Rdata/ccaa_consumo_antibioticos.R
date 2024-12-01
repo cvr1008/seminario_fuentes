@@ -8,37 +8,29 @@ tipo_ccaa_consumo_o_no <- read_delim("INPUT/DATA/datos_ccaa/tipo_ccaa_consumo_o_
 
 
 antibioticos <- tipo_ccaa_consumo_o_no %>% 
-  filter(`Tipo de medicamento` == "Antibióticos")
+  dplyr::filter(`Tipo de medicamento` == "Antibióticos",`Sexo` == "Ambos sexos")%>%
+  dplyr::filter(`Sí o no` == "Sí")
 
-antibioticos <- tipo_ccaa_consumo_o_no[tipo_ccaa_consumo_o_no$`Tipo de medicamento` == "Antibióticos" & tipo_ccaa_consumo_o_no$`Sexo` == "Ambos sexos",]
-antibioticos
 
 # Esta tabla enseña que el 3,54% de la población española en la última encuesta reconoce 
 # haber consumido antibióticos en las últimas 2 semanas (En el año 2021)
 
 
-# Comunidad que más consume
-
-antibioticos_si <- antibioticos[antibioticos$`Sí o no` == "Sí",]
-antibioticos_si
-
-
-antibioticos_si$Total <- gsub(",", ".", antibioticos_si$Total)
+antibioticos$Total <- gsub(",", ".", antibioticos$Total)
 
 # Limpia espacios y caracteres no numéricos (si es necesario)
-antibioticos_si$Total <- gsub(" ", "", antibioticos_si$Total)
+antibioticos$Total <- gsub(" ", "", antibioticos$Total)
 
 # Convierte a numérico
-antibioticos_si$Total <- as.numeric(antibioticos_si$Total)
+antibioticos$Total <- as.numeric(antibioticos$Total)
 
 # Revisa si hay NA después de la conversión
-sum(is.na(antibioticos_si$Total))  # Muestra el número de NAs
+sum(is.na(antibioticos$Total))  # Muestra el número de NAs
 
 
 
-consumo <- antibioticos_si %>%
+consumo <- antibioticos %>%
   group_by(`Comunidades y Ciudades Autónomas`) %>%
-  #summarise(Total_Consumo = sum(as.numeric(Total), na.rm = TRUE)) %>%
   arrange(desc(Total))
 
 consumo

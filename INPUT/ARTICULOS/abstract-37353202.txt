@@ -1,0 +1,35 @@
+1. Mod Pathol. 2023 Sep;36(9):100249. doi: 10.1016/j.modpat.2023.100249. Epub 2023 
+Jun 21.
+
+Emerging Antimicrobial Resistance.
+
+Flynn CE(1), Guarner J(2).
+
+Author information:
+(1)Department of Pathology, Christiana Care, Wilmington, Delaware. Electronic 
+address: Cynthia.Flynn@christianacare.org.
+(2)Department of Pathology and Laboratory Medicine, Emory University School of 
+Medicine, Atlanta, Georgia.
+
+The burden of emerging antimicrobial resistance (AMR) in the United States is 
+significant and even greater worldwide. Mitigation efforts have decreased the 
+incidence and deaths from antimicrobial-resistant organisms in the United 
+States. Yet more than 2.8 million antimicrobial-resistant infections occur every 
+year and more than 35,000 patients die as a result. Infection prevention and 
+control, data tracking, antimicrobial stewardship, vaccines, therapeutics, 
+diagnostics, and sanitation are all required to decrease AMR threats. In 2019, 
+in the second version of the Centers for Disease Control and Prevention (CDC) 
+report on antibiotic-resistant threats, the agency categorized AMR threats as 
+urgent, serious, concerning, or to be watched. This review will discuss the 
+following aspects of each bacterium in the CDC report: estimated numbers of 
+cases and deaths, identify the better known and impactful mechanisms of 
+resistance, diagnostic testing and its limitations, and current and possible 
+future therapies. This review also presents anatomical pathology case examples 
+that highlight the altered morphology of antibiotic partially treated bacteria 
+in tissues.
+
+Copyright © 2023 United States & Canadian Academy of Pathology. Published by 
+Elsevier Inc. All rights reserved.
+
+DOI: 10.1016/j.modpat.2023.100249
+PMID: 37353202 [Indexed for MEDLINE]

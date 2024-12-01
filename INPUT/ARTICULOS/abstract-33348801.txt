@@ -1,0 +1,39 @@
+1. Antibiotics (Basel). 2020 Dec 17;9(12):918. doi: 10.3390/antibiotics9120918.
+
+Global Trends in Antimicrobial Use in Food Animals from 2017 to 2030.
+
+Tiseo K(1), Huber L(1), Gilbert M(2)(3), Robinson TP(4), Van Boeckel TP(1)(5).
+
+Author information:
+(1)Department of Environmental Systems Science, Institute for Environmental 
+Decisions, ETH Zürich, 8006 Zürich, Switzerland.
+(2)Spatial Epidemiology Lab, Université Libre de Bruxelles, 1050 Brussels, 
+Belgium.
+(3)Fonds National de la Recherche Scientifique, 1050 Brussels, Belgium.
+(4)Food and Agriculture Organization of the United Nations, 00153 Rome, Italy.
+(5)Center for Disease Dynamics Economics and Policy, New Delhi 110024, India.
+
+Demand for animal protein is rising globally and has been facilitated by the 
+expansion of intensive farming. However, intensive animal production relies on 
+the regular use of antimicrobials to maintain health and productivity on farms. 
+The routine use of antimicrobials fuels the development of antimicrobial 
+resistance, a growing threat for the health of humans and animals. Monitoring 
+global trends in antimicrobial use is essential to track progress associated 
+with antimicrobial stewardship efforts across regions. We collected 
+antimicrobial sales data for chicken, cattle, and pig systems in 41 countries in 
+2017 and projected global antimicrobial consumption from 2017 to 2030. We used 
+multivariate regression models and estimated global antimicrobial sales in 2017 
+at 93,309 tonnes (95% CI: 64,443, 149,886). Globally, sales are expected to rise 
+by 11.5% in 2030 to 104,079 tonnes (95% CI: 69,062, 172,711). All continents are 
+expected to increase their antimicrobial use. Our results show lower global 
+antimicrobial sales in 2030 compared to previous estimates, owing to recent 
+reports of decrease in antimicrobial use, in particular in China, the world's 
+largest consumer. Countries exporting a large proportion of their production are 
+more likely to report their antimicrobial sales data than countries with small 
+export markets.
+
+DOI: 10.3390/antibiotics9120918
+PMCID: PMC7766021
+PMID: 33348801
+
+Conflict of interest statement: The authors declare no conflict of interest.

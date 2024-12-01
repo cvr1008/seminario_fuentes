@@ -9,10 +9,8 @@ output:
     highlight: tango
     css: "Input\\style.css"  
 
-    #date: "18/11/2024"
+    date: "02/12/2024"
 
-    date: "`r Sys.Date()`"
-    
     author: "Cristina Velazquez Romano y Deyanira Escudero Ramos"
 ---
 
@@ -23,19 +21,21 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Librerías empleadas
 
 ```{r}
-library(readr)
 library(dplyr)
 library(ggplot2)
-library(plotly)
-library(sf)
-library(pxR)
-library(RColorBrewer)
 library(httr)
-library(tidyverse)
 library(jsonlite)
+library(pxR)
+library(plotly)
+library(RColorBrewer)
+library(readr)
 library(readxl)
 library(rjson)
+library(rlang)
+library(sf)
 library(tidyr)
+library(tidyverse)
+
 ```
 
 Cargar environment
@@ -52,44 +52,51 @@ Determinar el consumo de antibióticos por comunidades autónomas, diferenciando
 tipo_ccaa_consumo_o_no <- read_delim("INPUT/DATA/datos_ccaa/tipo_ccaa_consumo_o_no.csv", 
                                      delim = ";", escape_double = FALSE, trim_ws = TRUE)
 
-antibioticos <- tipo_ccaa_consumo_o_no %>% 
-  filter(`Tipo de medicamento` == "Antibióticos")
 
-antibioticos <- tipo_ccaa_consumo_o_no[tipo_ccaa_consumo_o_no$`Tipo de medicamento` == "Antibióticos" & tipo_ccaa_consumo_o_no$`Sexo` == "Ambos sexos",]
+antibioticos <- tipo_ccaa_consumo_o_no %>% 
+  dplyr::filter(`Tipo de medicamento` == "Antibióticos",`Sexo` == "Ambos sexos")%>%
+  dplyr::filter(`Sí o no` == "Sí")
+
 
 # Esta tabla enseña que el 3,54% de la población española en la última encuesta reconoce 
 # haber consumido antibióticos en las últimas 2 semanas (En el año 2021)
 
 
-# Comunidad que más consume
+antibioticos$Total <- gsub(",", ".", antibioticos$Total)
 
-antibioticos_si <- antibioticos[antibioticos$`Sí o no` == "Sí",]
+# Limpia espacios y caracteres no numéricos (si es necesario)
+antibioticos$Total <- gsub(" ", "", antibioticos$Total)
 
-antibioticos_si$Total <- gsub(",", ".", antibioticos_si$Total)
-
-antibioticos_si$Total <- gsub(" ", "", antibioticos_si$Total)
-
-antibioticos_si$Total <- as.numeric(antibioticos_si$Total)
+# Convierte a numérico
+antibioticos$Total <- as.numeric(antibioticos$Total)
 
 # Revisa si hay NA después de la conversión
-sum(is.na(antibioticos_si$Total))  # Muestra el número de NAs
+sum(is.na(antibioticos$Total))  # Muestra el número de NAs
 
 
 
-consumo_comunidades <- antibioticos_si %>%
+consumo <- antibioticos %>%
   group_by(`Comunidades y Ciudades Autónomas`) %>%
   arrange(desc(Total))
 
+consumo
 
-c_c_final <- consumo_comunidades %>%
-  mutate(`Comunidades y Ciudades Autónomas` = ifelse(is.na(`Comunidades y Ciudades Autónomas`), "Total País", `Comunidades y Ciudades Autónomas`))
+c_c_final <- consumo %>%
+  mutate(`Comunidades y Ciudades Autónomas` = ifelse(is.na(`Comunidades y Ciudades Autónomas`), "Total País", `Comunidades y Ciudades Autónomas`))%>%
+  dplyr::rename(comunidades_autonomas = `Comunidades y Ciudades Autónomas`)%>%
+  select(comunidades_autonomas, Total)%>%
+  dplyr::rename(total_consumo_ccaa = Total)
+
+c_c_final
+
 
 ```
 
 Con estos datos podemos observar de manera gráfica la tendencia de consumo de antibióticos por comunidad autónoma en este país.
 
 ```{r}
-ggplot(c_c_final, aes(x = reorder(`Comunidades y Ciudades Autónomas`, -Total), y = Total)) +
+# Crear el gráfico de barras
+ggplot(c_c_final, aes(x = reorder(comunidades_autonomas, -total_consumo_ccaa), y = total_consumo_ccaa)) +
   geom_bar(stat = "identity", fill = "steelblue") +
   labs(x = "Comunidades Autónomas", y = "Total Consumo", title = "Consumo de antibióticos por Comunidad Autónoma") +
   theme_minimal() +
@@ -100,6 +107,7 @@ ggplot(c_c_final, aes(x = reorder(`Comunidades y Ciudades Autónomas`, -Total), 
 A continuación estudiaremos si esa cantidad de antibiótico se ha consumido de forma regulada, o por el contrario, no está recetado, favoreciendo así el autoconsumo de los mismos, lo cual se está considerando como una de las posibles causas de la resistencia a los antibióticos
 
 ```{r}
+
 # Leer el archivo .px
 archivo_px <- read.px("INPUT/DATA/datos_ccaa/tipo_ccaa_recetado_o_no.px")
 df_px <- as.data.frame(archivo_px)
@@ -110,41 +118,153 @@ df_px <- as.data.frame(archivo_px)
 antibiotic <- df_px[df_px[["Tipo.de.medicamento"]] == "Antibióticos" & df_px$`Sexo` == "Ambos sexos", ]
 
 
+
 # qué comunidad autónoma se automedica más
-antibioticos_sin_receta <- antibiotic[antibiotic$`Recetado` == "No recetado",]
-
-antibioticos_sin_receta <- antibioticos_sin_receta %>%
-  filter(value != 0)
-
-
-consumo_comunidades <- antibioticos_sin_receta %>%
+consumo_comunidades <- antibiotic%>%
+  dplyr::filter(`Recetado` == "No recetado") %>%
+  dplyr::filter(value != 0)%>%
   group_by(`Comunidad.autónoma`) %>%
-  arrange(desc(value))
+  arrange(desc(value)) %>%
+  select(Comunidad.autónoma, value)%>%
+  dplyr::rename(comunidades_autonomas = Comunidad.autónoma)%>%
+  dplyr::rename("Automedicación (%)" = value)%>%
+  dplyr::mutate(comunidades_autonomas = case_when(
+    comunidades_autonomas == "Total" ~ "Total País",
+    TRUE ~ comunidades_autonomas
+  ))
 
 
 ```
 
 ```{r}
-ggplot(consumo_comunidades, aes(x = "", y = value, fill = `Comunidad.autónoma`)) +
-  geom_bar(stat = "identity", width = 1) +
-  coord_polar(theta = "y") +
-  labs(title = "Consumo de Antibióticos por Comunidad Autónoma",
-       fill = "Comunidad Autónoma") +
-  theme_void()  # Elimina el fondo y los ejes
+unir_consumo_autoconsumo <- inner_join(c_c_final, consumo_comunidades, by = "comunidades_autonomas")%>%
+  mutate("Automedicación (%)" = total_consumo_ccaa * `Automedicación (%)`/100)%>%
+  dplyr::rename("Consumo total" = total_consumo_ccaa)%>%
+  pivot_longer(.,names_to = "Variable", values_to = "Valores", cols = c("Consumo total":"Automedicación (%)")) %>% 
+  mutate(Variable = factor(Variable, levels = c("Consumo total","Automedicación (%)")))
+
+
+ggplot(unir_consumo_autoconsumo, aes(fill = Variable, y = Valores, x = reorder(comunidades_autonomas, -Valores))) +
+  geom_bar(position = "stack", stat = "identity") +
+  scale_fill_manual(values = c("Consumo total" = "lightgreen", 
+                               "Automedicación (%)" = "tomato")) +
+  labs(x = "Comunidades Autónomas", y = "Porcentaje de Consumo", title = "Automedicación según el consumo de antibióticos por CCAA ")+
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+
 ```
+
+
+
+A continuación se presenta una función realizada para facilitar nuestro trabajo, ya que tenemos muchos datos de países y las fuentes no siempre están organizadas de forma que sea compatible la combinación de unos conjuntos de datos con otros. Muchas columnas ofrecen la misma información (los nombres de los países) pero expresada en formatos diferentes, algunas dan el nombre del país y otras el código internacional que las identifica.
+
+```{r}
+
+library(dplyr)
+library(rlang)
+
+cambio_nombre_codigo <- function(Tabla, columna) {
+  # Convertir el nombre de la columna en un símbolo
+  columna_sym <- ensym(columna)
+  
+  Tabla %>%
+    mutate(
+      !!columna_sym := case_when(
+        !!columna_sym == "Slovakia" ~ "SK",
+        !!columna_sym == "Belgium" ~ "BE",
+        !!columna_sym == "Cyprus" ~ "CY",
+        !!columna_sym == "Greece" ~ "EL",
+        !!columna_sym == "Romania" ~ "RO",
+        !!columna_sym == "Bulgaria" ~ "BG",
+        !!columna_sym == "France" ~ "FR",
+        !!columna_sym == "Malta" ~ "MT",
+        !!columna_sym == "Poland" ~ "PL",
+        !!columna_sym == "Spain" ~ "ES",
+        !!columna_sym == "Ireland" ~ "IE",
+        !!columna_sym == "Italy" ~ "IT",
+        !!columna_sym == "Luxembourg" ~ "LU",
+        !!columna_sym == "Portugal" ~ "PT",
+        !!columna_sym == "Czech Republic" ~ "CZ",
+        !!columna_sym == "Czechia" ~ "CZ",
+        !!columna_sym == "Finland" ~ "FI",
+        !!columna_sym == "Austria" ~ "AT",
+        !!columna_sym == "Germany" ~ "DE",
+        !!columna_sym == "Denmark" ~ "DK",
+        !!columna_sym == "Estonia" ~ "EE",
+        !!columna_sym == "Hungary" ~ "HU",
+        !!columna_sym == "Croatia" ~ "HR",
+        !!columna_sym == "Lithuania" ~ "LT",
+        !!columna_sym == "Latvia" ~ "LV",
+        !!columna_sym == "Netherlands" ~ "NL",
+        !!columna_sym == "Sweden" ~ "SE",
+        !!columna_sym == "Slovenia" ~ "SI",
+        TRUE ~ as.character(!!columna_sym) # Mantener valores originales si no coinciden
+      )
+    )
+}
+
+
+
+cambio_codigo_nombre <- function(Tabla, columna) {
+  # Convertir el nombre de la columna en un símbolo
+  columna_sym <- ensym(columna)
+  
+  Tabla %>%
+    mutate(
+      !!columna_sym := case_when(
+        !!columna_sym == "SK" ~ "Slovakia",
+        !!columna_sym == "BE" ~ "Belgium",
+        !!columna_sym == "CY" ~ "Cyprus",
+        !!columna_sym == "EL" ~ "Greece",
+        !!columna_sym == "RO" ~ "Romania",
+        !!columna_sym == "BG" ~ "Bulgaria",
+        !!columna_sym == "FR" ~ "France",
+        !!columna_sym == "MT" ~ "Malta",
+        !!columna_sym == "PL" ~ "Poland",
+        !!columna_sym == "ES" ~ "Spain",
+        !!columna_sym == "IE" ~ "Ireland",
+        !!columna_sym == "IT" ~ "Italy",
+        !!columna_sym == "LU" ~ "Luxembourg",
+        !!columna_sym == "PT" ~ "Portugal",
+        !!columna_sym == "CZ" ~ "Czech Republic",
+        !!columna_sym == "FI" ~ "Finland",
+        !!columna_sym == "AT" ~ "Austria",
+        !!columna_sym == "DE" ~ "Germany",
+        !!columna_sym == "DK" ~ "Denmark",
+        !!columna_sym == "EE" ~ "Estonia",
+        !!columna_sym == "HU" ~ "Hungary",
+        !!columna_sym == "HR" ~ "Croatia",
+        !!columna_sym == "LT" ~ "Lithuania",
+        !!columna_sym == "LV" ~ "Latvia",
+        !!columna_sym == "NL" ~ "Netherlands",
+        !!columna_sym == "SE" ~ "Sweden",
+        !!columna_sym == "SI" ~ "Slovenia",
+        TRUE ~ as.character(!!columna_sym) # Mantener valores originales si no coinciden
+      )
+    )
+}
+
+
+
+```
+
+
 
 ## Pregunta 2: Relación entre PIB y resistencia a antibióticos en la UE
 
 Analizar si existe una relación significativa entre el Producto Interno Bruto de los países de la Unión Europea y los niveles de resistencia a antibióticos.
 
 ```{r}
-pibPP <- read_table("INPUT/DATA/datos_pib.tsv")
+pib <- read_table("INPUT/DATA/datos_pib.tsv")
+
 
 # Cambio de nombre columna
-colnames(pibPP)[1] <- "pais"
+colnames(pib)[1] <- "pais"
 
 # Nos quedamos con las últimas letras
-pibPP$pais <- substr(pibPP$pais, nchar(pibPP$pais) - 1, nchar(pibPP$pais))
+pib$pais <- substr(pib$pais, nchar(pib$pais) - 1, nchar(pib$pais))
+
 
 lista_pais <- list("BE", "BG", "CZ", "DK", "DE", "EE", "IE", "EL", "ES", "FR", "HR", "IT", "CY", "LV", "LT", "LU", "HU", "MT", "NL",
                "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE")
@@ -152,35 +272,13 @@ lista_pais <- list("BE", "BG", "CZ", "DK", "DE", "EE", "IE", "EL", "ES", "FR", "
 # nos quedamos solo con los países de la UE
 
 
-pib <- pibPP %>% filter(pais %in% unlist(lista_pais))
+  # Filtrar los datos, quitar columnas nulas y seleccionar las columnas necesarias en una tubería
+pib_2022_desc <- pib %>%
+  dplyr::filter(pais %in% unlist(lista_pais)) %>%  # Filtrar por los países en 'lista_pais'
+  dplyr::select(where(~ all(!is.na(.)))) %>% # Eliminar columnas con todos los valores nulos
+  dplyr::select(pais, `2022`) %>%                 # Seleccionar las columnas 'pais' y '2022'
+  arrange(desc(`2022`))                    # Ordenar por el PIB del 2022 en orden descendente
 
-
-# quitar la columna nula
-
-pib <- pib[, colSums(is.na(pib)) < nrow(pib)]
-
-pib_2022 <- pib %>% select(pais, `2022`)
-
-
-# ggplot del pib en el 2022 (primero lo ponemos en descendente)
-
-pib_2022_desc <- pib_2022 %>% arrange(desc(`2022`))
-
-
-# sustituir las etiquetas de los países
-
-pib_2022_desc <- pib_2022_desc %>%
-  mutate(pais = case_when(
-    pais == "SK" ~ "Eslovaquia",
-    pais == "SI" ~ "Slovenia",
-    pais == "EE" ~ "Estonia",
-    pais == "MT" ~ "Malta",
-    pais == "LV" ~ "Latvia",
-    pais == "HR" ~ "Croatia",
-    pais == "EL" ~ "Greece",
-    pais == "BG" ~ "Bulgaria",
-    TRUE ~ pais # Mantiene los nombres que no están en la lista
-  ))
 
 
 ```
@@ -289,7 +387,6 @@ interactive_scatter_plot <- ggplotly(scatter_plot, tooltip = "text") %>%
 interactive_scatter_plot
 ```
 
-
 ## Pregunta 3: Consumo y resistencia en sectores específicos en la UE.
 
 Explorar cómo el consumo de antibióticos en sectores como el personal (comunitario), hospitalario y ganadero se relaciona con los niveles de resistencia a antibióticos en diferentes países de la UE.
@@ -297,51 +394,31 @@ Explorar cómo el consumo de antibióticos en sectores como el personal (comunit
 Uno de los factores a estudiar era el consumo/administración de este tipo de los medicamentos por parte de los hospitales y la ciudadanía de manera individual, y eso se ve reflejado en los siguientes datos extraídos de la encuesta europea anual.
 
 ```{r}
-library(tidyverse)
-library(rjson)
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-
 
 DDD_Europa_Json <- fromJSON(file = "INPUT/DATA/DDD_1000_habitantes_paises.JSON")
+
 
 DDD_Europa_df <- do.call(rbind, lapply(DDD_Europa_Json, function(x) {
   data.frame(Country = x$Country, 
              DDD_per_1000_inhabitants_per_day = as.numeric(x$`DDD per 1000 inhabitants per day`))
 }))
 
+# lapply: Aplica una función a cada elemento de una lista y devuelve una lista con los resultados
+# function(x): Define una función anónima que será aplicada a cada elemento x de la lista DDD_Europa_Json.
+# x$Country: Extrae el campo Country del elemento x.
+# x$'DDD per 1000 inhabitants per day': Extrae el campo DDD per 1000 inhabitants per day de x y lo convierte en numérico con as.numeric.
+# data.frame(...): Crea un dataframe con dos columnas
+
+
+# Usar la función 'cambio_nombre_codigo' para convertir nombres de países en códigos
+DDD_Europa_df <- cambio_nombre_codigo(DDD_Europa_df, "Country")
+
+# Añadir columna para calcular DDD por cada 100 habitantes y eliminar la columna original
 DDD_Europa_df <- DDD_Europa_df %>%
-  mutate(Country = case_when(
-    Country == "Slovakia" ~ "SK",
-    Country == "Belgium" ~ "BE",
-    Country == "Cyprus" ~ "CY",
-    Country == "Greece" ~ "EL",
-    Country == "Romania" ~ "RO",
-    Country == "Bulgaria" ~ "BG",
-    Country == "France" ~ "FR",
-    Country == "Malta" ~ "MT",
-    Country == "Poland" ~ "PL",
-    Country == "Spain" ~ "ES",
-    Country == "Ireland" ~ "IE",
-    Country == "Italy" ~ "IT",
-    Country == "Luxembourg" ~ "LU",
-    Country == "Portugal" ~ "PT",
-    Country == "Czechia" ~ "CZ",
-    Country == "Finland" ~ "FI",
-    Country == "Austria" ~ "AT",
-    Country == "Norway" ~ "DE",
-    Country == "Denmark" ~ "DK",
-    Country == "Estonia" ~ "EE",
-    Country == "Hungary" ~ "HU",
-    Country == "Croatia" ~ "HR",
-    Country == "Lithuania" ~ "LT",
-    Country == "Latvia" ~ "LV",
-    Country == "Netherlands" ~ "NL",
-    Country == "Iceland" ~ "SE",
-    Country == "Slovenia" ~ "SI",
-  ))%>%
-  mutate(DDD_per_1000_inhabitants_per_day = DDD_per_1000_inhabitants_per_day/10)
+  dplyr::mutate(DDD_per_100_inhabitants_per_day = DDD_per_1000_inhabitants_per_day / 10) %>%
+  dplyr::filter(Country %in% unlist(lista_pais)) %>%
+  select(-DDD_per_1000_inhabitants_per_day)
+
 
 
 ```
@@ -354,12 +431,12 @@ Si se considera que cada dosis se consume por una persona diferente, el resultad
 **Gráfico de barras de la Dosis de antibióticos media Diaria Definida de los países ordenados de mayor a menor consumo**
 
 ```{r}
-grafico_DDD <- ggplot(DDD_Europa_df, aes(x = reorder(Country, -DDD_per_1000_inhabitants_per_day), 
-                          y = DDD_per_1000_inhabitants_per_day)) +
+grafico_DDD <- ggplot(DDD_Europa_df, aes(x = reorder(Country, -DDD_per_100_inhabitants_per_day), 
+                          y = DDD_per_100_inhabitants_per_day)) +
   geom_bar(stat = "identity", fill = "turquoise") +
-  labs(title = "DDD por 1000 habitantes por día en Europa", 
+  labs(title = "DDD por 100 habitantes por día en Europa", 
        x = "País", 
-       y = "DDD por 1000 habitantes por día") +
+       y = "DDD por 100 habitantes por día") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 grafico_DDD
 
@@ -368,12 +445,9 @@ grafico_DDD
 
 Se puede analizar de forma individual, para determinar qué país consume más antibióticos de forma registrada por el sistema de salud, o por el contrario, se puede comparar con otros factores que se están estudiando como posibles causantes de la resistencia a los antibióticos para encontrar relaciones con el porcentaje de la población de los diferentes países de la UE que han dado positivo en resistencia a los antimicrobianos.
 
-
 A continuación se pretende estudiar el consumo de antibióticos por parte de los animales de granja suministrados por los profesionales del sector, que en ocasiones resultan en sobremedicación. Este problema se suele dar como resultado de un tratamiento (no necesario) cuyo objetivo es tener animales sanos y sin ninguna enfermedad para poder venderlos y que el producto cárnico no se desperdicie sin perder dinero.
 
-
 Para abrir los datos relativos a la ganadería, se presenta una función que permite abrir una carpeta con numerosos archivos de extensión .json con la misma estructura y leerlos.
-
 
 ```{r, eval=FALSE}
 
@@ -468,7 +542,6 @@ leer_archivo("carpeta_destino")
 
 ```
 
-
 **Juntar los dataframes que tenemos en el enviroment** 1. Listar los nombres de todos los dataframes que terminan en ".xlsx" (ajusta si es necesario) 2. Convertir los nombres a una lista de dataframes usando mget() 3. Unir todos los dataframes en uno solo usando bind_rows
 
 ```{r, eval=FALSE}
@@ -486,11 +559,9 @@ df_combinado <- bind_rows(lista_dataframes, .id = "origen")
 
 **Carga del global enviroment** El entorno en el que guardan todos los dataframes de cada pais resultantes de la función leer_archivo, y el dataframe df_combinado del codigo anterior se ha cargado anteriormente ya que incluye otros datos que ya se han empleado.
 
-
 **Modificación y obtencion del dataframe con los datos** seleccionamos las columnas que vamos a necesitar y filtramos en la columna de las bacterias solo las patogénicas.
 
 Cambiamos los nombres de las columnas y lo asignamos al dataframe
-
 
 ```{r, eval=FALSE}
 
@@ -504,7 +575,6 @@ nuevos_nombres <- c("NombrePais", "Codigo", "zoonosis_name","OrigenMuestra", "To
 
 colnames(paises_UE_df) <- nuevos_nombres
 ```
-
 
 **Mapa Interactivo de positivos en ganaderia por paises de la UE**
 
@@ -567,4 +637,3 @@ mapa_interactivo <- ggplotly(mapa)
 mapa_interactivo
 
 ```
-

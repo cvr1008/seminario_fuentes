@@ -7,7 +7,7 @@ library(patchwork)
 
 
 graf_izq <- ggplot(positivos_PIB, aes(x = PIB, y = Valores)) +
-  geom_point_interactive(aes(color = Variable, tooltip = RegionCode, data_id = RegionCode), size = 0.5) +
+  geom_point_interactive(aes(color = Variable, tooltip = RegionCode, data_id = RegionCode), size = 1.5) +
   geom_smooth(aes(color = Variable), method = "lm", se = TRUE) +
   labs(title = "Relación entre PIB y Resistencia", x = "PIB", y = "Porcentaje de Resistencia") +
   theme(legend.position = "none", plot.margin = margin(10, 10, 10, 10))

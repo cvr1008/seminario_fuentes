@@ -23,3 +23,4 @@ cleanAbs <- cleanAbstracts(abstracts)
 
 # Generar la nube de palabras
 plotWordCloud(cleanAbs, min.freq = 2, scale = c(2, 0.3))
+

@@ -23,8 +23,9 @@ paises_consumo_ab_sectores<-left_join(x = DDD_Europa_df, y = new, by = "Country"
   dplyr::select(-DDD_per_100_inhabitants_per_day)%>%
   left_join(x = ., y = media_region, by = c("Country" = "RegionCode"))%>%
   group_by(Country, mean_value_region)%>%
-  dplyr::rename("100 habitantes (mg)" = DDD_per_100_inhabitants_per_year, "1000 PCU (mg)" = Antibiotic_use_in_livestock_100_PCU, "Valor" = mean_value_region)%>%
-  pivot_longer(., names_to = "Consumo", values_to = "Dosis", cols= c(2:3))
+  dplyr::rename("100 habitantes (mg)" = DDD_per_100_inhabitants_per_year, 
+                "1000 PCU (mg)" = Antibiotic_use_in_livestock_100_PCU, "Valor" = mean_value_region)%>%
+  pivot_longer(names_to = "Consumo", values_to = "Dosis", cols= c('1000 PCU (mg)':"100 habitantes (mg)"))
 
 
 ggplot(paises_consumo_ab_sectores,aes(x=Dosis, y=Valor))+

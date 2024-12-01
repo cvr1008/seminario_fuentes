@@ -50,6 +50,6 @@ ggplot(c_c_final, aes(x = reorder(comunidades_autonomas, -total_consumo_ccaa), y
   geom_bar(stat = "identity", fill = "steelblue") +
   labs(x = "Comunidades Autónomas", y = "Total Consumo", title = "Consumo de antibióticos por Comunidad Autónoma") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+  theme(axis.text.x = element_text(angle = 70, hjust = 1)) 
 
 

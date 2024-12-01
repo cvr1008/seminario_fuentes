@@ -7,27 +7,37 @@ output:
     toc_float: true
     theme: united
     highlight: tango
-    css: "Input\\style.css"  
+      
 
-    date: "02/12/2024"
+date: "`r format(Sys.Date(), '%d de %B de %Y')`"
 
-    author: "Cristina Velazquez Romano y Deyanira Escudero Ramos"
+author: "Cristina Velazquez Romano y Deyanira Escudero Ramos"
 ---
 
+```{=html}
+<style>
+  body {
+    background-color: #bde0fe; 
+  }
+</style>
+```
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Librerías empleadas
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(dplyr)
+library(ggiraph)
 library(ggplot2)
 library(httr)
 library(jsonlite)
 library(patchwork)
 library(pxR)
 library(plotly)
+library(PubMedWordcloud)
+library(purrr) 
 library(RColorBrewer)
 library(readr)
 library(readxl)
@@ -38,7 +48,43 @@ library(tidyr)
 library(tidyverse)
 library(viridis)
 
+```
 
+## Introducción
+
+::: info-box
+En los últimos años, la resistencia a los antimicrobianos (AMR) ha emergido como una de las principales amenazas para la salud pública a nivel global. Este fenómeno no solo pone en riesgo la efectividad de los tratamientos médicos, sino que también representa un desafío significativo para los sistemas de salud, la economía y la seguridad alimentaria. En este contexto, la AMR no se limita al ámbito médico, sino que involucra factores interrelacionados como el consumo excesivo de antibióticos, la automedicación y el uso intensivo de antimicrobianos en la ganadería, especialmente en animales destinados a la producción de carne.
+
+En Europa, y particularmente en la Unión Europea (UE), las tasas de resistencia a los antibióticos varían considerablemente entre países y regiones, lo que plantea preguntas fundamentales: ¿cómo influyen las tendencias de salud pública en esta variabilidad? y ¿qué papel desempeña el desarrollo económico en la lucha contra la resistencia antimicrobiana?.
+
+Este trabajo se centra en explorar el impacto de factores clave en la incidencia de AMR, con especial atención en tres áreas principales:
+
+1.  Consumo de antibióticos en España: Identificar patrones de uso en las comunidades autónomas, diferenciando entre antibióticos recetados y no recetados, con el objetivo de abordar el problema de la automedicación.
+
+2.  Relación entre el PIB y la resistencia a los antibióticos en la UE: Analizar si el nivel económico de un país, medido a través de su Producto Interno Bruto, está correlacionado con la incidencia de resistencia antimicrobiana, aportando una perspectiva socioeconómica al problema.
+
+3.  Consumo y resistencia en sectores específicos: Examinar cómo el uso de antibióticos en humanos, hospitales y ganadería afecta los niveles de resistencia en los países de la UE, destacando la importancia de políticas sectoriales efectivas.
+:::
+
+```{r message=FALSE, warning=FALSE}
+# Vector con las rutas a los archivos de texto
+rutas <- c(
+  "INPUT/ARTICULOS/abstract-33348801.txt",
+  "INPUT/ARTICULOS/abstract-36963007.txt",
+  "INPUT/ARTICULOS/abstract-37353202.txt",
+  "INPUT/ARTICULOS/abstract-38217891.txt"
+)
+
+
+
+# Leer los contenidos de los archivos
+abstracts <- map_chr(rutas, read_file)
+
+# Limpiar los textos
+cleanAbs <- cleanAbstracts(abstracts)
+
+# Generar la nube de palabras
+plotWordCloud(cleanAbs, min.freq = 2, scale = c(2, 0.3))
 ```
 
 Cargar environment
@@ -47,11 +93,11 @@ Cargar environment
 load("OUTPUT/enviroment.RData")
 ```
 
-## Pregunta 1: Consumo de antibióticos en España
+## Pregunta 1: Consumo de antibióticos en España {style="1520A6"}
 
 Determinar el consumo de antibióticos por comunidades autónomas, diferenciando entre recetado y no recetado, para identificar tendencias de uso.
 
-```{r}
+```{r  message=FALSE, warning=FALSE}
 tipo_ccaa_consumo_o_no <- read_delim("INPUT/DATA/datos_ccaa/tipo_ccaa_consumo_o_no.csv", 
                                      delim = ";", escape_double = FALSE, trim_ws = TRUE)
 
@@ -74,7 +120,7 @@ antibioticos$Total <- gsub(" ", "", antibioticos$Total)
 antibioticos$Total <- as.numeric(antibioticos$Total)
 
 # Revisa si hay NA después de la conversión
-sum(is.na(antibioticos$Total))  # Muestra el número de NAs
+#sum(is.na(antibioticos$Total))  # Muestra el número de NAs
 
 
 
@@ -95,19 +141,23 @@ c_c_final <- consumo %>%
 
 Con estos datos podemos observar de manera gráfica la tendencia de consumo de antibióticos por comunidad autónoma en este país.
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 # Crear el gráfico de barras
 ggplot(c_c_final, aes(x = reorder(comunidades_autonomas, -total_consumo_ccaa), y = total_consumo_ccaa)) +
   geom_bar(stat = "identity", fill = "steelblue") +
   labs(x = "Comunidades Autónomas", y = "Total Consumo", title = "Consumo de antibióticos por Comunidad Autónoma") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+  theme(axis.text.x = element_text(angle = 70, hjust = 1)) 
 
 ```
 
+::: info-box
+Se observa una gran variabilidad en el consumo de antibióticos entre las diferentes comunidades autónomas. Algunas comunidades, como "La Rioja" y "Castilla y León", tienen un consumo significativamente mayor en comparación con otras. Esto puede deberse a que estas comunidades tienen una población mayor en comparación con otras regiones, lo que puede llevar a un mayor consumo por necesidades médicas.
+:::
+
 A continuación estudiaremos si esa cantidad de antibiótico se ha consumido de forma regulada, o por el contrario, no está recetado, favoreciendo así el autoconsumo de los mismos, lo cual se está considerando como una de las posibles causas de la resistencia a los antibióticos
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 
 # Leer el archivo .px
 archivo_px <- read.px("INPUT/DATA/datos_ccaa/tipo_ccaa_recetado_o_no.px")
@@ -137,7 +187,7 @@ consumo_comunidades <- antibiotic%>%
 
 ```
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 unir_consumo_autoconsumo <- inner_join(c_c_final, consumo_comunidades, by = "comunidades_autonomas")%>%
   mutate("Automedicación (%)" = total_consumo_ccaa * `Automedicación (%)`/100)%>%
   dplyr::rename("Consumo total" = total_consumo_ccaa)%>%
@@ -151,16 +201,18 @@ ggplot(unir_consumo_autoconsumo, aes(fill = Variable, y = Valores, x = reorder(c
                                "Automedicación (%)" = "tomato")) +
   labs(x = "Comunidades Autónomas", y = "Porcentaje de Consumo", title = "Automedicación según el consumo de antibióticos por CCAA ")+
   theme_minimal()+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 70, hjust = 1))
   
 
 ```
 
+::: {.info-box style="gray"}
+Podría parecer que la tendencia de consumo total se refleja en la automedicación, aun así, se ha demostrado que no siempre se da este caso. Aunque otras comunidades tienen un mayor consumo total (como La Rioja o Castilla y León), el País Vasco es la que presenta el porcentaje más alto de automedicación dentro de su población. Esto sugiere que en esta comunidad hay un acceso más frecuente o desregulado a antibióticos no recetados, o bien un mayor hábito de consumirlos sin prescripción médica.
+:::
 
+**Función para cambiar nombre de paises** A continuación se presenta una función realizada para facilitar nuestro trabajo, ya que tenemos muchos datos de países y las fuentes no siempre están organizadas de forma que sea compatible la combinación de unos conjuntos de datos con otros. Muchas columnas ofrecen la misma información (los nombres de los países) pero expresada en formatos diferentes, algunas dan el nombre del país y otras el código internacional que las identifica.
 
-A continuación se presenta una función realizada para facilitar nuestro trabajo, ya que tenemos muchos datos de países y las fuentes no siempre están organizadas de forma que sea compatible la combinación de unos conjuntos de datos con otros. Muchas columnas ofrecen la misma información (los nombres de los países) pero expresada en formatos diferentes, algunas dan el nombre del país y otras el código internacional que las identifica.
-
-```{r}
+```{r message=FALSE,warning=FALSE}
 
 library(dplyr)
 library(rlang)
@@ -250,11 +302,9 @@ cambio_codigo_nombre <- function(Tabla, columna) {
 
 ```
 
-
 **Función para abrir los archivos de las bacterias resistentes en la ganadería**
 
 Para abrir los datos relativos a la AMR en la ganadería, se presenta una función que permite abrir una carpeta con numerosos archivos de extensión .json con la misma estructura y leerlos.
-
 
 ```{r, eval=FALSE}
 
@@ -343,8 +393,7 @@ leer_archivo("carpeta_destino")
 
 ```
 
-**Juntar los dataframes que tenemos en el enviroment** 
-1. Listar los nombres de todos los dataframes que terminan en ".xlsx" (ajusta si es necesario) 2. Convertir los nombres a una lista de dataframes usando mget() 3. Unir todos los dataframes en uno solo usando bind_rows
+**Juntar los dataframes que tenemos en el enviroment** 1. Listar los nombres de todos los dataframes que terminan en ".xlsx" (ajusta si es necesario) 2. Convertir los nombres a una lista de dataframes usando mget() 3. Unir todos los dataframes en uno solo usando bind_rows
 
 ```{r, eval=FALSE}
 
@@ -360,11 +409,9 @@ df_combinado <- bind_rows(lista_dataframes, .id = "origen")
 
 ```
 
-
 **Carga del global enviroment** El entorno en el que guardan todos los dataframes de cada pais resultantes de la función leer_archivo, y el dataframe df_combinado del codigo anterior se ha cargado anteriormente ya que incluye otros datos que ya se han empleado.
 
-**Modificación y obtencion del dataframe con los datos** 
-seleccionamos las columnas que vamos a necesitar y filtramos en la columna de las bacterias solo las patogénicas.
+**Modificación y obtencion del dataframe con los datos** seleccionamos las columnas que vamos a necesitar y filtramos en la columna de las bacterias solo las patogénicas.
 
 Cambiamos los nombres de las columnas y lo asignamos al dataframe
 
@@ -382,15 +429,13 @@ colnames(paises_UE_df) <- nuevos_nombres
 
 ```
 
-
-
-## Pregunta 2: Consumo y resistencia en sectores específicos en la UE.
+## Pregunta 2: Consumo y resistencia en sectores específicos en la UE. {style="1520A6"}
 
 Explorar cómo el consumo de antibióticos en sectores como el personal (comunitario), hospitalario y ganadero se relaciona con los niveles de resistencia a antibióticos en diferentes países de la UE.
 
 Uno de los factores a estudiar era el consumo/administración de este tipo de los medicamentos por parte de los hospitales y la ciudadanía de manera individual, y eso se ve reflejado en los siguientes datos extraídos de la encuesta europea anual.
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 
 
 lista_pais <- list("BE", "BG", "CZ", "DK", "DE", "EE", "IE", "EL", "ES", "FR", "HR", "IT", "CY", "LV", "LT", "LU", "HU", "MT", "NL",
@@ -418,10 +463,9 @@ Al tratarse del número de dosis estándar consumidas diariamente por cada 1000 
 
 Si se considera que cada dosis se consume por una persona diferente, el resultado de la segunda columna significa que el x% de la población de cada país consume antibiótico de forma diaria en el sector hospitalario y comunitario.
 
-
 **Gráfico de barras de la Dosis de antibióticos media Diaria Definida de los países ordenados de mayor a menor consumo**
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 grafico_DDD <- ggplot(DDD_Europa_df, aes(x = reorder(Country, -DDD_per_100_inhabitants_per_day), 
                           y = DDD_per_100_inhabitants_per_day)) +
   geom_bar(stat = "identity", fill = "turquoise") +
@@ -434,16 +478,17 @@ grafico_DDD
 
 ```
 
+::: info-box
 Se puede analizar de forma individual, para determinar qué país consume más antibióticos de forma registrada por el sistema de salud, o por el contrario, se puede comparar con otros factores que se están estudiando como posibles causantes de la resistencia a los antibióticos para encontrar relaciones con el porcentaje de la población de los diferentes países de la UE que han dado positivo en resistencia a los antimicrobianos.
+:::
 
+**Modelar datos de consumo en ganadería, sector hospitalario y comunitario**
 
-A continuación se pretende estudiar el consumo de antibióticos por parte de los animales de granja suministrados por los profesionales del sector, que en ocasiones resultan en sobremedicación. 
-Este problema se suele dar como resultado de un tratamiento (no necesario) cuyo objetivo es tener animales sanos y sin ninguna enfermedad para poder venderlos y que el producto cárnico no se desperdicie sin perder dinero.
-
+A continuación se pretende estudiar el consumo de antibióticos por parte de los animales de granja suministrados por los profesionales del sector, que en ocasiones resultan en sobremedicación. Este problema se suele dar como resultado de un tratamiento (no necesario) cuyo objetivo es tener animales sanos y sin ninguna enfermedad para poder venderlos y que el producto cárnico no se desperdicie sin perder dinero.
 
 La apertura y muestra de los datos sobre la tendencia de consumo de antibióticos en la ganadería se realiza de la siguiente manera:
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 
 ant_europa_g <- read_excel("INPUT/DATA/consumo_ganaderia_2022.xlsx", skip = 3)
 
@@ -464,10 +509,9 @@ new <- a_e_g %>%
   select(-Antibiotic_use_in_livestock_1000_PCU)  # Eliminar la columna original
 ```
 
-La incidencia de la AMR se registra mediante una encuesta europea en la cual se escoge un grupo de individuos al azar de cada país y se analiza la presencia de bacterias resistentes a determinados antibióticos. Para simplificar la representación y obtener conclusiones más claras, se hace la media entre los registros positivos de todos los antibióticos referentes a la misma bacteria para obtener la incidencia media de la misma.
-Además, también se calcula media entre todas las bacterias para obtener un valor orientativo acerca del porcentaje de los encuestados de cada país que presenta resistencia ante los antibióticos.
+La incidencia de la AMR se registra mediante una encuesta europea en la cual se escoge un grupo de individuos al azar de cada país y se analiza la presencia de bacterias resistentes a determinados antibióticos. Para simplificar la representación y obtener conclusiones más claras, se hace la media entre los registros positivos de todos los antibióticos referentes a la misma bacteria para obtener la incidencia media de la misma. Además, también se calcula media entre todas las bacterias para obtener un valor orientativo acerca del porcentaje de los encuestados de cada país que presenta resistencia ante los antibióticos.
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 
 # Cargar el archivo CSV de incidencia de enfermedades
 Incidencia_enfermedades <-  read_csv("INPUT/DATA/ECDC_encuesta_AMR_incidencia_enfermedades.csv")
@@ -512,12 +556,9 @@ bacterias_personas<-otra %>%
 
 ```
 
-
-
-
 **Gráfico sobre la relación entre el consumo de AB y la AMR**
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 paises_consumo_ab_sectores<-left_join(x = DDD_Europa_df, y = new, by = "Country")%>%
   mutate(DDD_per_100_inhabitants_per_year = DDD_per_100_inhabitants_per_day*365/100*100)%>%
   mutate(Antibiotic_use_in_livestock_1000_PCU = Antibiotic_use_in_livestock_100_PCU*10)%>%
@@ -538,11 +579,15 @@ ggplot(paises_consumo_ab_sectores,aes(x=Dosis, y=Valor))+
 
 ```
 
+::: info-box
+Este gráfico muestra la relación entre el consumo de antibióticos y la incidencia de resistencia antimicrobiana, desglosando el consumo en dos categorías: 1. Consumo en humanos (dosis diarias definidas por cada 100 habitantes, en rojo): Existe una correlación positiva entre el consumo de antibióticos en humanos y la incidencia de resistencia antimicrobiana, lo cual sugiere que a mayor consumo, mayor incidencia, lo cual respalda el impacto del uso humano en la resistencia. 2. Consumo en ganado (mg por 100 PCU, en azul): Se observa una tendencia ligeramente negativa, aunque con un intervalo de confianza amplio, indicando que la relación entre el consumo en ganado y la resistencia no es tan clara o podría estar influida por otros factores. Es posible que las prácticas específicas en la ganadería o diferencias entre países estén modulando esta relación.
 
+Las áreas sombreadas representan los intervalos de confianza, destacando la incertidumbre en las estimaciones. La amplia sombra perteneciente a la línea de representación animal sugiere una variabilidad significativa en la relación entre el consumo en ganado y la resistencia. Factores externos (como políticas de regulación, patrones de uso antibiótico, la transmisión cruzada de bacterias resistentes, importación/exportación de carne) también podrían influir en estos resultados.
+:::
 
 **Gráfico acerca de la relación entre la resistencia antimicrobiana de animales de ganadería y personas**
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 positivos_animales <- bacterias_personas%>%
   group_by(RegionCode)%>%
   dplyr::summarise(media = mean(mean_value, na.rm = TRUE))
@@ -557,7 +602,7 @@ positivos_resist_sectores<-left_join(x = media_region, y = positivos_animales, b
   mutate(Variable = factor(Variable, levels = c("Personas","Animales"))) %>% 
   filter(Valores!=0.00)
 
-#GRAFICA DE BARRAS DE ENTRE MEDIA DE POSITIVOS EN ANIMALES Y PERSONAS
+#GRAFICA DE BARRAS DE LA MEDIA DE POSITIVOS EN AMR EN ANIMALES Y PERSONAS
 ggplot(data = positivos_resist_sectores, aes(y = Valores, x = RegionCode)) +
   geom_bar(aes(fill = Variable), position = "dodge", stat = "identity")+
   labs(title='Media por paises de positivos en animales y en personas',
@@ -570,7 +615,11 @@ ggplot(data = positivos_resist_sectores, aes(y = Valores, x = RegionCode)) +
 
 ```
 
-```{r}
+::: info-box
+Parece existir una correlación heterogénea entre los resultados positivos en animales y humanos por país. Aun así, a grandes rasgos, se muestra que aquellos países con índices más bajos en resistencia en humanos, también los tiene bajos en incidencia animal. Por motivos mencionados previamente hablando del consumo de antimicrobianos, la variabilidad de la relación entre la resistencia en humanos y animales no es directa en todos los casos.
+:::
+
+```{r message=FALSE,warning=FALSE}
 
 # Calcular la media basada en la proporción de positivos
 media_ganaderia <- paises_UE_df %>%
@@ -581,8 +630,8 @@ media_ganaderia <- paises_UE_df %>%
   tidyr::drop_na()
 
 
-table(factor(otra$grupo))
-table(factor(media_ganaderia$zoonosis_name))
+#table(factor(otra$grupo))
+#table(factor(media_ganaderia$zoonosis_name))
 #Observamos que las unicas bacterias comunes son Enterococcus y Escherichia
 
 
@@ -599,10 +648,9 @@ media_ganaderia_nueva<-media_ganaderia %>%
 
 ```
 
-
 **Boxplot de la distribución de las bacteras resistentes en ganadería y ciudadanos**
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 #BOXPLOT DE BACTERIAS QUE AFECTAN A ANIMALES Y BACTERIAS
 
 boxplot_bac_ganaderia<-ggplot(media_ganaderia,aes(x=zoonosis_name, y=media, fill=zoonosis_name)) + 
@@ -625,15 +673,15 @@ boxplot_bac_ganaderia + boxplot_baterias_personas
 
 ```
 
+::: info-box
+Los boxplots presentados permiten analizar la distribución y variabilidad de la incidencia de bacterias resistentes tanto en ganadería como en personas. Análisis del boxplot de ganadería: Campylobacter y Enterococcus tienen las incidencias medias más altas. Esto puede deberse a que estas bacterias son comunes en los sistemas de producción ganadera intensiva. Hay algunos puntos fuera de los rangos normales (outliers), indicando que en ciertas regiones la incidencia de estas bacterias es anormalmente alta. Esto puede deberse al momento en el que se encuentra la UE, ya que en el periodo de la toma de datos, los países estaban atravesando el momento de implantación de nuevas políticas y planes nacionales.
 
+Análisis del boxplot de personas: Acinetobacter y Enterococcus tienen la mayor incidencia en humanos. Estas bacterias están asociadas a infecciones nosocomiales/hospitalarias. De hecho, de manera aislada, la acinetobacter se relaciona con la resistencia a los antibióticos hospitalarios más comunes, como las Fluoroquinolonas (para la: sepsis, infecciones urinarias, diarreas), antibióticos carbapenémicos (para la: neumonía, gangrena) y Aminoglucósidos (ejemplos de ab: kanamicina, neomicina)
+:::
 
+**Reflejo de la presencia de las bacterias resistentes comunes en animales y en humanos**
 
-
-
-
-**Reflejo de la presencia de las bacterias resistentes en animales en la presencia de las mismas en humanos**
-
-```{r}
+```{r message=FALSE,warning=FALSE}
 tabla_unida <- full_join(x=media_ganaderia_nueva, y= bacterias_personas, 
   by = c("Codigo" = "RegionCode", "zoonosis_name" = "grupo")) %>% 
   dplyr::rename(Ganaderia=media, Poblacion=mean_value) %>% 
@@ -650,79 +698,17 @@ ggplot(data = tabla_unida, aes(x = Valores, y = Codigo)) +
   labs(x = "Porcentaje de incidencia")
 ```
 
+::: info-box
+Este gráfico compara los porcentajes de incidencia de Escherichia y Enterococcus en animales de ganadería y humanos por región (país). La relación entre las incidencias sugiere que en algunas regiones puede haber una transferencia significativa de bacterias resistentes entre animales y humanos (posiblemente a través de alimentos contaminados o contacto directo).
 
+Enterococcus y Escherichia emergen como indicadores clave de resistencia compartida y merecen atención particular en investigaciones futuras. Aunque hay bacterias comunes entre ambos sectores, su distribución e incidencia no siempre están alineadas. Esto sugiere que otros factores, como el uso de antibióticos en humanos, el saneamiento, y las políticas de salud pública, también desempeñan un papel importante.
+:::
 
-**Mapa Interactivo de los positivos AMR por paises de la UE**
-
-```{r,message=FALSE,warning=FALSE}
-library(sf)
-library(ggplot2)
-library(plotly)
-library(dplyr)
-library(viridis)
-paises_UE <- c(
-  "Cyprus", "France", "Lithuania", "Czechia", "Germany", 
-  "Estonia", "Latvia", "Sweden", "Finland", "Luxembourg", 
-  "Belgium", "Spain", "Denmark", "Romania", "Hungary", 
-  "Slovakia", "Poland", "Ireland", "Greece", "Austria", 
-  "Italy", "Netherlands", "Croatia", "Slovenia", "Bulgaria", 
-  "Portugal", "Malta"
-)
-
-
-
-mapa_mudo <- st_read("INPUT/DATA/mapaMundi")  
-
-
-mapa_mundo_europa <- mapa_mudo %>% 
-  dplyr::filter(NAME %in% paises_UE)
-
-mapa_mundo_europa <- mapa_mudo %>% dplyr::filter(NAME %in% paises_UE)
-
-
-positivos_por_ciudad <- paises_UE_df %>%
-  dplyr::filter(NombrePais != "United Kingdom (Northern Ireland)")%>%
-  group_by(NombrePais) %>%
-  dplyr::summarize(total_pruebas = sum(TotalMuestras, na.rm = TRUE),
-            total_positivos= sum(MuestraPositiva, na.rm = TRUE)) %>%
-  mutate(ratio_positivo = (total_positivos / total_pruebas) * 100)
-
-# Unir datos de positividad al mapa
-mapa_mundo_europa$NAME <- as.character(mapa_mundo_europa$NAME)
-positivos_por_ciudad$NombrePais <- as.character(positivos_por_ciudad$NombrePais)
-
-# Realizar el join usando las columnas correctas
-mapa_mundo_europa <- mapa_mundo_europa %>% 
-  left_join(positivos_por_ciudad, by = c("NAME" = "NombrePais"))
-
-
-
-mapa <- ggplot(mapa_mundo_europa) +
-  geom_sf(aes(fill = ratio_positivo)) +
-  scale_fill_viridis_c(option = "plasma", na.value = "gray") +
-  labs(title = "Tasa de Positividad por País en Europa",
-       fill = "Tasa de Positividad (%)") +
-  coord_sf(xlim = c(-30, 50), ylim = c(35, 72), expand = FALSE) +  # Ajustar límites para hacer zoom en Europa
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5))
-
-
-# Convertir el gráfico a interactivo con plotly
-mapa_interactivo <- ggplotly(mapa)
-
-mapa_interactivo
-
-```
-
-
-
-
-
-## Pregunta 3: Relación entre PIB y resistencia a antibióticos en la UE
+## Pregunta 3: Relación entre PIB y resistencia a antibióticos en la UE {style="1520A6"}
 
 Analizar si existe una relación significativa entre el Producto Interno Bruto de los países de la Unión Europea y los niveles de resistencia a antibióticos.
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 pib <- read_table("INPUT/DATA/datos_pib.tsv")
 
 
@@ -750,7 +736,7 @@ pib_2022_desc <- pib %>%
 
 Tras el tratamiento de estos datos se puede ver de manera gráfica la comparativa entre los países.
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 grafico_pib <- ggplot(pib_2022_desc, aes(x = reorder(pais, -`2022`), y = `2022`)) +
   geom_bar(stat = "identity", fill = "gold") +
   labs(x = "País", y = "Valor en 2022", title = "PIB por País en 2022") +
@@ -765,7 +751,7 @@ Una vez observada la primera variable, generamos los datos del valor medio de la
 
 Este código cargado en el entorno, es capaz de generar gráficos que permitan ver la incidencia de las bacterias en cada país.
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 # graficos positivos generales
 
 # Crear el gráfico usando los datos ordenados
@@ -785,11 +771,89 @@ grafico
 
 ```
 
+**Visualizar los positivos en AMR por país** Se crea un gráfico de barras el cual muestra el porcentaje de personas que presentan resistencia antrimicrobiana en cada país. En orden ascendente. Junto al gráfico tenemos el mapa con los países de la UE. Al pasar el cursor por alguna de las barras o por algun país en el mapa, se indica el porcentaje de positivos y el nombre del país en partícular en ambas gráficas.
+
+```{r message=FALSE,warning=FALSE}
+
+
+paises_UE_mapa <- c(
+  "Cyprus", "France", "Lithuania", "Czechia", "Germany", 
+  "Estonia", "Latvia", "Sweden", "Finland", "Luxembourg", 
+  "Belgium", "Spain", "Denmark", "Romania", "Hungary", 
+  "Slovakia", "Poland", "Ireland", "Greece", "Austria", 
+  "Italy", "Netherlands", "Croatia", "Slovenia", "Bulgaria", 
+  "Portugal", "Malta"
+)
+
+
+mapa_mundo <- st_read("INPUT/DATA/mapaMundi")  # Cargar el mapa de países en formato `sf`
+
+
+
+#Filtramos solo los paises de UE 
+mapa_mundo <- mapa_mundo %>% 
+  filter(NAME %in% paises_UE_mapa) 
+
+mapa_mundo <- cambio_nombre_codigo(mapa_mundo, "NAME")#usamos la función para cambiar los nombres
+
+
+#Unimos el mapa con la tabla de positivos en AMR
+mapa_mundo_europa <-left_join(x=mapa_mundo,y=media_region, by = c("NAME" = "RegionCode")) %>% 
+  dplyr::rename(Porcentaje_positivos=mean_value_region) %>%  
+  dplyr::mutate(Porcentaje_positivos = round(Porcentaje_positivos, 2))
+
+
+#Creamos un gráfico de barras interactivo
+graf_barras <- ggplot(mapa_mundo_europa, aes(
+  y=Porcentaje_positivos,
+  x = reorder(NAME_LONG,-Porcentaje_positivos), #ordenamos según el porcentaje de positivos
+  tooltip =  paste("País: ", NAME_LONG, "<br>Tasa de Positividad: ", Porcentaje_positivos),#mensaje que sale al pasar el cursor
+  data_id = NAME_LONG,#el identificador de cada barra
+  fill = NAME_LONG #colorea según el pais
+)) +
+  geom_col_interactive(data = mapa_mundo_europa) +
+  coord_flip() + #gira el gráfico 
+  theme_minimal() +
+  theme(legend.position = "none")+ #elimina la leyenda 
+  labs(x='paises',y='porcentaje de positivos en AMR')
+
+#Creamos el mapa
+mapaMundo <- ggplot() +
+  geom_sf(data = mapa_mundo_europa, fill = "lightgrey", color = "lightgrey") + #dibuja el mapa y asigna color de relleno y borde
+  geom_sf_interactive(
+    data = mapa_mundo_europa,
+    aes(fill = NAME_LONG, tooltip =  paste("País: ", NAME_LONG, "<br>Tasa de Positividad: ", Porcentaje_positivos), data_id = NAME_LONG)) +
+  coord_sf(xlim = c(-30, 50), ylim = c(35, 72), expand = FALSE) + #limita la vista a la región especifica 
+  theme_void() +
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "none"
+  )
+
+
+
+combined_plot <- (graf_barras + mapaMundo) + 
+  plot_layout(widths = c(1, 2)) + #ajustamos el ancho
+  plot_annotation(
+    title = 'Porcentaje de positivos en AMR por país',
+    theme = theme(plot.title = element_text(hjust = 0.5))#centrar titulo
+  )
+
+
+#Creamos el mapa interactivo
+mapaCombinado <- girafe(ggobj = combined_plot)#convertimos en grafico interactivo
+mapaCombinado <- girafe_options(
+  mapaCombinado,
+  opts_hover(css = "fill:red;stroke:black;")#cambia el color cuando el cursor pasa sobre el objeto
+)
+mapaCombinado
+
+```
 
 Con el objetivo de estudiar la relación entre el nivel económico y el de AMR de la UE, hemos hecho una regresión cuya variable independiente será el PIB y la dependiente, en el eje y, es el porcentaje de población animal y humana resistente a antibióticos representado en un factor dividido entre los dos grupos. La gráfica final es una de dispersión en la cual cada punto se corresponde con un país de la Unión Europea y cada color representa un nivel del factor.
 
-
-```{r}
+```{r message=FALSE,warning=FALSE}
 positivos_sinPivotar<-left_join(x = media_region, y = positivos_animales, by = "RegionCode")%>%
   dplyr::rename(porcentaje_posit_animales = media)%>%
   dplyr::rename(porcentaje_posit_personas = mean_value_region)
@@ -811,3 +875,93 @@ final<-ggplot(positivos_PIB,aes(x=PIB, y=Valores))+
 final
 
 ```
+
+::: info-box
+Este gráfico de dispersión muestra la relación entre el PIB y la resistencia antimicrobiana (AMR) para humanos (rojo) y animales (azul) en los países de la UE. También incluye una línea de regresión para cada grupo que representa la tendencia promedio de la relación entre el PIB y la resistencia antimicrobiana. Existe una correlación negativa entre el PIB y la AMR tanto en humanos como en animales. Es decir, los países con mayor PIB tienden a tener menores tasas de resistencia. La pendiente para humanos parece más pronunciada, lo que indica que el PIB tiene un impacto más significativo en la AMR humana que en la animal (lo cual puede deberse las tendencias de importación y exportación alimenticia mencionadas anteriormente). **Conclusión** Como conclusión, es notable que los países con menores recursos económicos presentan una mayor resistencia y necesitan fortalecer las políticas de salud pública para combatir la AMR.
+:::
+
+**Relación PIB y Resistencia por cada país de la UE** Aqui se muestra la gráfica anterior relacionando el porcentaje de resistencia que hay tanto en ganadería como en personas, por cada uno de los países de la UE
+
+```{r,message=FALSE,warning=FALSE}
+
+# Gráfico de dispersión interactivo (izquierda)
+
+
+graf_izq <- ggplot(positivos_PIB, aes(x = PIB, y = Valores)) +
+  geom_point_interactive(aes(color = Variable, tooltip = RegionCode, data_id = RegionCode), size = 1.5) +
+  geom_smooth(aes(color = Variable), method = "lm", se = TRUE) +
+  labs(title = "Relación entre PIB y Resistencia", x = "PIB", y = "Porcentaje de Resistencia") +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 10, 10))
+
+
+# Gráfico de barras interactivo (derecha)
+graf_drch <- ggplot(positivos_PIB, aes(x = reorder(RegionCode, -Valores), y = Valores, tooltip = paste("País:", RegionCode, "<br>Valor:", Valores), data_id = RegionCode)) +
+  geom_col_interactive(aes(fill = Variable), position = "dodge") +  # Barras interactivas agrupadas por variable
+  coord_flip() +  # Invertir los ejes para barras horizontales
+  labs(x = "País", y = "Porcentaje de Resistencia") +
+  #theme_minimal() +
+  theme(legend.position = "right",  # Mostrar la leyenda solo en el gráfico de barras
+        plot.margin = margin(10, 10, 10, 10))  # Ajuste de márgenes
+
+
+# Combinar los dos gráficos en una disposición horizontal
+
+graficas_unidas <- girafe(ggobj = graf_izq + graf_drch + plot_layout(ncol = 2))
+
+
+# Mostrar el gráfico interactivo
+graficas_unidas
+
+
+
+```
+
+::: info-box
+Los países que más porcentaje presentan en cuanto a resistencia en la población son Rumanía, Bulgaria y en cabeza tenemos a Chipre. En resistencia en ganadería encontramos a Letonia y Bulgaria de nuevo con los valors más altos.
+:::
+
+## Conclusiones finales
+
+::: {.info-box style="48AAAD"}
+En los últimos años, la resistencia a los antimicrobianos (AMR) ha emergido como una de las principales amenazas para la salud pública a nivel global. Este fenómeno no solo pone en riesgo la efectividad de los tratamientos médicos, sino que también representa un desafío significativo para los sistemas de salud, la economía y la seguridad alimentaria. En este contexto, la AMR no se limita al ámbito médico, sino que involucra factores interrelacionados como el consumo excesivo de antibióticos, la automedicación y el uso intensivo de antimicrobianos en la ganadería, especialmente en animales destinados a la producción de carne.
+
+En Europa, y particularmente en la Unión Europea (UE), las tasas de resistencia a los antibióticos varían considerablemente entre países y regiones, lo que plantea preguntas fundamentales: ¿cómo influyen las tendencias de salud pública en esta variabilidad? y ¿qué papel desempeña el desarrollo económico en la lucha contra la resistencia antimicrobiana?.
+
+Este trabajo se centra en explorar el impacto de factores clave en la incidencia de AMR, con especial atención en tres áreas principales:
+
+1.  Consumo de antibióticos en España: Identificar patrones de uso en las comunidades autónomas, diferenciando entre antibióticos recetados y no recetados, con el objetivo de abordar el problema de la automedicación.
+
+2.  Relación entre el PIB y la resistencia a los antibióticos en la UE: Analizar si el nivel económico de un país, medido a través de su Producto Interno Bruto, está correlacionado con la incidencia de resistencia antimicrobiana, aportando una perspectiva socioeconómica al problema.
+
+3.  Consumo y resistencia en sectores específicos: Examinar cómo el uso de antibióticos en humanos, hospitales y ganadería afecta los niveles de resistencia en los países de la UE, destacando la importancia de políticas sectoriales efectivas.
+
+CONCLUSIONES FINALES El consumo de antibióticos en España varía considerablemente entre comunidades autónomas, destacándose una posible problemática de automedicación en regiones específicas.
+
+La diferenciación entre consumo recetado y no recetado revela un uso inapropiado en ciertas áreas, lo que podría estar fomentando la aparición de bacterias resistentes.
+
+El uso de antibióticos en diferentes sectores (personal, hospitalario y ganadero) tiene un impacto directo en las tasas de resistencia:
+
+En el ámbito hospitalario, un uso excesivo o inapropiado está relacionado con mayores tasas de infecciones resistentes. En la ganadería, la sobremedicación de animales destinados al consumo humano contribuye al desarrollo y diseminación de bacterias multirresistentes a través de la cadena alimentaria y el medio ambiente. El consumo de antibióticos en la ganadería de la UE ha disminuido en los últimos años, lo que refleja el éxito de las políticas de regulación en ciertos países. Sin embargo, esta tendencia no es homogénea.
+
+Existe una correlación negativa significativa entre el Producto Interno Bruto (PIB) de los países de la UE y las tasas de resistencia a los antibióticos, tanto en humanos como en animales.
+
+Los países con mayores niveles de desarrollo económico, como Luxemburgo (LU), Suecia (SE) y Finlandia (FI), presentan tasas de resistencia más bajas, lo que puede atribuirse a mejores sistemas de salud, mayor acceso a la educación sobre el uso adecuado de antibióticos y políticas más estrictas de control.
+
+La incidencia de AMR sigue un patrón geográfico claro:
+
+Los países del norte de Europa (Suecia, Finlandia) muestran menores tasas de resistencia, probablemente debido a un control más estricto y menor uso de antibióticos. Los países del este y sur de Europa (Rumanía, Chipre, Bulgaria) presentan tasas significativamente más altas, lo que podría estar relacionado con factores socioeconómicos, culturales y regulatorios.
+:::
+
+## Referencias
+
+::: info-box
+@Article{antibiotics9120918, AUTHOR = {Tiseo, Katie and Huber, Laura and Gilbert, Marius and Robinson, Timothy P. and Van Boeckel, Thomas P.}, TITLE = {Global Trends in Antimicrobial Use in Food Animals from 2017 to 2030}, JOURNAL = {Antibiotics}, VOLUME = {9}, YEAR = {2020}, NUMBER = {12}, ARTICLE-NUMBER = {918}, URL = {<https://www.mdpi.com/2079-6382/9/12/918>}, PubMedID = {33348801}, ISSN = {2079-6382}, ABSTRACT = {Demand for animal protein is rising globally and has been facilitated by the expansion of intensive farming. However, intensive animal production relies on the regular use of antimicrobials to maintain health and productivity on farms. The routine use of antimicrobials fuels the development of antimicrobial resistance, a growing threat for the health of humans and animals. Monitoring global trends in antimicrobial use is essential to track progress associated with antimicrobial stewardship efforts across regions. We collected antimicrobial sales data for chicken, cattle, and pig systems in 41 countries in 2017 and projected global antimicrobial consumption from 2017 to 2030. We used multivariate regression models and estimated global antimicrobial sales in 2017 at 93,309 tonnes (95% CI: 64,443, 149,886). Globally, sales are expected to rise by 11.5% in 2030 to 104,079 tonnes (95% CI: 69,062, 172,711). All continents are expected to increase their antimicrobial use. Our results show lower global antimicrobial sales in 2030 compared to previous estimates, owing to recent reports of decrease in antimicrobial use, in particular in China, the world’s largest consumer. Countries exporting a large proportion of their production are more likely to report their antimicrobial sales data than countries with small export markets.}, DOI = {10.3390/antibiotics9120918} }
+
+@article{Flynn2023, title = {Emerging Antimicrobial Resistance}, author = {Flynn, Cynthia E. and Guarner, Jeannette}, year = {2023}, month = {sep}, doi = {10.1016/j.modpat.2023.100249}, journal = {Modern Pathology}, volume = {36}, number = {9}, pages = {100249}, publisher = {Elsevier}, issn = {0893-3952}, url = {<https://doi.org/10.1016/j.modpat.2023.100249>} }
+
+@article{10.1371/journal.pgph.0001305, doi = {10.1371/journal.pgph.0001305}, author = {Mulchandani, Ranya AND Wang, Yu AND Gilbert, Marius AND Van Boeckel, Thomas P.}, journal = {PLOS Global Public Health}, publisher = {Public Library of Science}, title = {Global trends in antimicrobial use in food-producing animals: 2020 to 2030}, year = {2023}, month = {02}, volume = {3}, url = {<https://doi.org/10.1371/journal.pgph.0001305>}, pages = {1-11}, abstract = {Use of antimicrobials in farming has enabled the growth of intensive animal production and helped in meeting the global increase in demand for animal protein. However, the widespread use of veterinary antimicrobials drives antimicrobial resistance, with important consequences for animal health, and potentially human health. Global monitoring of antimicrobial use is essential: first, to track progress in reducing the reliance of farming on antimicrobials. Second, to identify countries where antimicrobial-stewardship efforts should be targeted to curb antimicrobial resistance. Data on usage of antimicrobials in food animals were collected from 42 countries. Multivariate regression models were used in combination with projections of animal counts for cattle, sheep, chicken, and pigs from the Food and Agriculture Organization to estimate global antimicrobial usage of veterinary antimicrobials in 2020 and 2030. Maps of animal densities were used to identify geographic hotspots of antimicrobial use. In each country, estimates of antimicrobial use (tonnes) were calibrated to match continental-level reports of antimicrobial use intensity (milligrams per kilogram of animal) from the World Organization for Animal Health, as well as country-level reports of antimicrobial use from countries that made this information publicly available. Globally, antimicrobial usage was estimated at 99,502 tonnes (95% CI 68,535–198,052) in 2020 and is projected, based on current trends, to increase by 8.0% to 107,472 tonnes (95% CI: 75,927–202,661) by 2030. Hotspots of antimicrobial use were overwhelmingly in Asia (67%), while \<1% were in Africa. Findings indicate higher global antimicrobial usage in 2030 compared to prior projections that used data from 2017; this is likely associated with an upward revision of antimicrobial use in Asia/Oceania (\~6,000 tonnes) and the Americas (\~4,000 tonnes). National-level reporting of antimicrobial use should be encouraged to better evaluate the impact of national policies on antimicrobial use levels.}, number = {2},
+
+}
+
+@article{ARDAKANI2024101060, title = {Global antimicrobial use in livestock farming: an estimate for cattle, chickens, and pigs}, journal = {animal}, volume = {18}, number = {2}, pages = {101060}, year = {2024}, issn = {1751-7311}, doi = {<https://doi.org/10.1016/j.animal.2023.101060>}, url = {<https://www.sciencedirect.com/science/article/pii/S1751731123003774>}, author = {Zahra Ardakani and Maurizio Aragrande and Massimo Canali}, keywords = {Animal farming, Antimicrobial resistance, Food animals, Population correction unit, Veterinary antibiotics}, abstract = {Livestock farming substantially contributes to the global economy and food security. However, it poses crucial environmental, animal welfare, and public health challenges. The main objective of this study is to quantify the global antimicrobial use (AMU) in cattle, chicken, and pig farming. This information is important for understanding the potential impact of farm AMU on the emergence and spread of antimicrobial resistance among animals and humans. Using the United States Department of Agriculture Production, Supply, and Distribution and the Food and Agriculture Organization databases, we estimated the total supply of cattle (in heads) and its distribution into four weight categories: calves (26%), cows (41%), heifers (4%), and bulls of more than one year (29%). Similarly, we calculated the total supply of pigs (in heads) and divided it into two weight categories: pigs (96%) and sows (4%). For chickens, we considered one weight category. We attributed to each category a standard weight according to the parameters set by the European Medicines Agency (EMA) to determine the animal biomass at risk of antimicrobial treatment, or population correction unit (PCU). Finally, we estimated the global PCUs and then the global AMU based on the average administered to the three species (in mg of active ingredients per kg PCU). With this method, we estimated a global annual AMU of 76 060 tonnes of antimicrobial active ingredients (2019–2021 average), of which 40 697 tonnes (or 53.5%) for cattle, 4 243 tonnes (or 5.6%) for chickens, and 31 120 tonnes (or 40.9%) for pigs. According to our assessment, global AMU leads to almost 20 000 tonnes less than the previous estimates due to a different evaluation of PCUs. In previous studies, PCUs were calculated on the liveweight at slaughtering of animals, while our method considers the age and sex of animals and their average weight at treatment. Our results are consistent with the World Organization for Animal Health (WOAH) estimate of 76 704 tonnes of veterinary antimicrobials globally consumed in 2018 for the total of food-producing animals (the WOAH estimation is based on sales and import data).} }
+:::

@@ -923,19 +923,7 @@ Los países que más porcentaje presentan en cuanto a resistencia en la poblaci�
 ## Conclusiones finales
 
 ::: {.info-box style="48AAAD"}
-En los últimos años, la resistencia a los antimicrobianos (AMR) ha emergido como una de las principales amenazas para la salud pública a nivel global. Este fenómeno no solo pone en riesgo la efectividad de los tratamientos médicos, sino que también representa un desafío significativo para los sistemas de salud, la economía y la seguridad alimentaria. En este contexto, la AMR no se limita al ámbito médico, sino que involucra factores interrelacionados como el consumo excesivo de antibióticos, la automedicación y el uso intensivo de antimicrobianos en la ganadería, especialmente en animales destinados a la producción de carne.
-
-En Europa, y particularmente en la Unión Europea (UE), las tasas de resistencia a los antibióticos varían considerablemente entre países y regiones, lo que plantea preguntas fundamentales: ¿cómo influyen las tendencias de salud pública en esta variabilidad? y ¿qué papel desempeña el desarrollo económico en la lucha contra la resistencia antimicrobiana?.
-
-Este trabajo se centra en explorar el impacto de factores clave en la incidencia de AMR, con especial atención en tres áreas principales:
-
-1.  Consumo de antibióticos en España: Identificar patrones de uso en las comunidades autónomas, diferenciando entre antibióticos recetados y no recetados, con el objetivo de abordar el problema de la automedicación.
-
-2.  Relación entre el PIB y la resistencia a los antibióticos en la UE: Analizar si el nivel económico de un país, medido a través de su Producto Interno Bruto, está correlacionado con la incidencia de resistencia antimicrobiana, aportando una perspectiva socioeconómica al problema.
-
-3.  Consumo y resistencia en sectores específicos: Examinar cómo el uso de antibióticos en humanos, hospitales y ganadería afecta los niveles de resistencia en los países de la UE, destacando la importancia de políticas sectoriales efectivas.
-
-CONCLUSIONES FINALES El consumo de antibióticos en España varía considerablemente entre comunidades autónomas, destacándose una posible problemática de automedicación en regiones específicas.
+El consumo de antibióticos en España varía considerablemente entre comunidades autónomas, destacándose una posible problemática de automedicación en regiones específicas.
 
 La diferenciación entre consumo recetado y no recetado revela un uso inapropiado en ciertas áreas, lo que podría estar fomentando la aparición de bacterias resistentes.
 

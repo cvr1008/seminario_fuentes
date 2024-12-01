@@ -31,6 +31,7 @@ library(RColorBrewer)
 library(readr)
 library(readxl)
 library(rjson)
+library(rlang)
 library(sf)
 library(tidyr)
 library(tidyverse)
@@ -415,6 +416,7 @@ DDD_Europa_df <- cambio_nombre_codigo(DDD_Europa_df, "Country")
 # Añadir columna para calcular DDD por cada 100 habitantes y eliminar la columna original
 DDD_Europa_df <- DDD_Europa_df %>%
   dplyr::mutate(DDD_per_100_inhabitants_per_day = DDD_per_1000_inhabitants_per_day / 10) %>%
+  dplyr::filter(Country %in% unlist(lista_pais)) %>%
   select(-DDD_per_1000_inhabitants_per_day)
 
 

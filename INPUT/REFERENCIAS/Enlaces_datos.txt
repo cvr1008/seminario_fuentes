@@ -1,0 +1,12 @@
+https://atlas.ecdc.europa.eu/public/index.aspx?Dataset=27&HealthTopic=4
+https://datos.gob.es/es/catalogo/ea0010587-tipo-de-medicamento-consumido-en-las-ultimas-2-semanas-segun-haya-sido-recetado-o-no-por-sexo-y-clase-social-basada-en-la-ocupacion-de-la-persona-de-referencia-poblacion-de-15-y-mas-anos-que-identificador-api-t15-p420-a2019-p05-l0-07012-px1
+https://ourworldindata.org/grapher/antibiotic-use-in-livestock-in-europe?tab=table  
+https://data.europa.eu/data/datasets/x7xwpduqtcrglcfs5dno7g?locale=es  
+https://qap.ecdc.europa.eu/public/extensions/AMC2_Dashboard/AMC2_Dashboard.html#eu-consumption-tab
+https://ec.europa.eu/eurostat/databrowser/view/sdg_03_70/default/table?lang=en
+https://efsa.onlinelibrary.wiley.com/doi/full/10.2903/j.efsa.2024.8583
+https://www.efsa.europa.eu/en/microstrategy/dashboard-antimicrobial-resistance
+https://esvacbi.ema.europa.eu/analytics/saw.dll?PortalPages  
+https://data.europa.eu/data/datasets/v5x9gcgmhdn8we8ykg6ylw?locale=es  
+
+ 

@@ -943,6 +943,21 @@ Los países del norte de Europa (Suecia, Finlandia) muestran menores tasas de re
 ## Referencias
 
 ::: info-box
+**Programa empleado**
+RStudio
+
+**Páginas usadas**
+Repositorio: https://github.com/ajcanepa/PRACTICA_TEMA5
+
+R-Graphics Cookbook: https://r-graphics.org/
+
+R-gallery: https://r-graph-gallery.com/
+
+
+chat gpt: https://chatgpt.com/
+
+**Articulos**
+
 @Article{antibiotics9120918, AUTHOR = {Tiseo, Katie and Huber, Laura and Gilbert, Marius and Robinson, Timothy P. and Van Boeckel, Thomas P.}, TITLE = {Global Trends in Antimicrobial Use in Food Animals from 2017 to 2030}, JOURNAL = {Antibiotics}, VOLUME = {9}, YEAR = {2020}, NUMBER = {12}, ARTICLE-NUMBER = {918}, URL = {<https://www.mdpi.com/2079-6382/9/12/918>}, PubMedID = {33348801}, ISSN = {2079-6382}, ABSTRACT = {Demand for animal protein is rising globally and has been facilitated by the expansion of intensive farming. However, intensive animal production relies on the regular use of antimicrobials to maintain health and productivity on farms. The routine use of antimicrobials fuels the development of antimicrobial resistance, a growing threat for the health of humans and animals. Monitoring global trends in antimicrobial use is essential to track progress associated with antimicrobial stewardship efforts across regions. We collected antimicrobial sales data for chicken, cattle, and pig systems in 41 countries in 2017 and projected global antimicrobial consumption from 2017 to 2030. We used multivariate regression models and estimated global antimicrobial sales in 2017 at 93,309 tonnes (95% CI: 64,443, 149,886). Globally, sales are expected to rise by 11.5% in 2030 to 104,079 tonnes (95% CI: 69,062, 172,711). All continents are expected to increase their antimicrobial use. Our results show lower global antimicrobial sales in 2030 compared to previous estimates, owing to recent reports of decrease in antimicrobial use, in particular in China, the world’s largest consumer. Countries exporting a large proportion of their production are more likely to report their antimicrobial sales data than countries with small export markets.}, DOI = {10.3390/antibiotics9120918} }
 
 @article{Flynn2023, title = {Emerging Antimicrobial Resistance}, author = {Flynn, Cynthia E. and Guarner, Jeannette}, year = {2023}, month = {sep}, doi = {10.1016/j.modpat.2023.100249}, journal = {Modern Pathology}, volume = {36}, number = {9}, pages = {100249}, publisher = {Elsevier}, issn = {0893-3952}, url = {<https://doi.org/10.1016/j.modpat.2023.100249>} }
